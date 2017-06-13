@@ -1,0 +1,320 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BDC886811EEDC8D500923775 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886801EEDC8D500923775 /* AppDelegate.swift */; };
+		BDC886831EEDC8D500923775 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886821EEDC8D500923775 /* ViewController.swift */; };
+		BDC886851EEDC8D500923775 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BDC886841EEDC8D500923775 /* Assets.xcassets */; };
+		BDC886881EEDC8D500923775 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDC886861EEDC8D500923775 /* Main.storyboard */; };
+		BDC886951EEDC9D000923775 /* diagramm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886911EEDC9D000923775 /* diagramm.swift */; };
+		BDC886961EEDC9D000923775 /* hid.c in Sources */ = {isa = PBXBuildFile; fileRef = BDC886921EEDC9D000923775 /* hid.c */; };
+		BDC886971EEDC9D000923775 /* usb.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886941EEDC9D000923775 /* usb.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BDC8867D1EEDC8D500923775 /* DataLogger2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataLogger2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDC886801EEDC8D500923775 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BDC886821EEDC8D500923775 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BDC886841EEDC8D500923775 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BDC886871EEDC8D500923775 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BDC886891EEDC8D500923775 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BDC8868F1EEDC9D000923775 /* DataLogger2-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataLogger2-Bridging-Header.h"; sourceTree = "<group>"; };
+		BDC886911EEDC9D000923775 /* diagramm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = diagramm.swift; sourceTree = "<group>"; };
+		BDC886921EEDC9D000923775 /* hid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hid.c; sourceTree = "<group>"; };
+		BDC886931EEDC9D000923775 /* hid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hid.h; sourceTree = "<group>"; };
+		BDC886941EEDC9D000923775 /* usb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = usb.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BDC8867A1EEDC8D500923775 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BDC886741EEDC8D500923775 = {
+			isa = PBXGroup;
+			children = (
+				BDC8867F1EEDC8D500923775 /* DataLogger2 */,
+				BDC8867E1EEDC8D500923775 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BDC8867E1EEDC8D500923775 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BDC8867D1EEDC8D500923775 /* DataLogger2.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BDC8867F1EEDC8D500923775 /* DataLogger2 */ = {
+			isa = PBXGroup;
+			children = (
+				BDC886821EEDC8D500923775 /* ViewController.swift */,
+				BDC886911EEDC9D000923775 /* diagramm.swift */,
+				BDC886921EEDC9D000923775 /* hid.c */,
+				BDC886931EEDC9D000923775 /* hid.h */,
+				BDC886941EEDC9D000923775 /* usb.swift */,
+				BDC886801EEDC8D500923775 /* AppDelegate.swift */,
+				BDC886841EEDC8D500923775 /* Assets.xcassets */,
+				BDC886861EEDC8D500923775 /* Main.storyboard */,
+				BDC886891EEDC8D500923775 /* Info.plist */,
+				BDC8868F1EEDC9D000923775 /* DataLogger2-Bridging-Header.h */,
+			);
+			path = DataLogger2;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BDC8867C1EEDC8D500923775 /* DataLogger2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BDC8868C1EEDC8D500923775 /* Build configuration list for PBXNativeTarget "DataLogger2" */;
+			buildPhases = (
+				BDC886791EEDC8D500923775 /* Sources */,
+				BDC8867A1EEDC8D500923775 /* Frameworks */,
+				BDC8867B1EEDC8D500923775 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DataLogger2;
+			productName = DataLogger2;
+			productReference = BDC8867D1EEDC8D500923775 /* DataLogger2.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BDC886751EEDC8D500923775 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = "Ruedi Heimlicher";
+				TargetAttributes = {
+					BDC8867C1EEDC8D500923775 = {
+						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = 535FNG3TMM;
+						LastSwiftMigration = 0830;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = BDC886781EEDC8D500923775 /* Build configuration list for PBXProject "DataLogger2" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BDC886741EEDC8D500923775;
+			productRefGroup = BDC8867E1EEDC8D500923775 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BDC8867C1EEDC8D500923775 /* DataLogger2 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BDC8867B1EEDC8D500923775 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDC886851EEDC8D500923775 /* Assets.xcassets in Resources */,
+				BDC886881EEDC8D500923775 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BDC886791EEDC8D500923775 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDC886831EEDC8D500923775 /* ViewController.swift in Sources */,
+				BDC886951EEDC9D000923775 /* diagramm.swift in Sources */,
+				BDC886971EEDC9D000923775 /* usb.swift in Sources */,
+				BDC886811EEDC8D500923775 /* AppDelegate.swift in Sources */,
+				BDC886961EEDC9D000923775 /* hid.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BDC886861EEDC8D500923775 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BDC886871EEDC8D500923775 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BDC8868A1EEDC8D500923775 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BDC8868B1EEDC8D500923775 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		BDC8868D1EEDC8D500923775 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 535FNG3TMM;
+				INFOPLIST_FILE = DataLogger2/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = RH.DataLogger2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "DataLogger2/DataLogger2-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		BDC8868E1EEDC8D500923775 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 535FNG3TMM;
+				INFOPLIST_FILE = DataLogger2/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = RH.DataLogger2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "DataLogger2/DataLogger2-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BDC886781EEDC8D500923775 /* Build configuration list for PBXProject "DataLogger2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDC8868A1EEDC8D500923775 /* Debug */,
+				BDC8868B1EEDC8D500923775 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BDC8868C1EEDC8D500923775 /* Build configuration list for PBXNativeTarget "DataLogger2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDC8868D1EEDC8D500923775 /* Debug */,
+				BDC8868E1EEDC8D500923775 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BDC886751EEDC8D500923775 /* Project object */;
+}
