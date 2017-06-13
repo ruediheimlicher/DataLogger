@@ -1,0 +1,17 @@
+Images.*
+*Tests*
+*.xcodeproj
+*.eep
+*.elf
+*.hex
+*.lss
+*.lst
+*.map
+*.o
+*.sym
+build/*
+Power_InterfaceTests/
+*.caf
+*.mp3
+*.appiconset
+*.aif*
