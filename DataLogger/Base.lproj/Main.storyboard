@@ -12,11 +12,11 @@
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
                     <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
                         <items>
-                            <menuItem title="DataLogger2" id="1Xt-HY-uBw">
+                            <menuItem title="DataLogger" id="1Xt-HY-uBw">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="DataLogger2" systemMenu="apple" id="uQy-DD-JDr">
+                                <menu key="submenu" title="DataLogger" systemMenu="apple" id="uQy-DD-JDr">
                                     <items>
-                                        <menuItem title="About DataLogger2" id="5kV-Vb-QxS">
+                                        <menuItem title="About DataLogger" id="5kV-Vb-QxS">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="Exp-CZ-Vem"/>
@@ -30,7 +30,7 @@
                                             <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
-                                        <menuItem title="Hide DataLogger2" keyEquivalent="h" id="Olw-nP-bQN">
+                                        <menuItem title="Hide DataLogger" keyEquivalent="h" id="Olw-nP-bQN">
                                             <connections>
                                                 <action selector="hide:" target="Ady-hI-5gd" id="PnN-Uc-m68"/>
                                             </connections>
@@ -48,7 +48,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
-                                        <menuItem title="Quit DataLogger2" keyEquivalent="q" id="4sb-4s-VLi">
+                                        <menuItem title="Quit DataLogger" keyEquivalent="q" id="4sb-4s-VLi">
                                             <connections>
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
                                             </connections>
@@ -641,7 +641,7 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
                                     <items>
-                                        <menuItem title="DataLogger2 Help" keyEquivalent="?" id="FKE-Sm-Kum">
+                                        <menuItem title="DataLogger Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                             <connections>
                                                 <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
                                             </connections>
@@ -655,7 +655,7 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="ugo-Kl-gCk"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="DataLogger2" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="DataLogger" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="75" y="0.0"/>
@@ -663,7 +663,7 @@
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
             <objects>
-                <windowController storyboardIdentifier="MainWindowController" id="B8D-0N-5wS" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="MainWindow" id="B8D-0N-5wS" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -684,7 +684,7 @@
         <!--Data View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController id="XfG-lQ-9wD" customClass="DataViewController" customModule="DataLogger2" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController" id="XfG-lQ-9wD" customClass="DataViewController" customModule="DataLogger" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="1178" height="730"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -760,7 +760,7 @@
                                             <rect key="frame" x="10" y="33" width="939" height="403"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rr3-Tz-HlD" customClass="Abszisse" customModule="DataLogger2" customModuleProvider="target">
+                                                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rr3-Tz-HlD" customClass="Abszisse" customModule="DataLogger" customModuleProvider="target">
                                                     <rect key="frame" x="582" y="62" width="53" height="297"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </customView>
@@ -895,7 +895,7 @@
                                                         <rect key="frame" x="1" y="1" width="286" height="296"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="heH-S0-xIW" customClass="DataPlot" customModule="DataLogger2" customModuleProvider="target">
+                                                            <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="heH-S0-xIW" customClass="DataPlot" customModule="DataLogger" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="2411" height="281"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             </view>
@@ -1739,6 +1739,22 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vpa-CF-TMg">
+                                <rect key="frame" x="340" y="586" width="106" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <segmentedCell key="cell" controlSize="mini" borderStyle="border" alignment="left" style="separated" trackingMode="selectAny" id="UR5-iW-zOJ">
+                                    <font key="font" metaFont="miniSystem"/>
+                                    <segments>
+                                        <segment label="A0" width="20"/>
+                                        <segment label="A1" width="20" selected="YES" tag="1"/>
+                                        <segment label="A2" width="20"/>
+                                        <segment label="A3" width="20"/>
+                                        <segment width="20">
+                                            <nil key="label"/>
+                                        </segment>
+                                    </segments>
+                                </segmentedCell>
+                            </segmentedControl>
                         </subviews>
                     </view>
                     <connections>

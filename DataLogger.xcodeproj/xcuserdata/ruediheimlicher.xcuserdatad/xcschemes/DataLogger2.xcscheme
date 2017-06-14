@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BDC8867C1EEDC8D500923775"
-               BuildableName = "DataLogger2.app"
-               BlueprintName = "DataLogger2"
-               ReferencedContainer = "container:DataLogger2.xcodeproj">
+               BuildableName = "DataLogger.app"
+               BlueprintName = "DataLogger"
+               ReferencedContainer = "container:DataLogger.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BDC8867C1EEDC8D500923775"
-            BuildableName = "DataLogger2.app"
-            BlueprintName = "DataLogger2"
-            ReferencedContainer = "container:DataLogger2.xcodeproj">
+            BuildableName = "DataLogger.app"
+            BlueprintName = "DataLogger"
+            ReferencedContainer = "container:DataLogger.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BDC8867C1EEDC8D500923775"
-            BuildableName = "DataLogger2.app"
-            BlueprintName = "DataLogger2"
-            ReferencedContainer = "container:DataLogger2.xcodeproj">
+            BuildableName = "DataLogger.app"
+            BlueprintName = "DataLogger"
+            ReferencedContainer = "container:DataLogger.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BDC8867C1EEDC8D500923775"
-            BuildableName = "DataLogger2.app"
-            BlueprintName = "DataLogger2"
-            ReferencedContainer = "container:DataLogger2.xcodeproj">
+            BuildableName = "DataLogger.app"
+            BlueprintName = "DataLogger"
+            ReferencedContainer = "container:DataLogger.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

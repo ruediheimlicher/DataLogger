@@ -2847,7 +2847,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
    {
       
       let ident = tableColumn?.identifier
-      print ("viewFor row: \(row) ident: \(ident)")
+//      print ("viewFor row: \(row) ident: \(ident)")
       if tableColumn?.identifier == "imageIcon"
       {
          let result = tableView.make(withIdentifier: "imageIcon", owner: self) as! NSTableCellView
@@ -2869,7 +2869,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          
          //var checkbox:NSButton = result.objectValue as! NSButton
          let element = result.subviews[0]
-         print("check element on: \(element)")
+//         print("check element on: \(element)")
          let knopf = element as! NSButton
          knopf.tag = 1000 + row
          let status = Int(knopf.state)
@@ -2877,7 +2877,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          let soll = sollstatus.integerValue
          //knopf.state = 0
          knopf.state = soll!
-         print("check tag: \(knopf.tag) status: \(status)")
+ //        print("check tag: \(knopf.tag) status: \(status)")
          return result
          
       }
@@ -2891,7 +2891,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          
          //var checkbox:NSButton = result.objectValue as! NSButton
          let element = result.subviews[0]
-         print("check element A0: \(element)")
+//         print("check element A0: \(element)")
          let knopf = element as! NSButton
          knopf.tag = 1100 + row
          let status = Int(knopf.state)
@@ -2899,7 +2899,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          //let sollstatusint = (sollstatus as! Int)
          let soll = sollstatus.integerValue
          knopf.state = soll!
-         print("A0 tag: \(knopf.tag) status: \(status)")
+//         print("A0 tag: \(knopf.tag) status: \(status)")
          return result
          
       }
@@ -2913,7 +2913,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          
          //var checkbox:NSButton = result.objectValue as! NSButton
          let element = result.subviews[0]
-         print("check element A0: \(element)")
+//         print("check element A0: \(element)")
          let knopf = element as! NSButton
          knopf.tag = 1200 + row
          let status = Int(knopf.state)
@@ -2921,7 +2921,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          //let sollstatusint = (sollstatus as! Int)
          let soll = sollstatus.integerValue
          knopf.state = soll!
-         print("A1 tag: \(knopf.tag) status: \(status)")
+//         print("A1 tag: \(knopf.tag) status: \(status)")
          return result
          
       }

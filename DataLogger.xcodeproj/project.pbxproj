@@ -7,27 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BDC886811EEDC8D500923775 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886801EEDC8D500923775 /* AppDelegate.swift */; };
-		BDC886831EEDC8D500923775 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886821EEDC8D500923775 /* ViewController.swift */; };
-		BDC886851EEDC8D500923775 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BDC886841EEDC8D500923775 /* Assets.xcassets */; };
-		BDC886881EEDC8D500923775 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDC886861EEDC8D500923775 /* Main.storyboard */; };
-		BDC886951EEDC9D000923775 /* diagramm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886911EEDC9D000923775 /* diagramm.swift */; };
-		BDC886961EEDC9D000923775 /* hid.c in Sources */ = {isa = PBXBuildFile; fileRef = BDC886921EEDC9D000923775 /* hid.c */; };
-		BDC886971EEDC9D000923775 /* usb.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC886941EEDC9D000923775 /* usb.swift */; };
+		BD74D7E91EF171BB00FC6B7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD74D7E01EF171BB00FC6B7F /* AppDelegate.swift */; };
+		BD74D7EA1EF171BB00FC6B7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD74D7E11EF171BB00FC6B7F /* Assets.xcassets */; };
+		BD74D7EB1EF171BB00FC6B7F /* diagramm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD74D7E31EF171BB00FC6B7F /* diagramm.swift */; };
+		BD74D7EC1EF171BB00FC6B7F /* hid.c in Sources */ = {isa = PBXBuildFile; fileRef = BD74D7E41EF171BB00FC6B7F /* hid.c */; };
+		BD74D7ED1EF171BB00FC6B7F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD74D7E61EF171BB00FC6B7F /* Info.plist */; };
+		BD74D7EE1EF171BB00FC6B7F /* usb.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD74D7E71EF171BB00FC6B7F /* usb.swift */; };
+		BD74D7EF1EF171BB00FC6B7F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD74D7E81EF171BB00FC6B7F /* ViewController.swift */; };
+		BD74D7F41EF1722900FC6B7F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD74D7F21EF1722900FC6B7F /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BDC8867D1EEDC8D500923775 /* DataLogger2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataLogger2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BDC886801EEDC8D500923775 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BDC886821EEDC8D500923775 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		BDC886841EEDC8D500923775 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BDC886871EEDC8D500923775 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		BDC886891EEDC8D500923775 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BDC8868F1EEDC9D000923775 /* DataLogger2-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataLogger2-Bridging-Header.h"; sourceTree = "<group>"; };
-		BDC886911EEDC9D000923775 /* diagramm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = diagramm.swift; sourceTree = "<group>"; };
-		BDC886921EEDC9D000923775 /* hid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hid.c; sourceTree = "<group>"; };
-		BDC886931EEDC9D000923775 /* hid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hid.h; sourceTree = "<group>"; };
-		BDC886941EEDC9D000923775 /* usb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = usb.swift; sourceTree = "<group>"; };
+		BD74D7E01EF171BB00FC6B7F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = DataLogger/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
+		BD74D7E11EF171BB00FC6B7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = DataLogger/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		BD74D7E21EF171BB00FC6B7F /* DataLogger-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "DataLogger-Bridging-Header.h"; path = "DataLogger/DataLogger-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
+		BD74D7E31EF171BB00FC6B7F /* diagramm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = diagramm.swift; path = DataLogger/diagramm.swift; sourceTree = SOURCE_ROOT; };
+		BD74D7E41EF171BB00FC6B7F /* hid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hid.c; path = DataLogger/hid.c; sourceTree = SOURCE_ROOT; };
+		BD74D7E51EF171BB00FC6B7F /* hid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hid.h; path = DataLogger/hid.h; sourceTree = SOURCE_ROOT; };
+		BD74D7E61EF171BB00FC6B7F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = DataLogger/Info.plist; sourceTree = SOURCE_ROOT; };
+		BD74D7E71EF171BB00FC6B7F /* usb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = usb.swift; path = DataLogger/usb.swift; sourceTree = SOURCE_ROOT; };
+		BD74D7E81EF171BB00FC6B7F /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = DataLogger/ViewController.swift; sourceTree = SOURCE_ROOT; };
+		BD74D7F31EF1722900FC6B7F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = DataLogger/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
+		BDC8867D1EEDC8D500923775 /* DataLogger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataLogger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +45,7 @@
 		BDC886741EEDC8D500923775 = {
 			isa = PBXGroup;
 			children = (
-				BDC8867F1EEDC8D500923775 /* DataLogger2 */,
+				BDC8867F1EEDC8D500923775 /* DataLogger */,
 				BDC8867E1EEDC8D500923775 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,34 +53,35 @@
 		BDC8867E1EEDC8D500923775 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BDC8867D1EEDC8D500923775 /* DataLogger2.app */,
+				BDC8867D1EEDC8D500923775 /* DataLogger.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BDC8867F1EEDC8D500923775 /* DataLogger2 */ = {
+		BDC8867F1EEDC8D500923775 /* DataLogger */ = {
 			isa = PBXGroup;
 			children = (
-				BDC886821EEDC8D500923775 /* ViewController.swift */,
-				BDC886911EEDC9D000923775 /* diagramm.swift */,
-				BDC886921EEDC9D000923775 /* hid.c */,
-				BDC886931EEDC9D000923775 /* hid.h */,
-				BDC886941EEDC9D000923775 /* usb.swift */,
-				BDC886801EEDC8D500923775 /* AppDelegate.swift */,
-				BDC886841EEDC8D500923775 /* Assets.xcassets */,
-				BDC886861EEDC8D500923775 /* Main.storyboard */,
-				BDC886891EEDC8D500923775 /* Info.plist */,
-				BDC8868F1EEDC9D000923775 /* DataLogger2-Bridging-Header.h */,
+				BD74D7F21EF1722900FC6B7F /* Main.storyboard */,
+				BD74D7E01EF171BB00FC6B7F /* AppDelegate.swift */,
+				BD74D7E11EF171BB00FC6B7F /* Assets.xcassets */,
+				BD74D7E21EF171BB00FC6B7F /* DataLogger-Bridging-Header.h */,
+				BD74D7E31EF171BB00FC6B7F /* diagramm.swift */,
+				BD74D7E41EF171BB00FC6B7F /* hid.c */,
+				BD74D7E51EF171BB00FC6B7F /* hid.h */,
+				BD74D7E61EF171BB00FC6B7F /* Info.plist */,
+				BD74D7E71EF171BB00FC6B7F /* usb.swift */,
+				BD74D7E81EF171BB00FC6B7F /* ViewController.swift */,
 			);
+			name = DataLogger;
 			path = DataLogger2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BDC8867C1EEDC8D500923775 /* DataLogger2 */ = {
+		BDC8867C1EEDC8D500923775 /* DataLogger */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BDC8868C1EEDC8D500923775 /* Build configuration list for PBXNativeTarget "DataLogger2" */;
+			buildConfigurationList = BDC8868C1EEDC8D500923775 /* Build configuration list for PBXNativeTarget "DataLogger" */;
 			buildPhases = (
 				BDC886791EEDC8D500923775 /* Sources */,
 				BDC8867A1EEDC8D500923775 /* Frameworks */,
@@ -89,9 +91,9 @@
 			);
 			dependencies = (
 			);
-			name = DataLogger2;
+			name = DataLogger;
 			productName = DataLogger2;
-			productReference = BDC8867D1EEDC8D500923775 /* DataLogger2.app */;
+			productReference = BDC8867D1EEDC8D500923775 /* DataLogger.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -112,7 +114,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BDC886781EEDC8D500923775 /* Build configuration list for PBXProject "DataLogger2" */;
+			buildConfigurationList = BDC886781EEDC8D500923775 /* Build configuration list for PBXProject "DataLogger" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -125,7 +127,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BDC8867C1EEDC8D500923775 /* DataLogger2 */,
+				BDC8867C1EEDC8D500923775 /* DataLogger */,
 			);
 		};
 /* End PBXProject section */
@@ -135,8 +137,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDC886851EEDC8D500923775 /* Assets.xcassets in Resources */,
-				BDC886881EEDC8D500923775 /* Main.storyboard in Resources */,
+				BD74D7F41EF1722900FC6B7F /* Main.storyboard in Resources */,
+				BD74D7ED1EF171BB00FC6B7F /* Info.plist in Resources */,
+				BD74D7EA1EF171BB00FC6B7F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,21 +150,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDC886831EEDC8D500923775 /* ViewController.swift in Sources */,
-				BDC886951EEDC9D000923775 /* diagramm.swift in Sources */,
-				BDC886971EEDC9D000923775 /* usb.swift in Sources */,
-				BDC886811EEDC8D500923775 /* AppDelegate.swift in Sources */,
-				BDC886961EEDC9D000923775 /* hid.c in Sources */,
+				BD74D7EF1EF171BB00FC6B7F /* ViewController.swift in Sources */,
+				BD74D7E91EF171BB00FC6B7F /* AppDelegate.swift in Sources */,
+				BD74D7EC1EF171BB00FC6B7F /* hid.c in Sources */,
+				BD74D7EE1EF171BB00FC6B7F /* usb.swift in Sources */,
+				BD74D7EB1EF171BB00FC6B7F /* diagramm.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		BDC886861EEDC8D500923775 /* Main.storyboard */ = {
+		BD74D7F21EF1722900FC6B7F /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BDC886871EEDC8D500923775 /* Base */,
+				BD74D7F31EF1722900FC6B7F /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -268,11 +271,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 535FNG3TMM;
-				INFOPLIST_FILE = DataLogger2/Info.plist;
+				INFOPLIST_FILE = DataLogger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = RH.DataLogger2;
+				PRODUCT_BUNDLE_IDENTIFIER = RH.DataLogger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "DataLogger2/DataLogger2-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "DataLogger/DataLogger-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -285,11 +288,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 535FNG3TMM;
-				INFOPLIST_FILE = DataLogger2/Info.plist;
+				INFOPLIST_FILE = DataLogger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = RH.DataLogger2;
+				PRODUCT_BUNDLE_IDENTIFIER = RH.DataLogger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "DataLogger2/DataLogger2-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "DataLogger/DataLogger-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -297,7 +300,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BDC886781EEDC8D500923775 /* Build configuration list for PBXProject "DataLogger2" */ = {
+		BDC886781EEDC8D500923775 /* Build configuration list for PBXProject "DataLogger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BDC8868A1EEDC8D500923775 /* Debug */,
@@ -306,13 +309,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BDC8868C1EEDC8D500923775 /* Build configuration list for PBXNativeTarget "DataLogger2" */ = {
+		BDC8868C1EEDC8D500923775 /* Build configuration list for PBXNativeTarget "DataLogger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BDC8868D1EEDC8D500923775 /* Debug */,
 				BDC8868E1EEDC8D500923775 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
