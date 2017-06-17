@@ -61,16 +61,16 @@
 		BDC8867F1EEDC8D500923775 /* DataLogger */ = {
 			isa = PBXGroup;
 			children = (
+				BD74D7E81EF171BB00FC6B7F /* ViewController.swift */,
+				BD74D7E31EF171BB00FC6B7F /* diagramm.swift */,
 				BD74D7F21EF1722900FC6B7F /* Main.storyboard */,
 				BD74D7E01EF171BB00FC6B7F /* AppDelegate.swift */,
 				BD74D7E11EF171BB00FC6B7F /* Assets.xcassets */,
 				BD74D7E21EF171BB00FC6B7F /* DataLogger-Bridging-Header.h */,
-				BD74D7E31EF171BB00FC6B7F /* diagramm.swift */,
 				BD74D7E41EF171BB00FC6B7F /* hid.c */,
 				BD74D7E51EF171BB00FC6B7F /* hid.h */,
 				BD74D7E61EF171BB00FC6B7F /* Info.plist */,
 				BD74D7E71EF171BB00FC6B7F /* usb.swift */,
-				BD74D7E81EF171BB00FC6B7F /* ViewController.swift */,
 			);
 			name = DataLogger;
 			path = DataLogger2;

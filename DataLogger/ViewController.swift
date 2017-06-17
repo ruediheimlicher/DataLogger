@@ -19,17 +19,6 @@ let TEENSYPRESENT   =   7
 let DSLO = 8
 let DSHI = 9
 
-// ADC
-//let  ADC0LO      =      16
-//let  ADC0HI      =      17
-// ADC 2
-//let  ADC1LO      =       18
-//let  ADC1HI      =       19
-
-// neue defines
-//Datenpaket USB:
-//PACKET_SIZE 32 // Bytes
-
 // teensy
 //ADC
 
@@ -144,9 +133,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    var DiagrammFeld:CGRect = CGRect.zero
    
    var taskArray :[[String:Any]] = [[String:Any]]()
+   
+   
    var anzahlChannels = 0
    var anzahlStoreChannels = 1
    var swiftArray = [[String:AnyObject]]()
+   
+   var BereichArray = [[Int:String]]()
    
    var testArray = [[String:AnyObject]]()
    
@@ -174,6 +167,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var dataScroller: NSScrollView!
    @IBOutlet  var dataAbszisse: Abszisse!
    
+   @IBOutlet  var datagraph_Volt: DataPlot!
+   @IBOutlet  var dataScroller_Volt: NSScrollView!
+  
+   @IBOutlet  var dataAbszisse_Volt: Abszisse!
+  
    
    @IBOutlet  var save_SD_check: NSButton!
    @IBOutlet  var Start_Messung: NSButton!
@@ -252,11 +250,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var tagmin_Feld: NSTextField!
    
    
-   @IBOutlet  var DSLO_Feld: NSTextField!
-   @IBOutlet  var DSHI_Feld: NSTextField!
-   @IBOutlet  var DSTempFeld: NSTextField!
-   
-   // ADC
+    // ADC
    @IBOutlet  var ADC0LO_Feld: NSTextField!
    @IBOutlet  var ADC0HI_Feld: NSTextField!
    @IBOutlet  var ADC0Feld: NSTextField!
@@ -290,30 +284,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var Set_Settings: NSButton!
    
    // USB-code
-   @IBOutlet  var bit0_check: NSButton!
-   @IBOutlet  var bit1_check: NSButton!
-   @IBOutlet  var bit2_check: NSButton!
-   @IBOutlet  var bit3_check: NSButton!
-   @IBOutlet  var bit4_check: NSButton!
-   @IBOutlet  var bit5_check: NSButton!
-   @IBOutlet  var bit6_check: NSButton!
-   @IBOutlet  var bit7_check: NSButton!
    
    // mmc
    @IBOutlet  var mmcLOFeld: NSTextField!
    @IBOutlet  var mmcHIFeld: NSTextField!
    @IBOutlet  var mmcDataFeld: NSTextField!
    
-   // Task
-   @IBOutlet  var Task_0: NSPopUpButton!
-   @IBOutlet  var Task_1: NSPopUpButton!
-   @IBOutlet  var Task_2: NSPopUpButton!
-   @IBOutlet  var Task_3: NSPopUpButton!
-   
-   @IBOutlet  var Task_0_Check: NSButton!
-   @IBOutlet  var Task_1_Check: NSButton!
-   @IBOutlet  var Task_2_Check: NSButton!
-   @IBOutlet  var Task_3_Check: NSButton!
    
    
    // Collection view
@@ -555,7 +531,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       
       USB_OK.textColor = NSColor.red
-      USB_OK.stringValue = "?";
+      USB_OK.stringValue = "??";
       
       //MARK: -   TaskListe
       
@@ -563,6 +539,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
        TaskListe.dataSource = self
        TaskListe.target = self
       
+      IntervallPop.addItems(withObjectValues:["1","2","5","10","20","30","60","120","180","300"])
       IntervallPop.selectItem(at:0)
       
       var tempDic = [String:AnyObject]()
@@ -575,6 +552,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["A0"] = 0  as AnyObject?
       tempDic["A1"] = 1  as AnyObject?
 
+      tempDic["A"] = 3  as AnyObject?
+      
       swiftArray.append(tempDic)
 
       tempDic["on"] = 0  as AnyObject?
@@ -583,9 +562,25 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["bereich"] = "0-8V"  as AnyObject?
       tempDic["A0"] = 1  as AnyObject?
       tempDic["A1"] = 1  as AnyObject?
+      tempDic["A"] = 6  as AnyObject?
+
       swiftArray.append(tempDic)
 
-  
+      var bereichDic = [Int:String]()
+      bereichDic[0] = "AAA"
+      bereichDic[1] = "BBB"
+      bereichDic[2] = "CCC"
+     BereichArray.append(bereichDic)
+      
+      bereichDic[0] = "0 - 100°"
+      bereichDic[1] = "0 - 150°"
+      bereichDic[2] = "-30 - 150°"
+      BereichArray.append(bereichDic)
+
+      bereichDic[0] = "0 - 8V"
+      bereichDic[1] = "0 - 16V"
+      BereichArray.append(bereichDic)
+
       //MARK: -   datagraph
       var data = datadiagramm.init(nibName: "Datadiagramm", bundle: nil)
       self.datagraph.wantsLayer = true
@@ -598,35 +593,18 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       self.dataAbszisse.backgroundColor_n(color:abszissebgfarbe)
       self.dataAbszisse.setDiagrammFeldHeight(h: self.datagraph.DiagrammFeldHeight())
       
+      let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 2, "MaxY": 8.0,"MinY": 0.0,"MaxX": 1000]
+      
+      self.dataAbszisse_Volt.backgroundColor_n(color:abszissebgfarbe)
+      self.dataAbszisse_Volt.setDiagrammFeldHeight(h: self.datagraph.DiagrammFeldHeight())
+//      self.dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
+      
       
       var tasklist:[String] = ["Temperatur","ADC12Bit","Aux"]
       
       var kanaldic:[String:Any] = [:]
       
-      
-      Task_0.removeAllItems()
-      Task_0.addItems(withTitles: tasklist)
-      Task_0.action = #selector(reportWahlPop(_:))
-      Task_0.target = self
-      
-      
-      Task_1.removeAllItems()
-      Task_1.addItems(withTitles: tasklist)
-      Task_1.action = #selector(reportWahlPop(_:))
-      
-      Task_1.selectItem(at: 1)
-      Task_1.target = self
-      Task_2.removeAllItems()
-      Task_2.addItems(withTitles: tasklist)
-      Task_2.action = #selector(reportWahlPop(_:))
-      Task_2.selectItem(at: 2)
-      Task_2.target = self
-      Task_3.removeAllItems()
-      Task_3.addItems(withTitles: tasklist)
-      Task_3.action = #selector(reportWahlPop(_:))
-      Task_3.target = self
-      Task_3.selectItem(at: 3)
-      kanaldic["taskwahl"] = 0
+         kanaldic["taskwahl"] = 0
       kanaldic["taskcheck"] = 0
       for _ in 0..<8
       {
@@ -639,14 +617,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 //      taskArray[2]["taskcheck"] = 1 //
       
 //      taskArray[4]["taskcheck"] = 1 // 
-      
       anzahlChannels = countChannels() // Anzahl aktivierte kanaele
       Channels_Feld.intValue  = Int32(anzahlChannels)
       
       adcfloatarray = [Float] ( repeating: 0.0, count: 8 )
       // var tempwerte = [Float] ( repeating: 0.0, count: 9 )
       
-      
+      TaskListe.reloadData()
       
    }//viewDidLoad
    
@@ -1418,11 +1395,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let  temperaturfloat:Float = Float(temperatur)/10.0
          _ = NumberFormatter()
          
-         let t:NSString = NSString(format:"%.01f", temperaturfloat) as String as String as NSString
-         //print("temperaturfloat: \(temperaturfloat) String: \(t)");
-         DSTempFeld.stringValue = NSString(format:"%.01f°C", temperaturfloat) as String
-         //DSTempFeld.floatValue = temperaturfloat
-      }
+       }
       
       // mmc
       let mmcLO:Int32 = Int32(teensy.last_read_byteArray[MMCLO])
@@ -1841,6 +1814,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       let kompvorgabe = ["zeitkompression":Float(kompressionwertwert)]
       datagraph.setVorgaben(vorgaben:kompvorgabe)
+      
+      
+      
+      
+      
+      
+      
       
       //Angabe zum  Startblock lesen. default ist 0
       startblock = UInt16(write_sd_startblock.integerValue)
@@ -2344,17 +2324,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       {
          let temperatur = DSLOW | (DSHIGH<<8)
          
-         print("DSLOW: \(DSLOW)\tSDHIGH: \(DSHIGH)\n");
-         DSLO_Feld.intValue = DSLOW
-         DSHI_Feld.intValue = DSHIGH
-         let  temperaturfloat:Float = Float(temperatur)/10.0
-         _ = NumberFormatter()
-         
-         let t:NSString = NSString(format:"%.01f", temperaturfloat) as String as String as NSString
-         //print("temperaturfloat: \(temperaturfloat) String: \(t)");
-         DSTempFeld.stringValue = NSString(format:"%.01f°C", temperaturfloat) as String
-         //DSTempFeld.floatValue = temperaturfloat
-      }
+        }
       self.datagraph.initGraphArray()
       self.datagraph.setStartsekunde(startsekunde:tagsekunde())
       self.datagraph.setMaxY(maxY: 180)
@@ -2847,7 +2817,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
    {
       
       let ident = tableColumn?.identifier
-//      print ("viewFor row: \(row) ident: \(ident)")
+      //print ("viewFor row: \(row) ident: \(ident)")
       if tableColumn?.identifier == "imageIcon"
       {
          let result = tableView.make(withIdentifier: "imageIcon", owner: self) as! NSTableCellView
@@ -2881,7 +2851,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          return result
          
       }
- 
+ /*
       else if  tableColumn?.identifier == "A0"
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
@@ -2925,7 +2895,46 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          return result
          
       }
+*/
+      else if  tableColumn?.identifier == "A" // SegmentedControl
+      {
+         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
+         let wert = (swiftArray[row][(tableColumn?.identifier)!])
+         print("A value: \(wert)")
+         let sub = result.subviews
+         
+         let element = result.subviews[0]
+         //         print("check element A0: \(element)")
+         let knopf = element as! NSSegmentedControl
+         knopf.tag = 1500 + row
+         let anz = Int(knopf.segmentCount)
+         // https://stackoverflow.com/questions/38369544/how-to-convert-anyobject-type-to-int-in-swift
+         let code = Int((wert as? Int)!)
+         let selectcode = UInt8(wert as! Int)
+         
+         
+         for pos in 0..<anz
+         {
+            let temp = UInt8(pos)
+            if ((selectcode & (1<<temp)) > 0)
+            {
+               knopf.setSelected(true, forSegment: pos)
+            }
+            else
+            {
+               knopf.setSelected(false, forSegment: pos)
 
+            }
+         }
+        
+         //let sollstatus = (swiftArray[row][(tableColumn?.identifier)!]! )
+         //let sollstatusint = (sollstatus as! Int)
+         //let soll = sollstatus.integerValue
+         //knopf.state = soll!
+         //         print("A1 tag: \(knopf.tag) status: \(status)")
+         return result
+         
+      }
          
       else
       {
