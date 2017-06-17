@@ -15,7 +15,7 @@ import Cocoa
 
 class Abszisse: NSView
 {
-   var diagrammfeld:CGRect = CGRect.zero
+   var abszissefeld:CGRect = CGRect.zero
    
    fileprivate struct   Geom
    {
@@ -32,12 +32,13 @@ class Abszisse: NSView
       
    }
    
-   
-   fileprivate struct AbszisseVorgaben
+   /*
+   struct AbszisseVorgaben
    {
       static let legendebreite: CGFloat = 10.0
+      
       static var exponent: Int = 1 // Zehnerpotenz fuer label
-      static var MajorTeileY: Int = 8                           // Teile der Hauptskala
+      static var MajorTeileY: Int = 16                           // Teile der Hauptskala
       static var MinorTeileY: Int = 2                             // Teile der Subskala
       static var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
       static var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
@@ -54,14 +55,40 @@ class Abszisse: NSView
       static let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
       
    }
+    
+   */
    
+   struct Vorgaben
+   {
+       let legendebreite: CGFloat = 10.0
+      
+       var exponent: Int = 1 // Zehnerpotenz fuer label
+       var MajorTeileY: Int = 16                           // Teile der Hauptskala
+       var MinorTeileY: Int = 2                             // Teile der Subskala
+       var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
+       var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
+       var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
+      
+       var ZeitKompression: CGFloat = 1.0
+       var Startsekunde: Int = 0
+       let NullpunktY: CGFloat = 0.0
+       let NullpunktX: CGFloat = 0.0
+       let DiagrammEcke: CGPoint = CGPoint(x:15, y:10)// Ecke des Diagramms im View
+       let DiagrammeckeY: CGFloat = 0.0 //
+       let StartwertX: CGFloat = 0.0 // Abszisse des ersten Wertew
+      
+       let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
+      
+   }
+
+   var AbszisseVorgaben = Vorgaben()
    
    required init(coder aDecoder: NSCoder)
    {
       //Swift.print("abszisse init coder")
       super.init(coder: aDecoder)!
-      diagrammfeld = AbszisseRect(rect:self.bounds)
-      //diagrammfeld = PlotRect()
+      abszissefeld = AbszisseRect(rect:self.bounds)
+      //abszissefeld = PlotRect()
    }
    
    func PlotRect() -> CGRect
@@ -157,21 +184,21 @@ class Abszisse: NSView
 
 extension Abszisse
 {
-   func DiagrammFeld() -> CGRect
+   func AbszisseFeld() -> CGRect
    {
-      return diagrammfeld
+      return abszissefeld
    }
    
-   func DiagrammFeldHeight()->CGFloat
+   func AbszisseFeldHeight()->CGFloat
    {
       //Swift.print("")
-      return diagrammfeld.size.height
+      return abszissefeld.size.height
    }
    
-   func setDiagrammFeldHeight(h:CGFloat)
+   func setAbszisseFeldHeight(h:CGFloat)
    {
       
-      diagrammfeld.size.height = h
+      abszissefeld.size.height = h
    }
    
    open func setVorgaben(vorgaben:[String:Float])
@@ -269,10 +296,6 @@ extension Abszisse
    
    
    
-   func AbszisseFeld() -> CGRect
-   {
-      return diagrammfeld
-   }
    
    func drawAbszisseInContext(context: CGContext?)
    {
@@ -282,7 +305,7 @@ extension Abszisse
       let feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
       let linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
       
-      drawAbszisseRect(rect: diagrammfeld, inContext: context,
+      drawAbszisseRect(rect: abszissefeld, inContext: context,
                        borderColor: randfarbe,
                        fillColor: feldfarbe)
       
@@ -303,7 +326,7 @@ extension Abszisse
       
       // Feld fuer das Diagramm
       //  let diagrammrect = CGRect.init(x: rect.origin.x + Geom.offsetx, y: rect.origin.y + Geom.offsety, width: rect.size.width - Geom.offsetx - Geom.freex , height: rect.size.height - Geom.offsety - Geom.freey)
-      // diagrammfeld = DiagrammRect(rect: PlotRect())
+      // abszissefeld = DiagrammRect(rect: PlotRect())
       
       //let diagrammrect = DiagrammRect(rect: PlotRect())
       
@@ -312,11 +335,11 @@ extension Abszisse
       let a = rect.origin.x + rect.size.width
       let b = rect.origin.y + rect.size.height
       /*
-       path.move(to: CGPoint(x:  diagrammfeld.origin.x, y: diagrammfeld.origin.y ))
-       path.addLine(to: NSMakePoint(diagrammfeld.origin.x + diagrammfeld.size.width, diagrammfeld.origin.y )) // > rechts
-       path.addLine(to: NSMakePoint(diagrammfeld.origin.x + diagrammfeld.size.width, diagrammfeld.origin.y + diagrammfeld.size.height)) // > oben
-       path.addLine(to: NSMakePoint(diagrammfeld.origin.x , diagrammfeld.origin.y + diagrammfeld.size.height)) // > links
-       path.addLine(to: NSMakePoint(diagrammfeld.origin.x , diagrammfeld.origin.y))
+       path.move(to: CGPoint(x:  abszissefeld.origin.x, y: abszissefeld.origin.y ))
+       path.addLine(to: NSMakePoint(abszissefeld.origin.x + abszissefeld.size.width, abszissefeld.origin.y )) // > rechts
+       path.addLine(to: NSMakePoint(abszissefeld.origin.x + abszissefeld.size.width, abszissefeld.origin.y + abszissefeld.size.height)) // > oben
+       path.addLine(to: NSMakePoint(abszissefeld.origin.x , abszissefeld.origin.y + abszissefeld.size.height)) // > links
+       path.addLine(to: NSMakePoint(abszissefeld.origin.x , abszissefeld.origin.y))
        //    path.addLine(to: NSMakePoint(diagrammrect.origin.x + diagrammrect.size.width, diagrammrect.origin.y + diagrammrect.size.height))
        path.closeSubpath()
        
@@ -327,10 +350,10 @@ extension Abszisse
       // 4
       //     context?.addPath(path)
       // context?.drawPath(using: .fillStroke)
-      //let achsenpath = achsen(rect:diagrammfeld)
+      //let achsenpath = achsen(rect:abszissefeld)
       //context?.addPath(achsenpath)
       let abszissebreite = CGFloat(10.0)
-      var abszisserect = diagrammfeld
+      var abszisserect = abszissefeld
       abszisserect.size.width = abszissebreite
       abszisserect.origin.x -= 1
       let abszissefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)

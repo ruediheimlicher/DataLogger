@@ -591,13 +591,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let abszissebgfarbe:NSColor  = NSColor(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
       
       self.dataAbszisse.backgroundColor_n(color:abszissebgfarbe)
-      self.dataAbszisse.setDiagrammFeldHeight(h: self.datagraph.DiagrammFeldHeight())
+      self.dataAbszisse.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
       
       let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 2, "MaxY": 8.0,"MinY": 0.0,"MaxX": 1000]
       
       self.dataAbszisse_Volt.backgroundColor_n(color:abszissebgfarbe)
-      self.dataAbszisse_Volt.setDiagrammFeldHeight(h: self.datagraph.DiagrammFeldHeight())
-//      self.dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
+      self.dataAbszisse_Volt.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
+      self.dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
       
       
       var tasklist:[String] = ["Temperatur","ADC12Bit","Aux"]
