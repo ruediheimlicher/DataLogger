@@ -244,11 +244,27 @@ class DataPlot: NSView
          Vorgaben.MajorTeileY = Int((vorgaben["MajorTeileY"])!)
       }
       
-      if (vorgaben["MajorTeileY"] != nil)
+      if (vorgaben["MinorTeileY"] != nil)
       {
-         Vorgaben.MajorTeileY = Int((vorgaben["MajorTeileY"])!)
+         Vorgaben.MinorTeileY = Int((vorgaben["MinorTeileY"])!)
+      }
+
+      if (vorgaben["MaxY"] != nil)
+      {
+         Vorgaben.MaxY = CGFloat((vorgaben["MaxY"])!)
+      }
+
+      if (vorgaben["MaxY"] != nil)
+      {
+         Vorgaben.MinY = CGFloat((vorgaben["MinY"])!)
       }
       
+      if (vorgaben["MaxX"] != nil)
+      {
+         Vorgaben.MaxX = CGFloat((vorgaben["MaxX"])!)
+      }
+
+
       
       
       
@@ -992,7 +1008,7 @@ class Abszisse: DataPlot
    fileprivate struct abszvorgaben
    {
       static let legendebreite: CGFloat = 10.0
-      static let exponent: Int = 1 // Zehnerpotenz fuer label
+      static var exponent: Int = 1 // Zehnerpotenz fuer label
    }
    
    

@@ -19,13 +19,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
    func applicationDidFinishLaunching(_ aNotification: Notification)
    {
       // Insert code here to initialize your application
-      
+    /*
       // https://stackoverflow.com/questions/39876559/cocoa-mac-creating-window-from-appdelegate
       main = NSStoryboard(name : "Main", bundle: nil).instantiateController(withIdentifier: "MainWindow") as! NSWindowController
       let mainVc = NSStoryboard(name:"Main", bundle: nil).instantiateController(withIdentifier: "MainViewController") as! NSViewController
       main.window?.contentViewController = mainVc
       main.window?.makeKeyAndOrderFront(nil)
-
+*/
    }
 
    func applicationWillTerminate(_ aNotification: Notification)
