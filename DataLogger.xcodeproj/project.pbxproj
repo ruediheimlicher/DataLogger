@@ -15,6 +15,7 @@
 		BD74D7EE1EF171BB00FC6B7F /* usb.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD74D7E71EF171BB00FC6B7F /* usb.swift */; };
 		BD74D7EF1EF171BB00FC6B7F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD74D7E81EF171BB00FC6B7F /* ViewController.swift */; };
 		BD74D7F41EF1722900FC6B7F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD74D7F21EF1722900FC6B7F /* Main.storyboard */; };
+		BD8500EF1EF55B7500B48272 /* abszisse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8500EE1EF55B7500B48272 /* abszisse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		BD74D7E71EF171BB00FC6B7F /* usb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = usb.swift; path = DataLogger/usb.swift; sourceTree = SOURCE_ROOT; };
 		BD74D7E81EF171BB00FC6B7F /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = DataLogger/ViewController.swift; sourceTree = SOURCE_ROOT; };
 		BD74D7F31EF1722900FC6B7F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = DataLogger/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
+		BD8500EE1EF55B7500B48272 /* abszisse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = abszisse.swift; path = DataLogger/abszisse.swift; sourceTree = SOURCE_ROOT; };
 		BDC8867D1EEDC8D500923775 /* DataLogger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataLogger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -61,6 +63,7 @@
 		BDC8867F1EEDC8D500923775 /* DataLogger */ = {
 			isa = PBXGroup;
 			children = (
+				BD8500EE1EF55B7500B48272 /* abszisse.swift */,
 				BD74D7E81EF171BB00FC6B7F /* ViewController.swift */,
 				BD74D7E31EF171BB00FC6B7F /* diagramm.swift */,
 				BD74D7F21EF1722900FC6B7F /* Main.storyboard */,
@@ -155,6 +158,7 @@
 				BD74D7EC1EF171BB00FC6B7F /* hid.c in Sources */,
 				BD74D7EE1EF171BB00FC6B7F /* usb.swift in Sources */,
 				BD74D7EB1EF171BB00FC6B7F /* diagramm.swift in Sources */,
+				BD8500EF1EF55B7500B48272 /* abszisse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
