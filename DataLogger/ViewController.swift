@@ -593,7 +593,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       self.dataAbszisse.backgroundColor_n(color:abszissebgfarbe)
       self.dataAbszisse.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
       
-      let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 2, "MaxY": 8.0,"MinY": 0.0,"MaxX": 1000]
+      let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 2, "MaxY": 4.0,"MinY": 0.0,"MaxX": 1000]
       
       self.dataAbszisse_Volt.backgroundColor_n(color:abszissebgfarbe)
       self.dataAbszisse_Volt.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())

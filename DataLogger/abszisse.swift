@@ -17,6 +17,7 @@ class Abszisse: NSView
 {
    var abszissefeld:CGRect = CGRect.zero
    
+   /*
    fileprivate struct   Geom
    {
       // Abstand von bounds
@@ -31,7 +32,23 @@ class Abszisse: NSView
       static let freex: CGFloat = 15.0 // Freier Raum rechts
       
    }
+   */
    
+   struct   Geom
+   {
+      // Abstand von bounds
+       let randunten: CGFloat = 15.0
+       let randlinks: CGFloat = 0.0
+       let randoben: CGFloat = 10.0
+       let randrechts: CGFloat = 10.0
+      // Abstand vom Feldrand
+       let offsetx: CGFloat = 0.0 // Offset des Nullpunkts
+       let offsety: CGFloat = 15.0
+       let freey: CGFloat = 20.0 // Freier Raum oben
+       let freex: CGFloat = 15.0 // Freier Raum rechts
+      
+   }
+   var AbszisseGeom = Geom()
    /*
    struct AbszisseVorgaben
    {
@@ -94,10 +111,10 @@ class Abszisse: NSView
    func PlotRect() -> CGRect
    {
       Swift.print("abszisse PlotRect bounds: \(bounds)")
-      let breite = bounds.size.width // -  Geom.randlinks - Geom.randrechts
-      let hoehe = bounds.size.height - Geom.randoben - Geom.randunten
+      let breite = bounds.size.width // -  AbszisseGeom.randlinks - AbszisseGeom.randrechts
+      let hoehe = bounds.size.height - AbszisseGeom.randoben - AbszisseGeom.randunten
       let rect = CGRect(x:0 ,
-                        y: Geom.randunten ,
+                        y: AbszisseGeom.randunten ,
                         width: breite, height: hoehe)
       Swift.print("abszisse PlotRect rect: \(rect)")
       return rect
@@ -275,11 +292,11 @@ extension Abszisse
    func AbszisseRect(rect: CGRect) -> CGRect
    {
       /*
-       let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + Geom.offsety + Geom.randunten, width: rect.size.width  , height: rect.size.height - Geom.offsety - Geom.freey)
+       let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + AbszisseGeom.offsety + AbszisseGeom.randunten, width: rect.size.width  , height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey)
        return diagrammrect
        */
       
-      let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + Geom.offsety  + Geom.offsety, width: rect.size.width - Geom.offsetx - Geom.freex  - Geom.randrechts  -  Geom.randlinks, height: rect.size.height - Geom.offsety - Geom.freey  - Geom.randoben - Geom.randunten)
+      let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + AbszisseGeom.offsety  + AbszisseGeom.offsety, width: rect.size.width - AbszisseGeom.offsetx - AbszisseGeom.freex  - AbszisseGeom.randrechts  -  AbszisseGeom.randlinks, height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey  - AbszisseGeom.randoben - AbszisseGeom.randunten)
       
       return diagrammrect
       
@@ -287,7 +304,7 @@ extension Abszisse
       
       /*
        // DATA_INTERFACE 5
-       let diagrammrect = CGRect.init(x: rect.origin.x + Geom.offsetx, y: rect.origin.y + Geom.offsety  + Geom.offsety, width: rect.size.width - Geom.offsetx - Geom.freex  - Geom.randrechts  -  Geom.randlinks, height: rect.size.height - Geom.offsety - Geom.freey  - Geom.randoben - Geom.randunten)
+       let diagrammrect = CGRect.init(x: rect.origin.x + AbszisseGeom.offsetx, y: rect.origin.y + AbszisseGeom.offsety  + AbszisseGeom.offsety, width: rect.size.width - AbszisseGeom.offsetx - AbszisseGeom.freex  - AbszisseGeom.randrechts  -  AbszisseGeom.randlinks, height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey  - AbszisseGeom.randoben - AbszisseGeom.randunten)
        return diagrammrect
        */
       
@@ -325,7 +342,7 @@ extension Abszisse
       //path.addRect(rect)
       
       // Feld fuer das Diagramm
-      //  let diagrammrect = CGRect.init(x: rect.origin.x + Geom.offsetx, y: rect.origin.y + Geom.offsety, width: rect.size.width - Geom.offsetx - Geom.freex , height: rect.size.height - Geom.offsety - Geom.freey)
+      //  let diagrammrect = CGRect.init(x: rect.origin.x + AbszisseGeom.offsetx, y: rect.origin.y + AbszisseGeom.offsety, width: rect.size.width - AbszisseGeom.offsetx - AbszisseGeom.freex , height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey)
       // abszissefeld = DiagrammRect(rect: PlotRect())
       
       //let diagrammrect = DiagrammRect(rect: PlotRect())
