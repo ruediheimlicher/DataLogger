@@ -24,6 +24,7 @@ class DataPlot: NSView
    
    var diagrammfeld:CGRect = CGRect.zero
    
+   ///var Abszisse_A:Abszisse
    // var vorgaben = [[String:String]]()
    
    fileprivate struct   Geom
@@ -81,6 +82,8 @@ class DataPlot: NSView
    required init(coder: NSCoder)
    {
       //Swift.print("DataPlot coder")
+  //    Abszisse_A = Abszisse.init(coder:coder)
+      
       super.init(coder: coder)!
       diagrammfeld = DiagrammRect(rect:  self.bounds)
       
@@ -264,10 +267,6 @@ class DataPlot: NSView
          Vorgaben.MaxX = CGFloat((vorgaben["MaxX"])!)
       }
 
-
-      
-      
-      
       
       needsDisplay = true
    }
@@ -828,7 +827,7 @@ extension DataPlot
        context?.setStrokeColor(abszissefarbe)
        //context?.setFillColor(CGColor.init(red:0x00,green: 0xFF, blue: 0xFF,alpha:1.0))
        context?.drawPath(using: .stroke)
-       */
+      */
       
       let lastdata = DatenDicArray.last
       if (lastdata?.count == 0)
@@ -1003,24 +1002,58 @@ extension DataPlot
    
 }
 
-class Abszisse: DataPlot
+class Abszisse: NSView
 {
-   fileprivate struct abszvorgaben
+   var diagrammfeld:CGRect = CGRect.zero
+   
+   fileprivate struct   Geom
+   {
+      // Abstand von bounds
+      static let randunten: CGFloat = 15.0
+      static let randlinks: CGFloat = 0.0
+      static let randoben: CGFloat = 10.0
+      static let randrechts: CGFloat = 10.0
+      // Abstand vom Feldrand
+      static let offsetx: CGFloat = 0.0 // Offset des Nullpunkts
+      static let offsety: CGFloat = 15.0
+      static let freey: CGFloat = 20.0 // Freier Raum oben
+      static let freex: CGFloat = 15.0 // Freier Raum rechts
+      
+   }
+   
+
+   fileprivate struct AbszisseVorgaben
    {
       static let legendebreite: CGFloat = 10.0
       static var exponent: Int = 1 // Zehnerpotenz fuer label
+      static var MajorTeileY: Int = 8                           // Teile der Hauptskala
+      static var MinorTeileY: Int = 2                             // Teile der Subskala
+      static var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
+      static var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
+      static var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
+      
+      static var ZeitKompression: CGFloat = 1.0
+      static var Startsekunde: Int = 0
+      static let NullpunktY: CGFloat = 0.0
+      static let NullpunktX: CGFloat = 0.0
+      static let DiagrammEcke: CGPoint = CGPoint(x:15, y:10)// Ecke des Diagramms im View
+      static let DiagrammeckeY: CGFloat = 0.0 //
+      static let StartwertX: CGFloat = 0.0 // Abszisse des ersten Wertew
+
+      static let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
+
    }
    
    
    required init(coder aDecoder: NSCoder)
    {
       //Swift.print("abszisse init coder")
-      super.init(coder: aDecoder)
-      diagrammfeld = DiagrammRect(rect:self.bounds)
+      super.init(coder: aDecoder)!
+      diagrammfeld = AbszisseRect(rect:self.bounds)
       //diagrammfeld = PlotRect()
    }
    
-   override func PlotRect() -> CGRect
+   func PlotRect() -> CGRect
    {
       Swift.print("abszisse PlotRect bounds: \(bounds)")
       let breite = bounds.size.width // -  Geom.randlinks - Geom.randrechts
@@ -1036,7 +1069,7 @@ class Abszisse: DataPlot
    {
       let path = CGMutablePath()
       
-      let abszissex = rect.origin.x + rect.size.width - abszvorgaben.legendebreite
+      let abszissex = rect.origin.x + rect.size.width - AbszisseVorgaben.legendebreite
       let bigmark = CGFloat(6)
       let submark = CGFloat(3)
       
@@ -1048,20 +1081,20 @@ class Abszisse: DataPlot
       // wieder nach unten
       path.move(to: CGPoint(x:  abszissex, y: rect.origin.y ))
       //marken setzen
-      let markdistanz = rect.size.height / (CGFloat(Vorgaben.MajorTeileY ) )
-      let subdistanz = CGFloat(markdistanz) / CGFloat(Vorgaben.MinorTeileY)
+      let markdistanz = rect.size.height / (CGFloat(AbszisseVorgaben.MajorTeileY ) )
+      let subdistanz = CGFloat(markdistanz) / CGFloat(AbszisseVorgaben.MinorTeileY)
       var posy = rect.origin.y
-      let deznummer = NSDecimalNumber(decimal:pow(10,abszvorgaben.exponent)).intValue
+      let deznummer = NSDecimalNumber(decimal:pow(10,AbszisseVorgaben.exponent)).intValue
       
-      for pos in 0...(Vorgaben.MajorTeileY - 1)
+      for pos in 0...(AbszisseVorgaben.MajorTeileY - 1)
       {
          path.addLine(to: CGPoint(x:abszissex - bigmark, y: posy))
          
-         if (( pos % Vorgaben.rastervertikal ) == 0)
+         if (( pos % AbszisseVorgaben.rastervertikal ) == 0)
          {
             // Wert
             let p = path.currentPoint
-            let zehnerpotenz = pow(10,abszvorgaben.exponent)
+            let zehnerpotenz = pow(10,AbszisseVorgaben.exponent)
             let wert = pos * deznummer
             let tempWertString = String(format: "%d",  wert)
             //Swift.print("p: \(p) tempWertString: \(tempWertString)")
@@ -1073,7 +1106,7 @@ class Abszisse: DataPlot
          }
          
          var subposy = posy // aktuelle Position
-         for _ in 1..<(Vorgaben.MinorTeileY)
+         for _ in 1..<(AbszisseVorgaben.MinorTeileY)
          {
             subposy = subposy + subdistanz
             path.move(to: CGPoint(x:  abszissex, y: subposy ))
@@ -1090,7 +1123,7 @@ class Abszisse: DataPlot
       // Wert
       
       let p = path.currentPoint
-      let wert = Vorgaben.MajorTeileY * deznummer
+      let wert = AbszisseVorgaben.MajorTeileY * deznummer
       let tempWertString = String(format: "%d",  wert)
       //Swift.print("p: \(p) tempWertString: \(tempWertString)")
       let paragraphStyle = NSMutableParagraphStyle()
@@ -1102,14 +1135,106 @@ class Abszisse: DataPlot
       
       return path
    }
-   
+   func backgroundColor_n(color: NSColor)
+   {
+      wantsLayer = true
+      layer?.backgroundColor = color.cgColor
+   }
+
    
 }
 
 extension Abszisse
 {
+   func DiagrammFeld() -> CGRect
+   {
+      return diagrammfeld
+   }
    
-   override    func DiagrammRect(rect: CGRect) -> CGRect
+   func DiagrammFeldHeight()->CGFloat
+   {
+      //Swift.print("")
+      return diagrammfeld.size.height
+   }
+   
+   func setDiagrammFeldHeight(h:CGFloat)
+   {
+      
+      diagrammfeld.size.height = h
+   }
+
+   open func setVorgaben(vorgaben:[String:Float])
+   {
+      /*
+       static var MajorTeileY: Int = 16                           // Teile der Hauptskala
+       static var MinorTeileY: Int = 2                             // Teile der Subskala
+       static var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige
+       static var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
+       static var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
+       
+       static var ZeitKompression: CGFloat = 1.0
+       static var Startsekunde: Int = 0
+       static let NullpunktY: CGFloat = 0.0
+       static let NullpunktX: CGFloat = 0.0
+       static let DiagrammEcke: CGPoint = CGPoint(x:15, y:10)// Ecke des Diagramms im View
+       static let DiagrammeckeY: CGFloat = 0.0 //
+       static let StartwertX: CGFloat = 0.0 // Abszisse des ersten Wertew
+       // static let StartwertY: CGFloat = 0.0
+       
+       // Achsen
+       static let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
+       
+       
+       static let majorrasterhorizontal = 50 // Sprung innerhalb Zeitachse
+       static let minorrasterhorizontal = 10
+       
+       */
+      if (vorgaben["zeitkompression"] != nil)
+      {
+         AbszisseVorgaben.ZeitKompression = CGFloat(vorgaben["zeitkompression"]!)
+      }
+      if (vorgaben["MajorTeileY"] != nil)
+      {
+         AbszisseVorgaben.MajorTeileY = Int((vorgaben["MajorTeileY"])!)
+      }
+      
+      if (vorgaben["MinorTeileY"] != nil)
+      {
+         AbszisseVorgaben.MinorTeileY = Int((vorgaben["MinorTeileY"])!)
+      }
+      
+      if (vorgaben["MaxY"] != nil)
+      {
+         AbszisseVorgaben.MaxY = CGFloat((vorgaben["MaxY"])!)
+      }
+      
+      if (vorgaben["MaxY"] != nil)
+      {
+         AbszisseVorgaben.MinY = CGFloat((vorgaben["MinY"])!)
+      }
+      
+      if (vorgaben["MaxX"] != nil)
+      {
+         AbszisseVorgaben.MaxX = CGFloat((vorgaben["MaxX"])!)
+      }
+      
+      
+      needsDisplay = true
+   }
+   
+   
+   open func setMaxX(maxX:Int)
+   {
+      AbszisseVorgaben.MaxX = CGFloat(maxX)
+   }
+   
+   open func setMaxY(maxY:Int)
+   {
+      AbszisseVorgaben.MaxY = CGFloat(maxY)
+   }
+
+   
+   func AbszisseRect(rect: CGRect) -> CGRect
    {
       /*
        let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + Geom.offsety + Geom.randunten, width: rect.size.width  , height: rect.size.height - Geom.offsety - Geom.freey)
@@ -1131,13 +1256,31 @@ extension Abszisse
    }
    
    
-   override func DiagrammFeld() -> CGRect
+   
+   
+   func AbszisseFeld() -> CGRect
    {
       return diagrammfeld
    }
    
+   func drawAbszisseInContext(context: CGContext?)
+   {
+      context!.setLineWidth(0.6)
+      //let diagrammRect = PlotRect()
+      let randfarbe =  CGColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
+      let feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
+      let linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
+      
+      drawAbszisseRect(rect: diagrammfeld, inContext: context,
+                       borderColor: randfarbe,
+                       fillColor: feldfarbe)
+      
+      self.setNeedsDisplay(self.frame)
+   }
    
-   override func drawDiagrammRect(rect: CGRect, inContext context: CGContext?,
+
+   
+   func drawAbszisseRect(rect: CGRect, inContext context: CGContext?,
                                   borderColor: CGColor, fillColor: CGColor)
    {
       /*
@@ -1195,6 +1338,22 @@ extension Abszisse
       //context?.drawPath(using: .stroke)
       //Swift.print("GraphArray drawPath end")
    }
+   
+   override func draw(_ dirtyRect: NSRect)
+   {
+      super.draw(dirtyRect)
+      let context = NSGraphicsContext.current()?.cgContext
+      
+      
+      //    NSColor.white.setFill()
+      //    NSRectFill(bounds)
+      drawAbszisseInContext(context:context)
+      
+      
+      
+   }
+   
+
    
 }
 

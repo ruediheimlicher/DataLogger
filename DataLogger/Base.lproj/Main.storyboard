@@ -1151,11 +1151,11 @@
                                                     </tableHeaderView>
                                                 </scrollView>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rr3-Tz-HlD" customClass="Abszisse" customModule="DataLogger" customModuleProvider="target">
-                                                    <rect key="frame" x="483" y="62" width="32" height="297"/>
+                                                    <rect key="frame" x="493" y="62" width="22" height="297"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </customView>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tW6-nt-D3W" customClass="Abszisse" customModule="DataLogger" customModuleProvider="target">
-                                                    <rect key="frame" x="453" y="62" width="32" height="297"/>
+                                                    <rect key="frame" x="461" y="62" width="32" height="297"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </customView>
                                             </subviews>
@@ -1211,7 +1211,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" ambiguous="YES" id="zfD-KS-vK1">
                                                         <rect key="frame" x="1" y="1" width="280" height="94"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6BR-t2-hl6" customClass="NSTextView">
                                                                 <rect key="frame" x="0.0" y="0.0" width="277" height="91"/>
@@ -1224,7 +1224,7 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="S8K-kK-L9O">
-                                                        <rect key="frame" x="281" y="1" width="15" height="94"/>
+                                                        <rect key="frame" x="1" y="1" width="15" height="0.0"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                 </scrollView>
@@ -1259,7 +1259,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" ambiguous="YES" id="wDB-6M-jeo">
                                                         <rect key="frame" x="1" y="1" width="572" height="296"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MQl-xa-lLF" customClass="DataPlot" customModule="DataLogger" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="2697" height="281"/>
@@ -1268,7 +1268,7 @@
                                                         </subviews>
                                                     </clipView>
                                                     <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="dVN-8M-CQJ">
-                                                        <rect key="frame" x="1" y="297" width="572" height="15"/>
+                                                        <rect key="frame" x="1" y="1" width="0.0" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Ckc-Vl-ISL">
@@ -1597,8 +1597,8 @@
                         <outlet property="blockcounter" destination="UpY-QF-mQi" id="sPJ-V1-XDN"/>
                         <outlet property="cont_read_check" destination="1Kr-9d-W2g" id="mP6-Os-dt5"/>
                         <outlet property="cont_write_check" destination="1eS-Rj-kQf" id="Gk6-7D-7va"/>
-                        <outlet property="dataAbszisse" destination="rr3-Tz-HlD" id="qat-cu-Aor"/>
-                        <outlet property="dataAbszisse_Volt" destination="JXa-aa-h8p" id="QS7-dI-fbs"/>
+                        <outlet property="dataAbszisse" destination="rr3-Tz-HlD" id="Z6Y-fC-1b7"/>
+                        <outlet property="dataAbszisse_Volt" destination="tW6-nt-D3W" id="tc4-Ei-BVC"/>
                         <outlet property="dataScroller" destination="yKc-TX-1jj" id="qoO-mT-ebQ"/>
                         <outlet property="dataScroller_Volt" destination="itH-AW-9Vs" id="qUx-F5-8fE"/>
                         <outlet property="datagraph" destination="heH-S0-xIW" id="fWT-Gf-qd1"/>
