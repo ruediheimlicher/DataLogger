@@ -16,7 +16,10 @@ import Cocoa
 class Abszisse: NSView
 {
    var abszissefeld:CGRect = CGRect.zero
-   
+   var randfarbe =  CGColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
+   var feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
+   var linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
+
    /*
    fileprivate struct   Geom
    {
@@ -77,24 +80,26 @@ class Abszisse: NSView
    
    struct Vorgaben
    {
-       let legendebreite: CGFloat = 10.0
+      let legendebreite: CGFloat = 10.0
+      var Stellen: Int = 0
+      var Exponent: Int = 1 // Zehnerpotenz fuer label
+      var MajorTeileY: Int = 16                           // Teile der Hauptskala
+      var MinorTeileY: Int = 2                             // Teile der Subskala
+      var Nullpunkt:Int = 2
       
-       var exponent: Int = 1 // Zehnerpotenz fuer label
-       var MajorTeileY: Int = 16                           // Teile der Hauptskala
-       var MinorTeileY: Int = 2                             // Teile der Subskala
-       var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
-       var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
-       var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
+      var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
+      var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
+      var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
       
-       var ZeitKompression: CGFloat = 1.0
-       var Startsekunde: Int = 0
-       let NullpunktY: CGFloat = 0.0
-       let NullpunktX: CGFloat = 0.0
-       let DiagrammEcke: CGPoint = CGPoint(x:15, y:10)// Ecke des Diagramms im View
-       let DiagrammeckeY: CGFloat = 0.0 //
-       let StartwertX: CGFloat = 0.0 // Abszisse des ersten Wertew
+      var ZeitKompression: CGFloat = 1.0
+      var Startsekunde: Int = 0
+      let NullpunktY: CGFloat = 0.0
+      let NullpunktX: CGFloat = 0.0
+      let DiagrammEcke: CGPoint = CGPoint(x:15, y:10)// Ecke des Diagramms im View
+      let DiagrammeckeY: CGFloat = 0.0 //
+      let StartwertX: CGFloat = 0.0 // Abszisse des ersten Wertew
       
-       let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
+      let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
       
    }
 
@@ -139,7 +144,9 @@ class Abszisse: NSView
       let markdistanz = rect.size.height / (CGFloat(AbszisseVorgaben.MajorTeileY ) )
       let subdistanz = CGFloat(markdistanz) / CGFloat(AbszisseVorgaben.MinorTeileY)
       var posy = rect.origin.y
-      let deznummer = NSDecimalNumber(decimal:pow(10,AbszisseVorgaben.exponent)).intValue
+      let deznummer = NSDecimalNumber(decimal:pow(10,AbszisseVorgaben.Exponent)).intValue
+      
+      var tempWertString = ""
       
       for pos in 0...(AbszisseVorgaben.MajorTeileY - 1)
       {
@@ -149,13 +156,39 @@ class Abszisse: NSView
          {
             // Wert
             let p = path.currentPoint
-            let zehnerpotenz = pow(10,AbszisseVorgaben.exponent)
-            let wert = pos * deznummer
-            let tempWertString = String(format: "%d",  wert)
-            //Swift.print("p: \(p) tempWertString: \(tempWertString)")
+            
+            let wert = (pos - AbszisseVorgaben.Nullpunkt) * deznummer
+
+           
+            switch (AbszisseVorgaben.Stellen)
+            {
+            case 0:
+               tempWertString = String(format: "%d",  wert)
+               
+               break
+               
+            case 1:
+            tempWertString = String(format: "%3.1f",  Float(wert)/10)
+                  break
+            default:
+               break
+            }
+            let zehnerpotenz = pow(10,AbszisseVorgaben.Exponent)
+            
+            
+            
+            
+            Swift.print("p: \(p) tempWertString: \(tempWertString)")
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .right
-            let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 8)!, NSParagraphStyleAttributeName: paragraphStyle]
+            
+       //     let textfarbe:NSColor? = NSColor.init(cgColor:linienfarbe)
+            
+            let textfarbe:NSColor = NSColor.init(cgColor:linienfarbe)!
+            
+       //     let textfarbe = NSColor.init?(colorSpace:colspace ,components:comp)
+       //     let textfarbe = NSColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
+            let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 9)!, NSParagraphStyleAttributeName: paragraphStyle,NSForegroundColorAttributeName:textfarbe]
             
             tempWertString.draw(with: CGRect(x: p.x - 42 , y: p.y - 5, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
          }
@@ -178,12 +211,26 @@ class Abszisse: NSView
       // Wert
       
       let p = path.currentPoint
-      let wert = AbszisseVorgaben.MajorTeileY * deznummer
-      let tempWertString = String(format: "%d",  wert)
+      let wert = (AbszisseVorgaben.MajorTeileY - AbszisseVorgaben.Nullpunkt) * deznummer
+      switch (AbszisseVorgaben.Stellen)
+      {
+      case 0:
+         tempWertString = String(format: "%d",  wert)
+         
+         break
+         
+      case 1:
+         tempWertString = String(format: "%3.1f",  Float(wert)/10)
+         break
+      default:
+         break
+      }
+
+      
       //Swift.print("p: \(p) tempWertString: \(tempWertString)")
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .right
-      let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 8)!, NSParagraphStyleAttributeName: paragraphStyle]
+      let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 9)!, NSParagraphStyleAttributeName: paragraphStyle]
       
       tempWertString.draw(with: CGRect(x: p.x - 42 , y: p.y - 5, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
       
@@ -263,7 +310,7 @@ extension Abszisse
          AbszisseVorgaben.MaxY = CGFloat((vorgaben["MaxY"])!)
       }
       
-      if (vorgaben["MaxY"] != nil)
+      if (vorgaben["MinY"] != nil)
       {
          AbszisseVorgaben.MinY = CGFloat((vorgaben["MinY"])!)
       }
@@ -288,6 +335,28 @@ extension Abszisse
       AbszisseVorgaben.MaxY = CGFloat(maxY)
    }
    
+   open func setExponent(exponent:Int)
+   {
+      AbszisseVorgaben.Exponent = exponent
+      
+   }
+   
+   open func setStellen(stellen:Int)
+   {
+      AbszisseVorgaben.Stellen = stellen
+      
+   }
+   
+
+   open func setLinienfarbe(farbe:CGColor)
+   {
+      linienfarbe = farbe
+   }
+
+   open func update()
+   {
+      self.setNeedsDisplay(self.abszissefeld)
+   }
    
    func AbszisseRect(rect: CGRect) -> CGRect
    {
@@ -318,10 +387,7 @@ extension Abszisse
    {
       context!.setLineWidth(0.6)
       //let diagrammRect = PlotRect()
-      let randfarbe =  CGColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
-      let feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
-      let linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
-      
+      context?.setStrokeColor(linienfarbe)
       drawAbszisseRect(rect: abszissefeld, inContext: context,
                        borderColor: randfarbe,
                        fillColor: feldfarbe)
@@ -380,7 +446,7 @@ extension Abszisse
       // let abszissepath = abszisse(rect:rect,linienfarbe:borderColor)
       context?.setLineWidth(1.0)
       context?.addPath(abszissepath)
-      context?.setStrokeColor(abszissefarbe)
+      context?.setStrokeColor(linienfarbe)
       //context?.setFillColor(CGColor.init(red:0x00,green: 0xFF, blue: 0xFF,alpha:1.0))
       context?.drawPath(using: .stroke)
       
