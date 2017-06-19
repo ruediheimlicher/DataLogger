@@ -1211,7 +1211,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" ambiguous="YES" id="zfD-KS-vK1">
                                                         <rect key="frame" x="1" y="1" width="280" height="94"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6BR-t2-hl6" customClass="NSTextView">
                                                                 <rect key="frame" x="0.0" y="0.0" width="277" height="91"/>
@@ -1224,7 +1224,7 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="S8K-kK-L9O">
-                                                        <rect key="frame" x="1" y="1" width="15" height="0.0"/>
+                                                        <rect key="frame" x="281" y="1" width="15" height="94"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                 </scrollView>
