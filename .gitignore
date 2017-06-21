@@ -1,6 +1,6 @@
 Images.*
 *Tests*
-*.xcodeproj*
+*.xcodeproj/*
 *.eep
 *.elf
 *.hex
@@ -15,4 +15,5 @@ Power_InterfaceTests/
 *.mp3
 *.appiconset
 *.aif*
-xcuserdata*
+xcuserdata/*
+*.lproj/*
