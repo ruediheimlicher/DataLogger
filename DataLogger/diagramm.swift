@@ -280,6 +280,12 @@ class DataPlot: NSView
    {
       Vorgaben.MaxX = CGFloat(maxX)
    }
+
+   open func augmentMaxX(maxX:Int)
+   {
+      Vorgaben.MaxX += CGFloat(maxX)
+   }
+
    
    open func setMaxY(maxY:Int)
    {
