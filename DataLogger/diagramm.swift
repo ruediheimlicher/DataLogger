@@ -44,7 +44,7 @@ class DataPlot: NSView
    
    
    
-   fileprivate struct   Vorgaben
+   struct   Vorgaben
    {
       
       static var MajorTeileY: Int = 16                           // Teile der Hauptskala
@@ -52,7 +52,9 @@ class DataPlot: NSView
       static var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
       static var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
       static var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
+      static var Nullpunkt:Int = 0
       
+      static var Intervall:Int = 1
       static var ZeitKompression: CGFloat = 1.0
       static var Startsekunde: Int = 0
       static let NullpunktY: CGFloat = 0.0
@@ -206,7 +208,13 @@ class DataPlot: NSView
       Vorgaben.ZeitKompression = CGFloat(kompression)
       needsDisplay = true
    }
-   
+
+   open func setIntervall(intervall:Int)
+   {
+      Vorgaben.Intervall = (intervall)
+      needsDisplay = true
+   }
+
    open func setDatafarbe(farbe:NSColor, index:Int)
    {
       DatafarbeArray[index] = farbe
@@ -220,7 +228,7 @@ class DataPlot: NSView
        static var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige
        static var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
        static var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
-       
+       static var Nullpunkt = 0
        static var ZeitKompression: CGFloat = 1.0
        static var Startsekunde: Int = 0
        static let NullpunktY: CGFloat = 0.0
@@ -266,6 +274,11 @@ class DataPlot: NSView
       {
          Vorgaben.MaxX = CGFloat((vorgaben["MaxX"])!)
       }
+      
+      if (vorgaben["Nullpunkt"] != nil)
+      {
+         Vorgaben.Nullpunkt = Int((vorgaben["Nullpunkt"])!)
+      }
 
       
       needsDisplay = true
@@ -305,7 +318,7 @@ class DataPlot: NSView
       let SortenFaktor:CGFloat = 1.0
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
-      let FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX
+      let FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
       
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
@@ -318,6 +331,7 @@ class DataPlot: NSView
       
       neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	//	Zeit, x-Wert, erster Wert im WerteArray
       
+      
       var tempKanalDatenDic = [String:CGFloat]() //=  [CGFloat](repeating:0.0,count:8)
       tempKanalDatenDic["rawx"] = CGFloat(werteArray[0])
       
@@ -327,7 +341,7 @@ class DataPlot: NSView
       
       if (time > 0)
       {
-         let quot = Float(neuerPunkt.x) / time
+         let quot = Float(neuerPunkt.x) / time / Float(Vorgaben.Intervall)
          //Swift.print("lastdatax: \(String(describing: time))  quot: \(quot)")
       }
       

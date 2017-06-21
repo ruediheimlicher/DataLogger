@@ -132,12 +132,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    var spistatus:UInt8 = 0;
    var DiagrammFeld:CGRect = CGRect.zero
    
-   var taskArray :[[String:Any]] = [[String:Any]]()
+   var taskArray :[[String:String]] = [[:]]
    
    
    var anzahlChannels = 0
    var anzahlStoreChannels = 1
-   var swiftArray = [[String:AnyObject]]()
+   var swiftArray: [[String:String]] = [[:]]//()
    
    var BereichArray = [[Int:String]]()
    
@@ -233,6 +233,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var spL: NSTextField!
    @IBOutlet  var spH: NSTextField!
    
+   @IBOutlet  var teensybatt: NSTextField!
+   
    @IBOutlet  var extstrom: NSTextField!
    @IBOutlet  var Teensy_Status: NSButton!
    
@@ -287,6 +289,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var Set_Settings: NSButton!
    
    // USB-code
+   
+   @IBOutlet var wl_callback_status_Feld: NSTextField!
    
    // mmc
    @IBOutlet  var mmcLOFeld: NSTextField!
@@ -544,33 +548,35 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       IntervallPop.addItems(withObjectValues:["1","2","5","10","20","30","60","120","180","300"])
       IntervallPop.selectItem(at:0)
       
-      var tempDic = [String:AnyObject]()
       
-      tempDic["on"] = 1  as AnyObject?
-
-      tempDic["device"] = "Temperatur"  as AnyObject?
-      tempDic["description"] = "Temperatur messen"  as AnyObject?
-      tempDic["A0"] = 0  as AnyObject?
-      tempDic["A1"] = 1  as AnyObject?
-
-      tempDic["A"] = 3  as AnyObject?
-      tempDic["bereich"] = ["0-80°","0-160°","-30-130°"]  as AnyObject?
-      tempDic["temperatur"] = "25.5°"  as AnyObject?
-      tempDic["batterie"] = "5.01V" as AnyObject?
+      swiftArray.removeAll()
+      var tempDic = [String:String]()
       
-      swiftArray.append(tempDic)
+      tempDic["on"] = String(1)
 
-      tempDic["on"] = 1  as AnyObject?
-      tempDic["device"] = "ADC 12Bit"  as AnyObject?
-      tempDic["description"] = "Spannung messen"  as AnyObject?
-      tempDic["A0"] = 1  as AnyObject?
-      tempDic["A1"] = 1  as AnyObject?
-      tempDic["A"] = 6  as AnyObject?
-      tempDic["bereich"] = ["0 - 8V","0 - 16V"]  as AnyObject?
+      tempDic["device"] = "Temperatur"
+      tempDic["description"] = "Temperatur messen"
+      tempDic["A0"] = String(0)
+      tempDic["A1"] = String(1)
 
-      tempDic["temperatur"] = "20.1°"  as AnyObject?
-      tempDic["batterie"] = "4.20V" as AnyObject?
-      swiftArray.append(tempDic)
+      tempDic["A"] = String(3)
+      tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
+      tempDic["temperatur"] = "25.5°"
+      tempDic["batterie"] = "5.01V"
+      
+      swiftArray.append(tempDic )
+
+      tempDic["on"] = String(1 )
+      tempDic["device"] = "ADC 12Bit"
+      tempDic["description"] = "Spannung messen"
+      tempDic["A0"] = "1"
+      tempDic["A1"] = "1"
+      tempDic["A"] = "6"
+      tempDic["bereich"] = "0 - 8V\t0 - 16V"
+
+      tempDic["temperatur"] = "20.1°"
+      tempDic["batterie"] = "4.20V"
+      swiftArray.append(tempDic as! [String : String])
 
       /*
       var bereichDic = [Int:String]()
@@ -618,10 +624,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       dataAbszisse_Volt.setStellen(stellen:1)
       //var tasklist:[String] = ["Temperatur","ADC12Bit","Aux"]
       
-      var kanaldic:[String:Any] = [:]
+      var kanaldic:[String:String] = [:]
       
-         kanaldic["taskwahl"] = 0
-      kanaldic["taskcheck"] = 0
+         kanaldic["taskwahl"] = "0"
+      kanaldic["taskcheck"] = "0"
+      taskArray.removeAll()
       for _ in 0..<8
       {
          taskArray.append(kanaldic)
@@ -630,9 +637,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
 //      taskArray[1]["taskcheck"] = 1 //
       
-      taskArray[2]["taskcheck"] = 1 //
+      taskArray[2]["taskcheck"] = "1" //
       
-      taskArray[4]["taskcheck"] = 1 // 
+      taskArray[4]["taskcheck"] = "1" //
       anzahlChannels = countChannels() // Anzahl aktivierte kanaele
       Channels_Feld.intValue  = Int32(anzahlChannels)
       
@@ -908,6 +915,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("\n\(teensy.read_byteArray)")
          blockcounter.intValue = 0
          
+         
          // ****************************************************************************
          // MARK: MESSUNG_DATA
       // ****************************************************************************
@@ -918,13 +926,27 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO])
          let counterHI = Int32(teensy.read_byteArray[DATACOUNT_HI])
          
+         let wl_callback_status = Int32(teensy.read_byteArray[2])
+         
+         // status der  device checken
+         for devicelinie in swiftArray
+         {
+            
+         }
+         
+         print("wl_callback_status:\t\(wl_callback_status)")
+         wl_callback_status_Feld.intValue = wl_callback_status
+         
          let counter = (counterLO & 0x00FF) | ((counterHI & 0xFF00)>>8)
          //print("counter:\t\(counter)")
          Counter.intValue = counter
          
          messungcounter.intValue = counter
          
-         
+         let batterieLO = Int32(teensy.read_byteArray[5]) // batteriespannung teensy
+         let batterieHI = Int32(teensy.read_byteArray[6])
+        let teensybatterie = batterieLO  | (batterieHI>>8)
+         teensybatt.stringValue = NSString(format:"%.1f", teensybatterie) as String
          
          let blockposition = (UInt32(teensy.read_byteArray[BLOCKOFFSETLO_BYTE]) & 0x00FF) | ((UInt32(teensy.read_byteArray[BLOCKOFFSETHI_BYTE])  & 0xFF00)>>8)
          
@@ -935,6 +957,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // Device nummer lesen
          
          var tasknummer = Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE]))
+         
          var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
          
          print ("\ntasknummer: \(tasknummer)\tchannelnummer: \(channelnummer)")
@@ -1304,7 +1327,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          for storeindex in 0..<8
          {
             //print("storeindex: \(storeindex) taskArray: \(taskArray[storeindex])")
-            if ((taskArray[storeindex]["taskcheck"] as! Int) > 0)    // der Kanal ist aktiviert
+            let check = Int(taskArray[storeindex]["taskcheck"]!)!
+            if (check > 0)    // der Kanal ist aktiviert
             {
                //print("kanalindex: \(kanalindex)")
                // wert des Kanal fortlaufend in tempwerte einsetzen:
@@ -1411,7 +1435,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          if (lastx > Float((self.dataScroller.documentView?.frame.size.width)! * 0.9))
          {
-            // self.dataScroller.documentView?.frame.size.width += 1000
+             self.dataScroller.documentView?.frame.size.width += 1000
+            
+            self.datagraph.augmentMaxX(maxX:1000)
          }
          
          let batteriespannung = Int32(teensy.read_byteArray[BATT])
@@ -1423,7 +1449,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // ****************************************************************************
          
       default: break
-         //print("code ist 0")
+         print("code ist 0")
          
       } // switch code
       //return;
@@ -1857,17 +1883,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          switch sender.indexOfSelectedItem
          {
          case 0: // 0-80
-            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4]
+            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4 ,"Nullpunkt":0]
             dataAbszisse_Temperatur.setVorgaben(vorgaben: Vorgaben_Temperatur)
          case 1: // 0-160
-            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4]
+            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4 ,"Nullpunkt":0]
             dataAbszisse_Temperatur.setVorgaben(vorgaben: Vorgaben_Temperatur)
          case 2: // -30-100
-            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4]
+            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4,"Nullpunkt":2]
             dataAbszisse_Temperatur.setVorgaben(vorgaben: Vorgaben_Temperatur)
          default: break
          }
-         
+         dataAbszisse_Temperatur.update()
          //dataAbszisse_Temperatur.setMaxY(maxY: 160)
          
       case 1: // ADC
@@ -1884,11 +1910,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          default:
             break
          }// switch index
-         
+         dataAbszisse_Volt.update()
       default:
             break;
       }
-      dataAbszisse_Volt.update()
+      
    }
    
    
@@ -1987,6 +2013,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          teensy.write_byteArray[TAKT_LO_BYTE] = UInt8(integerwahl! & 0x00FF)
          teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((integerwahl! & 0xFF00)>>8)
          //    print("reportTaskIntervall teensy.write_byteArray[TAKT_LO_BYTE]: \(teensy.write_byteArray[TAKT_LO_BYTE])")
+      
+         datagraph.setIntervall(intervall:Int(wahl)!)
+      
       }
    }
    
@@ -1997,13 +2026,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let zeile = knopftag%1000
       print("reportCheckbox zeile: \(zeile)")
       
-      let knopfstatus = (swiftArray[zeile]["check"]!).integerValue
+      let knopfstatus = Int((swiftArray[zeile]["check"]!))//.integerValue
+      
       if (knopfstatus == 1)
       {
-         swiftArray[zeile]["check"] = 0 as AnyObject
+         swiftArray[zeile]["check"] = "0"
       }
       else{
-         swiftArray[zeile]["check"] = 1 as AnyObject
+         swiftArray[zeile]["check"] = "1"
       }
       
       print("tableViewData nach Check:\n\(swiftArray)")
@@ -2021,13 +2051,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let key = "A" + String(zeile%10)
       print("reportKanalwahl zeile: \(zeile) key: \(key)")
       
-      let knopfstatus = (swiftArray[zeile]["A0"]!).integerValue
+      let knopfstatus = Int((swiftArray[zeile]["A0"]!))//.integerValue
       if (knopfstatus == 1)
       {
-         swiftArray[zeile][key] = 0 as AnyObject
+         swiftArray[zeile][key] = "0"
       }
       else{
-         swiftArray[zeile][key] = 1 as AnyObject
+         swiftArray[zeile][key] = "1"
       }
       
       print("tableViewData nach Kanalwahl:\n\(String(describing: swiftArray[zeile]["A0"]))")
@@ -2043,7 +2073,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let zeile = (sender as! NSPopUpButton).indexOfSelectedItem
       print("reportWahlPop sender zeile: \(zeile) ")
       
-      taskArray[index]["taskwahl"] = zeile
+      taskArray[index]["taskwahl"] = String(zeile)
       /*
        let zeile = TaskListe.selectedRow
        var zelle = swiftArray[TaskListe.selectedRow]
@@ -2076,7 +2106,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       print("reportTaskCheck  sender tag: \(sender.tag) state: \(sender.state)")
       let index = (sender.tag / 10) - 20
-      taskArray[index]["taskcheck"] = sender.state
+      taskArray[index]["taskcheck"] = String(sender.state)
       print("reportTaskCheck  taskArray: \n\(taskArray)")
       anzahlChannels = countChannels()
       Channels_Feld.intValue  = Int32(anzahlChannels)
@@ -2105,8 +2135,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       var anzahl = 0
       for zeile in taskArray
       {
-         let status = zeile["taskcheck"] as! Int
-         if ((zeile["taskcheck"] as! Int) == 1)
+         let a = zeile
+         
+         let rawstatus = zeile["taskcheck"]
+         
+         let status = Int(zeile["taskcheck"]!)
+         if (status == 1)
          {
             anzahl = anzahl + 1
          }
@@ -2843,7 +2877,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       if (listeident == "device")
       {
          let ident = tableColumn?.identifier
-         self.swiftArray[row][ident!] = object
+         self.swiftArray[row][ident!] = object as! String
          //      (self.swiftArray[row] as! NSMutableDictionary).setObject(object!, forKey: (tableColumn?.identifier)! as NSCopying)
       }
    }
@@ -2877,7 +2911,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          if tableColumn!.identifier == "description"
          {
             print("objectValueForTableColumn util: \(description)")
-            return zeile["description"]
+            return zeile["description"] as AnyObject
          }
          else if tableColumn!.identifier == "wahl"
          {
@@ -2885,7 +2919,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             let wahlzelle = tableColumn?.dataCell(forRow: row) as? NSPopUpButtonCell
             
-            return zeile["wahl"]
+            return zeile["wahl"] as AnyObject
             
             // let zelle = tableView (_, dataCellFor: tableColumn?, row: row)
             
@@ -3093,7 +3127,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          knopf.tag = 1000 + row
          let status = Int(knopf.state)
          let sollstatus = (swiftArray[row][(tableColumn?.identifier)!]! )
-         let soll = sollstatus.integerValue
+         let soll = Int(sollstatus)//.integerValue
          //knopf.state = 0
          knopf.state = soll!
  //        print("check tag: \(knopf.tag) status: \(status)")
@@ -3158,13 +3192,13 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          knopf.tag = 1500 + row
          let anz = Int(knopf.segmentCount)
          // https://stackoverflow.com/questions/38369544/how-to-convert-anyobject-type-to-int-in-swift
-         let code = Int((wert as? Int)!)
-         let selectcode = UInt8(wert as! Int)
+         let code = Int(wert!)
+         let selectcode = UInt8(wert!)
          
          for pos in 0..<anz
          {
             let temp = UInt8(pos)
-            if ((selectcode & (1<<temp)) > 0)
+            if ((selectcode! & (1<<temp)) > 0)
             {
                knopf.setSelected(true, forSegment: pos)
             }
@@ -3195,11 +3229,14 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          let knopftag = knopf.tag
          //print("knopftag: \(knopftag)")
          //let result:NSPopUpButton = tableView.make(withIdentifier: "bereich", owner: self) as! NSPopUpButton
-         let titles:[String] = swiftArray[row][(tableColumn?.identifier)!]! as! Array
+         let titlestring = swiftArray[row][(tableColumn?.identifier)!]
+         let titles:[String] = titlestring!.components(separatedBy: "\t")
+        // let titles:[String] = swiftArray[row][(tableColumn?.identifier)!]! as! Array
+         
          knopf.removeAllItems()
          knopf.addItems(withTitles: titles)
          var zeilenindex = 0
-         for zeile in titles
+         for _ in titles
          {
             //print("zeilenindex: \(zeilenindex) zeile: \(zeile)")
             knopf.item(at: zeilenindex)?.tag = knopftag * 10 + 10 * row + zeilenindex
@@ -3238,7 +3275,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
          
-         result.textField?.stringValue = swiftArray[row][(tableColumn?.identifier)!]! as! String
+         result.textField?.stringValue = swiftArray[row][(tableColumn?.identifier)!]!// as! String
          return result
          
       }

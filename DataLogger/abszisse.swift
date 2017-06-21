@@ -85,7 +85,7 @@ class Abszisse: NSView
       var Exponent: Int = 1 // Zehnerpotenz fuer label
       var MajorTeileY: Int = 16                           // Teile der Hauptskala
       var MinorTeileY: Int = 2                             // Teile der Subskala
-      var Nullpunkt:Int = 2
+      var Nullpunkt:Int = 0                              // Nullpunkt bei deisem MajorTeil
       
       var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
       var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
@@ -318,6 +318,11 @@ extension Abszisse
       if (vorgaben["MaxX"] != nil)
       {
          AbszisseVorgaben.MaxX = CGFloat((vorgaben["MaxX"])!)
+      }
+      
+      if (vorgaben["Nullpunkt"] != nil)
+      {
+         AbszisseVorgaben.Nullpunkt = Int((vorgaben["Nullpunkt"])!)
       }
       
       
