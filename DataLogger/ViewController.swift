@@ -164,7 +164,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
    var bereicharray:[[String]] = [[]]
    
-   
+    var devicearray:[String] = ["Teensy","Temperatur","ADC12BIT"]
    // Diagramm
    @IBOutlet  var datagraph: DataPlot!
    @IBOutlet  var dataScroller: NSScrollView!
@@ -550,11 +550,26 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       
       swiftArray.removeAll()
-      var tempDic = [String:String]()
       
+      var tempDic = [String:String]()
+ 
+      tempDic["on"] = String(1)
+      
+      tempDic["device"] = devicearray[0]
+      tempDic["description"] = "Home"
+      tempDic["A0"] = String(0)
+      tempDic["A1"] = String(1)
+      
+      tempDic["A"] = String(3)
+      tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
+      tempDic["temperatur"] = "16.5°"
+      tempDic["batterie"] = "4.01V"
+      
+      swiftArray.append(tempDic )
+
       tempDic["on"] = String(1)
 
-      tempDic["device"] = "Temperatur"
+      tempDic["device"] = devicearray[1]
       tempDic["description"] = "Temperatur messen"
       tempDic["A0"] = String(0)
       tempDic["A1"] = String(1)
@@ -567,7 +582,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       swiftArray.append(tempDic )
 
       tempDic["on"] = String(1 )
-      tempDic["device"] = "ADC 12Bit"
+      tempDic["device"] = devicearray[2]
       tempDic["description"] = "Spannung messen"
       tempDic["A0"] = "1"
       tempDic["A1"] = "1"
@@ -576,8 +591,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
       tempDic["temperatur"] = "20.1°"
       tempDic["batterie"] = "4.20V"
-      swiftArray.append(tempDic as! [String : String])
-
+      swiftArray.append(tempDic )
+      
       /*
       var bereichDic = [Int:String]()
       bereichDic[0] = "AAA"
@@ -926,12 +941,26 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO])
          let counterHI = Int32(teensy.read_byteArray[DATACOUNT_HI])
          
+         var devicenummer = Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE]))
+         
+         var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
+         
+         print ("\ndevicenummer: \(devicenummer)\tchannelnummer: \(channelnummer)")
+         devicenummer &= 0x0F
+         //print ("\ndevicenummer B: \(devicenummer)")
+
+         
          let wl_callback_status = Int32(teensy.read_byteArray[2])
          
          // status der  device checken
+         var deviceindex = 0
          for devicelinie in swiftArray
          {
-            
+            var zeile = devicelinie
+            let device = devicelinie["device"]
+            print ("deviceindex: \(deviceindex) device: \(device)")
+            deviceindex += 1
+         
          }
          
          print("wl_callback_status:\t\(wl_callback_status)")
@@ -956,13 +985,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // Device nummer lesen
          
-         var tasknummer = Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE]))
          
-         var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
          
-         print ("\ntasknummer: \(tasknummer)\tchannelnummer: \(channelnummer)")
-         tasknummer &= 0x0F
-         //print ("\ntasknummer B: \(tasknummer)")
          
          var  analog0float:Float = 0
          var  analog1float:Float = 0
@@ -984,13 +1008,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          let messungzeitfloat = Float(tagsekunde())
 
-         let task = Int(tasknummer)
+         let task = Int(devicenummer)
 
          switch (task)
          {
          case 0:
             
-            print ("switch keine tasknummer: \(tasknummer)")
+            print ("switch keine devicenummer: \(devicenummer)")
             
          case 1:
             //print ("")
@@ -1086,7 +1110,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          case 2:
             //print ("")
             
-            print ("switch tasknummer: \(tasknummer)")
+            print ("switch devicenummer: \(devicenummer)")
             //print("task 2 teensy.read_byteArray")
             
             for index in 16...33
@@ -1343,7 +1367,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                //    var devicefloatarray:[[Float]] = Array(repeating:Array(repeating:0.0,count:10),count:6)
                
-               devicefloatarray[Int(tasknummer)] = tempwerte
+               devicefloatarray[Int(devicenummer)] = tempwerte
                
                kanalindex = kanalindex + 1 // weiterschalten
             }
@@ -1459,21 +1483,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       var data = NSData(bytes: teensy.last_read_byteArray, length: 64)
       //print("data: \(data)")
       
-      // let inputDataFeldstring = teensy.last_read_byteArray as NSArray
       
       let b1: Int32 = Int32(teensy.last_read_byteArray[1])
       let b2: Int32 = Int32(teensy.last_read_byteArray[2])
       
       //print("b1: \(b1)\tb2: \(b2)\n");
       
-//      H_Feld.intValue = b2
-//      H_Feld.stringValue = NSString(format:"%2X", b1) as String
-      
-      // H_Feld.stringValue = NSString(format:"%d", a2)
-      
-//      L_Feld.intValue = b1
-//      L_Feld.stringValue = NSString(format:"%2X", b1) as String
-      // L_Feld.stringValue = NSString(format:"%d", a1)
       
       let rotA:Int32 = (b1 | (b2<<8))
       
@@ -1655,10 +1670,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       //      extspannungFeld.doubleValue = ((tempspannung/100)+1)%12
       //var tempintspannung = UInt16(tempspannung)
-      //NSString(format:"%2X", a2)
-      //spL.stringValue = NSString(format:"%02X", (tempintspannung & 0x00FF)) as String
-      //spH.stringValue = NSString(format:"%02X", ((tempintspannung & 0xFF00)>>8)) as String
-      print("tempPos: \(tempPos)");// L: \(spL.stringValue)\ttempintspannung H: \(spH.stringValue) ")
+         print("tempPos: \(tempPos)");// L: \(spL.stringValue)\ttempintspannung H: \(spH.stringValue) ")
       //teensy.write_byteArray[0] = 0x01
       print("write_byteArray 0: \(teensy.write_byteArray[0])")
       teensy.write_byteArray[10] = UInt8(tempPos & (0x00FF))
@@ -1998,7 +2010,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       print("reportTaskIntervall index: \(sender.indexOfSelectedItem)")
       if (sender.indexOfSelectedItem >= 0)
       {
-         let wahl = sender.objectValueOfSelectedItem! as! String
+         let wahl = String(describing: sender.objectValueOfSelectedItem!)// as! String
          let index = sender.indexOfSelectedItem
          // print("reportTaskIntervall wahl: \(wahl) index: \(index)")
          // http://stackoverflow.com/questions/24115141/swift-converting-string-to-int
@@ -2112,24 +2124,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       //print("reportTaskCheck  taskArray: \n\(taskArray)")
       anzahlChannels = countChannels()
       Channels_Feld.intValue  = Int32(anzahlChannels)
-      /*
-       let zeile = TaskListe.selectedRow
-       var zelle = swiftArray[TaskListe.selectedRow] //as! [String:AnyObject]
-       print("reportTaskCheck zeile: \(zeile) zelle: \(zelle) task: \(zelle["task"])")
-       
-       // let check = zelle["task"] as! Int
-       // if (check == 0)
-       
-       if (swiftArray[TaskListe.selectedRow]["task"] as! Int == 1)
-       {
-       swiftArray[TaskListe.selectedRow]["task"] = 0  as AnyObject?
-       }
-       else
-       {
-       //zelle["task"] = 0 as AnyObject?
-       swiftArray[TaskListe.selectedRow]["task"] = 1  as AnyObject?
-       }
-       */
    }
    
    func countChannels() ->Int
@@ -2841,6 +2835,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          //print("task wahl: auswahl: \(auswahl) items: \(wahlzelle?.itemTitles)")
          return auswahl
+         // dfghjkly<xcvbnm,
       }
       
       return "***"

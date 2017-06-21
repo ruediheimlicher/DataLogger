@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3176"
-            endingLineNumber = "3176"
+            startingLineNumber = "3200"
+            endingLineNumber = "3200"
             landmarkName = "tableView(_:viewFor:row:)"
             landmarkType = "7">
             <Locations>
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3185"
-            endingLineNumber = "3185"
+            startingLineNumber = "3209"
+            endingLineNumber = "3209"
             landmarkName = "tableView(_:viewFor:row:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/diagramm.swift"
-            timestampString = "519730870.467981"
+            timestampString = "519732634.747952"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "813"
-            endingLineNumber = "813"
+            startingLineNumber = "814"
+            endingLineNumber = "814"
             landmarkName = "drawDiagrammRect(rect:inContext:borderColor:fillColor:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1755"
-            endingLineNumber = "1755"
+            startingLineNumber = "1780"
+            endingLineNumber = "1780"
             landmarkName = "USBfertigAktion(notification:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3268"
-            endingLineNumber = "3268"
+            startingLineNumber = "3292"
+            endingLineNumber = "3292"
             landmarkName = "tableView(_:viewFor:row:)"
             landmarkType = "7">
             <Locations>
@@ -314,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2868"
-            endingLineNumber = "2868"
+            startingLineNumber = "2893"
+            endingLineNumber = "2893"
             landmarkName = "tableView(_:shouldSelectRow:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1914"
-            endingLineNumber = "1914"
+            startingLineNumber = "1939"
+            endingLineNumber = "1939"
             landmarkName = "reportBereichPop(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -410,11 +410,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1902"
-            endingLineNumber = "1902"
+            startingLineNumber = "1927"
+            endingLineNumber = "1927"
             landmarkName = "reportBereichPop(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -426,11 +426,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1872"
-            endingLineNumber = "1872"
+            startingLineNumber = "1897"
+            endingLineNumber = "1897"
             landmarkName = "reportBereichPop(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -442,7 +442,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1930"
+            endingLineNumber = "1930"
+            landmarkName = "reportBereichPop(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DataLogger/ViewController.swift"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1905"
@@ -458,11 +474,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1880"
-            endingLineNumber = "1880"
+            startingLineNumber = "1904"
+            endingLineNumber = "1904"
             landmarkName = "reportBereichPop(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -474,27 +490,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1879"
-            endingLineNumber = "1879"
-            landmarkName = "reportBereichPop(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2140"
-            endingLineNumber = "2140"
+            startingLineNumber = "2165"
+            endingLineNumber = "2165"
             landmarkName = "countChannels()"
             landmarkType = "7">
          </BreakpointContent>
@@ -506,11 +506,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519726742.540003"
+            timestampString = "519737979.7007"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "640"
-            endingLineNumber = "640"
+            startingLineNumber = "654"
+            endingLineNumber = "654"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -522,11 +522,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519726742.540003"
+            timestampString = "519737979.7007"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "631"
-            endingLineNumber = "631"
+            startingLineNumber = "645"
+            endingLineNumber = "645"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -534,15 +534,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2076"
-            endingLineNumber = "2076"
+            startingLineNumber = "2101"
+            endingLineNumber = "2101"
             landmarkName = "reportWahlPop(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -554,11 +554,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2149"
-            endingLineNumber = "2149"
+            startingLineNumber = "2174"
+            endingLineNumber = "2174"
             landmarkName = "countChannels()"
             landmarkType = "7">
          </BreakpointContent>
@@ -570,11 +570,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1330"
-            endingLineNumber = "1330"
+            startingLineNumber = "1355"
+            endingLineNumber = "1355"
             landmarkName = "newLoggerDataAktion(notification:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -586,12 +586,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DataLogger/ViewController.swift"
-            timestampString = "519731316.932528"
+            timestampString = "519738245.439454"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3233"
-            endingLineNumber = "3233"
+            startingLineNumber = "3257"
+            endingLineNumber = "3257"
             landmarkName = "tableView(_:viewFor:row:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DataLogger/ViewController.swift"
+            timestampString = "519738245.439454"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2901"
+            endingLineNumber = "2901"
+            landmarkName = "tableView(tableView:setObjectValue:forTableColumn:row:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DataLogger/ViewController.swift"
+            timestampString = "519738245.439454"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "958"
+            endingLineNumber = "958"
+            landmarkName = "newLoggerDataAktion(notification:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
