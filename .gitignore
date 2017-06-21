@@ -15,5 +15,6 @@ Power_InterfaceTests/
 *.mp3
 *.appiconset
 *.aif*
-xcuserdata/*
+*.xcuserdata/*
 *.lproj/*
+*.storyboard/*

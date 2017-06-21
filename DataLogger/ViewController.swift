@@ -141,7 +141,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    var BereichArray = [[Int:String]]()
    
-   var testArray = [[String:AnyObject]]()
+//   var testArray = [[String:AnyObject]]()
    
    var teensy = usb_teensy()
    
@@ -504,7 +504,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    }
    
 
-   @IBAction func myPopUpButtonWasSelected(sender:AnyObject)
+   @IBAction func myPopUpButtonWasSelected(sender:NSButton)
    {
       
       print("myPopUpButtonWasSelected")
@@ -1006,7 +1006,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print ("")
             
             let devicebatteriespannung = Int32(teensy.read_byteArray[BATT  + DATA_START_BYTE])
-            print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
+            //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
 
             //var messungfloatarray:[[Float]] = Array(repeating:Array(repeating:0,count:10),count:6)
             var devicearray:[Float] = Array(repeating:0.0,count:16)
@@ -1099,14 +1099,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
             
             let devicebatteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
-            print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
+            //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
 
             let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0 + DATA_START_BYTE])
             let analog0hi:Int32 =  Int32(teensy.read_byteArray[ANALOG0+1 + DATA_START_BYTE])
             let analog0 = analog0lo | (analog0hi<<8)
             //print ("analog0lo: \(analog0lo) analog0hi: \(analog0hi)  analog0: \(analog0)");
             analog0float = Float(analog0) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-            print ("task 2 analog0float: \(analog0float)");
+            //print ("task 2 analog0float: \(analog0float)");
             
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 0] = analog0float
 
@@ -1166,6 +1166,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             break
          }
          var tl = 0
+         /*
          for taskline in messungfloatarray
          {
             print("\ntask: \(tl):\t" ,terminator:"")
@@ -1176,6 +1177,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             tl += 1
          }
          print("\n")
+ */
          //        let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0 + DATA_START_BYTE])
          //        let analog0hi:Int32 =  Int32(teensy.read_byteArray[ANALOG0+1 + DATA_START_BYTE])
          
@@ -2066,11 +2068,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    }
    
-   @IBAction func reportWahlPop(_ sender: AnyObject)
+   @IBAction func reportWahlPop(_ sender: NSPopUpButton)
    {
       print("reportWahlPop sender tag: \(sender.tag) ")
       let index = (sender.tag / 10) - 10
-      let zeile = (sender as! NSPopUpButton).indexOfSelectedItem
+      let zeile = sender.indexOfSelectedItem
       print("reportWahlPop sender zeile: \(zeile) ")
       
       taskArray[index]["taskwahl"] = String(zeile)
@@ -2092,12 +2094,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    }
    
    
-   @IBAction func reportChannelPop(_ sender: AnyObject)
+   @IBAction func reportChannelPop(_ sender: NSPopUpButton)
    {
       //print("reportChannelPop sender tag: \(sender.tag!) ")
       let index = (sender.tag / 10) - 10
-      let zeile = (sender as! NSPopUpButton).indexOfSelectedItem
-      let channeltag = ((sender as! NSPopUpButton).selectedItem?.tag)! - 400
+      let zeile = sender.indexOfSelectedItem
+      let channeltag = (sender.selectedItem?.tag)! - 400
       anzahlStoreChannels = channeltag
       print("reportChannelPop sender zeile: \(zeile) tag: \(channeltag)")
    }
@@ -2107,7 +2109,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       print("reportTaskCheck  sender tag: \(sender.tag) state: \(sender.state)")
       let index = (sender.tag / 10) - 20
       taskArray[index]["taskcheck"] = String(sender.state)
-      print("reportTaskCheck  taskArray: \n\(taskArray)")
+      //print("reportTaskCheck  taskArray: \n\(taskArray)")
       anzahlChannels = countChannels()
       Channels_Feld.intValue  = Int32(anzahlChannels)
       /*
@@ -2892,13 +2894,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       {
          return self.swiftArray.count
       }
-      else if (listeident == "testliste")
-      {
-         return self.testArray.count
-      }
       return 0
    }
    
+   /*
    func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject?
    {
       let listeident = tableView.identifier
@@ -2926,15 +2925,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             // return swiftArray.availableResolutions.indexOf(display.resolution)
          }
       }
+         
       else if (listeident == "testliste")
       {
          let zeile = testArray[row]
          print("testArray objectValueForTableColumn zeile: \(zeile["util"])")
          
       }
+ 
       return nil
    }
-   
+  */
    /*
     func tableView(tableView: NSTableView, setObjectValue object: AnyObject?, forTableColumn tableColumn: NSTableColumn?, row: Int)
     {

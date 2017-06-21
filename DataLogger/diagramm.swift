@@ -676,7 +676,7 @@ extension DataPlot
             path.move(to: CGPoint(x: posx, y: liniestart ))
             //Swift.print("mark: \(mark) posx: \(posx)")
             
-            if ((mark > 0)&&(Int(mark * Vorgaben.minorrasterhorizontal) % Vorgaben.majorrasterhorizontal == 0))
+            if ((mark > 0)&&(Int(mark * Vorgaben.minorrasterhorizontal / Vorgaben.Intervall) % Vorgaben.majorrasterhorizontal == 0))
             {
                
                //Swift.print(" markx: \(markx)  posx: \(posx)")
