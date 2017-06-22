@@ -178,7 +178,7 @@ class Abszisse: NSView
             
             
             
-            Swift.print("p: \(p) tempWertString: \(tempWertString)")
+            //Swift.print("p: \(p) tempWertString: \(tempWertString)")
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .right
             

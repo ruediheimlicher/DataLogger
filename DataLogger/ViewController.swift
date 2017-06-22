@@ -69,8 +69,7 @@ let SAVE_SD_STOP = 0x04 // Bit 2
 
 let SAVE_SD_BYTE          =     1 //
 
-let ABSCHNITT_BYTE   =     2 // Abschnitt auf SD
-
+let ABSCHNITT_BYTE         =     2
 let BLOCKOFFSETLO_BYTE    =     3 // Block auf SD fuer Sicherung
 let BLOCKOFFSETHI_BYTE    =     4
 
@@ -78,11 +77,13 @@ let BLOCK_ANZAHL_BYTE   = 9 // Anzahl zu lesende Blocks
 let DOWNLOADBLOCKNUMMER_BYTE   =   10 // aktuelle nummer des downloadblocks
 let PACKETCOUNT_BYTE = 8
 
-let TAKT_LO_BYTE = 14
-let TAKT_HI_BYTE = 15
 
 let DATACOUNT_LO    =   12 // Messung, laufende Nummer
 let DATACOUNT_HI    =   13
+
+let TAKT_LO_BYTE    =   14
+let TAKT_HI_BYTE    =   15
+
 
 let STARTMINUTELO_BYTE = 5
 let STARTMINUTEHI_BYTE = 6
@@ -560,7 +561,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["A0"] = String(0)
       tempDic["A1"] = String(1)
       
-      tempDic["A"] = String(3)
+      tempDic["A"] = String(8) // Kanaele Analog
       tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
       tempDic["temperatur"] = "16.5°"
       tempDic["batterie"] = "4.01V"
@@ -576,6 +577,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
       tempDic["A"] = String(3)
       tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
+      tempDic["analog"] = "6"
       tempDic["temperatur"] = "25.5°"
       tempDic["batterie"] = "5.01V"
       
@@ -648,13 +650,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       {
          taskArray.append(kanaldic)
       }
-//      taskArray[0]["taskcheck"] = 1 // Ein kanal ist immer aktiviert
+      taskArray[0]["taskcheck"] = "1" // Ein kanal ist immer aktiviert
       
-//      taskArray[1]["taskcheck"] = 1 //
+     // taskArray[1]["taskcheck"] = "1" //
       
       taskArray[2]["taskcheck"] = "1" //
+  //   taskArray[3]["taskcheck"] = "1" //
       
       taskArray[4]["taskcheck"] = "1" //
+    taskArray[5]["taskcheck"] = "1" //
       anzahlChannels = countChannels() // Anzahl aktivierte kanaele
       Channels_Feld.intValue  = Int32(anzahlChannels)
       
@@ -931,6 +935,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          blockcounter.intValue = 0
          
          
+         
+         
          // ****************************************************************************
          // MARK: MESSUNG_DATA
       // ****************************************************************************
@@ -941,7 +947,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO])
          let counterHI = Int32(teensy.read_byteArray[DATACOUNT_HI])
          
-         var devicenummer = Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE]))
+         var devicenummer = Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0x0F // Device, 1-4
+         let datacode = (Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0xF0) >> 4   // Code fuer Datenbereich
          
          var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
          
@@ -950,21 +957,31 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //print ("\ndevicenummer B: \(devicenummer)")
 
          
-         let wl_callback_status = Int32(teensy.read_byteArray[2])
+         let wl_callback_status = UInt8(teensy.read_byteArray[2])
          
          // status der  device checken
-         var deviceindex = 0
+         var deviceindex:Int = 0
          for devicelinie in swiftArray
          {
             var zeile = devicelinie
-            let device = devicelinie["device"]
-            print ("deviceindex: \(deviceindex) device: \(device)")
+            let device = devicelinie["device"]!
+            let analog = devicelinie["A"]! // Tastenstatus Kanaele            print ("deviceindex: \(deviceindex) analog: \(analog)")
+            let devicecode = UInt8(deviceindex)
+            if (wl_callback_status & (1<<devicecode) > 0)
+            {
+               print("device \(String(describing: device)) ist da")
+               swiftArray[deviceindex]["on"] = "1"
+            }
+            else
+            {
+               swiftArray[deviceindex]["on"] = "0"
+            }
             deviceindex += 1
-         
+            
          }
          
          print("wl_callback_status:\t\(wl_callback_status)")
-         wl_callback_status_Feld.intValue = wl_callback_status
+         wl_callback_status_Feld.intValue = Int32(wl_callback_status)
          
          let counter = (counterLO & 0x00FF) | ((counterHI & 0xFF00)>>8)
          //print("counter:\t\(counter)")
@@ -974,7 +991,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          let batterieLO = Int32(teensy.read_byteArray[5]) // batteriespannung teensy
          let batterieHI = Int32(teensy.read_byteArray[6])
-        let teensybatterie = batterieLO  | (batterieHI>>8)
+         let teensybatterie = batterieLO  | (batterieHI>>8)
          teensybatt.stringValue = NSString(format:"%.1f", teensybatterie) as String
          
          let blockposition = (UInt32(teensy.read_byteArray[BLOCKOFFSETLO_BYTE]) & 0x00FF) | ((UInt32(teensy.read_byteArray[BLOCKOFFSETHI_BYTE])  & 0xFF00)>>8)
@@ -983,9 +1000,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          //print("ADC0LO: \(teensy.read_byteArray[ADC0LO]) ADC0HI: \(teensy.read_byteArray[ADC0HI])");
          
+         
+         
          // Device nummer lesen
-         
-         
          
          
          var  analog0float:Float = 0
@@ -1029,6 +1046,18 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
            
             print ("")
             
+            if (wl_callback_status & (1<<UInt8(task)) > 0)
+            {
+               let device = swiftArray[task]
+               print("device \(String(describing: device)) ist da")
+//               swiftArray[task]["on"] = "1"
+               
+            }
+            else
+            {
+               
+            }
+
             let devicebatteriespannung = Int32(teensy.read_byteArray[BATT  + DATA_START_BYTE])
             //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
 
@@ -1120,7 +1149,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             
             print ("")
-
             
             let devicebatteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
             //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
@@ -1130,8 +1158,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let analog0 = analog0lo | (analog0hi<<8)
             //print ("analog0lo: \(analog0lo) analog0hi: \(analog0hi)  analog0: \(analog0)");
             analog0float = Float(analog0) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-            //print ("task 2 analog0float: \(analog0float)");
-            
+            print ("task 2 analog0float: \(analog0float)");
+            let analog0float_norm = analog0float / 0x1000 * 4.096
+            adcfloatarray[5]  = analog0float / 0x800 * 4.096 * 10 // Wert wird im device halbiert, max ist 8V
+
+            print ("task 2 analog0float_norm: \(analog0float_norm)");
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 0] = analog0float
 
             //adcfloatarray[4]  = analog0float/4
@@ -1149,15 +1180,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
             var adc1anzeige = Float(roundit(Double(analog1float), toNearest: 0.5))
             
-//            ADC1Feld.stringValue = NSString(format:"%.01f", analog0float) as String
+//          ADC1Feld.stringValue = NSString(format:"%.01f", analog0float) as String
             
             
             let analog2lo:Int32 =  Int32(teensy.read_byteArray[ANALOG2 + DATA_START_BYTE])
             let analog2hi:Int32 =  Int32(teensy.read_byteArray[ANALOG2+1 + DATA_START_BYTE])
             let analog2 = analog2lo | (analog2hi<<8)
             analog2float = Float(analog2)
-                        adcfloatarray[3]  = analog2float
-            adcfloatarray[4]  = analog2float / 4
+            //adcfloatarray[3]  = analog2float
+            //adcfloatarray[4]  = analog2float / 4
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 2] = analog2float
 
             print("task 2 analog2float: \(analog2float)");
@@ -1189,6 +1220,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print ("")
             break
          }
+         
+         TaskListe.reloadData()
          var tl = 0
          /*
          for taskline in messungfloatarray
@@ -1352,11 +1385,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // taskarray: array der 8 kanaele; aktivierte sind 1
          for storeindex in 0..<8
          {
-            //print("storeindex: \(storeindex) taskArray: \(taskArray[storeindex])")
+            print("storeindex: \(storeindex) taskArray: \(taskArray[storeindex])")
             let check = Int(taskArray[storeindex]["taskcheck"]!)!
             if (check > 0)    // der Kanal ist aktiviert
             {
-               //print("kanalindex: \(kanalindex)")
+               print("check ok: kanalindex: \(kanalindex)")
                // wert des Kanal fortlaufend in tempwerte einsetzen:
                tempwerte[kanalindex] = Float(adcfloatarray[storeindex])
                
@@ -1372,6 +1405,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                kanalindex = kanalindex + 1 // weiterschalten
             }
          }
+         print ("tempinputDataFeldstring \(tempinputDataFeldstring)\n")
          
          
          
@@ -2126,6 +2160,33 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       Channels_Feld.intValue  = Int32(anzahlChannels)
    }
    
+   
+    @IBAction func reportAnalogTasten(_ sender: NSSegmentedControl)
+    {
+      let anz = sender.segmentCount
+      let segment = sender.selectedSegment
+      let segtag = sender.tag
+      let zeile =  sender.tag % 10
+      print("vor: \(swiftArray[zeile]["A"]!)")
+      let wert = swiftArray[zeile]["A"]!
+      var selectcode = UInt8(wert)!
+      print("reportAnalogTasten: anz: \(anz)  segment: \(segment)  segtag: \(segtag) zeile: \(zeile)")
+      let status =  sender.isSelected(forSegment:segment)
+      
+      let seg = UInt8(segment)
+      selectcode ^= (1<<seg)
+ 
+      if (sender.isSelected(forSegment:segment))
+      {
+               }
+      else
+      {
+         //swiftArray[zeile]["A"] = "0"
+      }
+       swiftArray[zeile]["A"] = String(describing: selectcode)
+      print("nach: \(swiftArray[zeile]["A"]!)")
+   }
+   
    func countChannels() ->Int
    {
       var anzahl = 0
@@ -2835,7 +2896,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          //print("task wahl: auswahl: \(auswahl) items: \(wahlzelle?.itemTitles)")
          return auswahl
-         // dfghjkly<xcvbnm,
+         // dfghjkly<xcvbnm,asdfghjksdfghjasf<yxcvbnmxxxxxxsxdcfghj
       }
       
       return "***"
@@ -3096,7 +3157,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
    {
       
       let ident = tableColumn?.identifier
-      print ("viewFor row: \(row) ident: \(ident)")
+      //print ("viewFor row: \(row) ident: \(ident)")
       if tableColumn?.identifier == "imageIcon"
       {
          let result = tableView.make(withIdentifier: "imageIcon", owner: self) as! NSTableCellView
@@ -3201,7 +3262,6 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
             else
             {
                knopf.setSelected(false, forSegment: pos)
-
             }
          }
         
@@ -3216,7 +3276,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
           else if  tableColumn?.identifier == "bereich" // PopUpButton
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
-         print("bereich")
+         //print("bereich")
          let sub = result.subviews
          
          let element = result.subviews[0]
@@ -3246,14 +3306,14 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
       else if  tableColumn?.identifier == "scale" // PopUpButton
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
-         print("scale")
+         //print("scale")
          return result
       }
 
       else if  tableColumn?.identifier == "temperaturr" // TextField
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
-         print("temperatur")
+         //print("temperatur")
          
          
          return result
@@ -3262,7 +3322,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
       else if  tableColumn?.identifier == "batteriee" // TextField
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
-         print("batterie")
+         //print("batterie")
          return result
       }
 
