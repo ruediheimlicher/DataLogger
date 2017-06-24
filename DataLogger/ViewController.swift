@@ -1382,12 +1382,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // datenzeile fuer Diagramm
          
          var AnzeigeFaktor:Float = 1.0 // Faktor für y-wert, abhängig von Abszisse-Skala
+         var SortenFaktor:Float = 1.0 // Anzeige in Diagramm durch Sortenfaktor teilen
          var NullpunktOffset:Int = 0
+         
          var tempwerte = [Float] ( repeating: 0.0, count: 9 )     // eine Zeile mit messung-zeit und 8 floats
          tempwerte[0] = Float(tempzeit) // Abszisse
 
-         var werteArray = [[Float:Float]]( repeating: [0.0:0.0], count: 9 )
-
+         var werteArray = [[Float]](repeating: [0.0,0.0,1.0,1.0], count: 9 ) // Data mit wert sortenfaktor anzeigefaktor
+         
+         werteArray[0] = [Float(tempzeit),1.0,1.0] // Abszisse
          var kanalindex = 1    // index 0 ist abszisse (zeit)                                   // Index des zu speichernden Kanals
          
          
@@ -1400,19 +1403,22 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                let analog = UInt8(devicedata["A"]!)! // code fuer tasten des SegmentedControl
                let messungfloatzeilenarray:[Float] = messungfloatarray[device]
                print("device: \(String(describing: devicedata["device"]!)) analogtasten: \(String(describing: analog)) messungfloatzeilenarray: \(messungfloatzeilenarray)")
+               
                let devicecode = UInt8(device)
                
-               
+               let deviceID = Int(devicearray.index(of:devicedata["device"]!)!)
+
                
                for kanal in 0..<4
                {
+                  SortenFaktor = 1
+                  AnzeigeFaktor = 1.0
                   let kanalint = UInt8(kanal)
                   if (analog & (1<<kanalint) > 0)
                   {
                      let wert = messungfloatzeilenarray[Int(kanal) + DIAGRAMMDATA_OFFSET]
 
                      var wert_norm:Float = wert
-                     let deviceID = Int(devicearray.index(of:devicedata["device"]!)!)
                      
                      switch deviceID
                      {
@@ -1446,22 +1452,26 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                         {
                            wert_norm = wert / 0x1000 * 4.096 * 20
                            AnzeigeFaktor = 2.0 // Anzeige strecken
+                           SortenFaktor = 10 // Anzeige in Diagramm durch Sortenfaktor teilen: Volt kommt mit Faktor 10
                         }
                         if (kanal == 1 || kanal == 3)// 16V, geteilt durch 4
                         {
                            wert_norm = wert / 0x1000 * 4.096 * 40
-                           
+                           SortenFaktor = 10 
                         }
                         print("wert_norm: \(wert_norm)")
                      default: break
                      }// switch device
                      
                      tempwerte[kanalindex] = wert_norm
+                     
+                     werteArray[kanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
+                     
                      // Zeile im Textfeld als string aufbauen
                      tempinputDataFeldstring = tempinputDataFeldstring + "\t" + (NSString(format:"%.01f", wert_norm) as String)
                      kanalindex += 1
-                  }
-               }
+                  } // if (analog & (1<<kanalint) > 0)
+               } // for kanal
                
             } // if on
          }// for device
@@ -1516,7 +1526,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // Daten einsetzen in graph
 //         self.datagraph.setWerteArray(werteArray:tempwerte)
 
-         self.datagraph.setWerteArray(werteArray:tempwerte, anzeigefaktor:AnzeigeFaktor, nullpunktoffset: NullpunktOffset)
+         
+         
+
+         //self.datagraph.setWerteArray(werteArray:tempwerte, anzeigefaktor:AnzeigeFaktor, nullpunktoffset: NullpunktOffset)
+         
+         self.datagraph.setWerteArray(werteArray:werteArray,  nullpunktoffset: NullpunktOffset)
          
          let PlatzRechts:Float = 20.0
          
