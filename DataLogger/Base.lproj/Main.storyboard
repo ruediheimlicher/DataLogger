@@ -1016,7 +1016,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tW6-nt-D3W" customClass="Abszisse" customModule="DataLogger" customModuleProvider="target">
-                                                    <rect key="frame" x="453" y="149" width="32" height="297"/>
+                                                    <rect key="frame" x="453" y="148" width="32" height="297"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </customView>
                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SpV-8h-7G9">
@@ -1299,7 +1299,7 @@
                                                     </tableHeaderView>
                                                 </scrollView>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rr3-Tz-HlD" customClass="Abszisse" customModule="DataLogger" customModuleProvider="target">
-                                                    <rect key="frame" x="487" y="149" width="28" height="297"/>
+                                                    <rect key="frame" x="487" y="148" width="28" height="297"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </customView>
                                                 <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cxB-zs-j4u">

@@ -561,8 +561,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["A0"] = String(0)
       tempDic["A1"] = String(1)
       
-      tempDic["A"] = String(8) // Kanaele Analog
+      tempDic["A"] = String(7) // Kanaele Analog
+      
       tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
+      tempDic["bereichwahl"] = "0"
       tempDic["temperatur"] = "16.5°"
       tempDic["batterie"] = "4.01V"
       
@@ -575,8 +577,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["A0"] = String(0)
       tempDic["A1"] = String(1)
 
-      tempDic["A"] = String(3)
+      tempDic["A"] = String(7)
       tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
+      tempDic["bereichwahl"] = "0"
       tempDic["analog"] = "6"
       tempDic["temperatur"] = "25.5°"
       tempDic["batterie"] = "5.01V"
@@ -590,7 +593,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["A1"] = "1"
       tempDic["A"] = "6"
       tempDic["bereich"] = "0 - 8V\t0 - 16V"
-
+      tempDic["bereichwahl"] = "0"
       tempDic["temperatur"] = "20.1°"
       tempDic["batterie"] = "4.20V"
       swiftArray.append(tempDic )
@@ -652,7 +655,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       }
       taskArray[0]["taskcheck"] = "1" // Ein kanal ist immer aktiviert
       
-     // taskArray[1]["taskcheck"] = "1" //
+      taskArray[1]["taskcheck"] = "1" //
       
       taskArray[2]["taskcheck"] = "1" //
   //   taskArray[3]["taskcheck"] = "1" //
@@ -969,7 +972,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let devicecode = UInt8(deviceindex)
             if (wl_callback_status & (1<<devicecode) > 0)
             {
-               print("device \(String(describing: device)) ist da")
+               //print("device \(String(describing: device)) ist da")
                swiftArray[deviceindex]["on"] = "1"
             }
             else
@@ -1049,7 +1052,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             if (wl_callback_status & (1<<UInt8(task)) > 0)
             {
                let device = swiftArray[task]
-               print("device \(String(describing: device)) ist da")
+               //print("device \(String(describing: device)) ist da")
 //               swiftArray[task]["on"] = "1"
                
             }
@@ -1373,19 +1376,102 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          let data0zeile:[Float] = [Float(tempzeit),Float(analog0float),Float(analog1float),Float(analog2float)]
          
-         
+  // MARK: Datenzeile
          
          //   print ("datazeile \(data0zeile)\n")
          // datenzeile fuer Diagramm
          
+         var AnzeigeFaktor:Float = 1.0 // Faktor für y-wert, abhängig von Abszisse-Skala
+         var NullpunktOffset:Int = 0
          var tempwerte = [Float] ( repeating: 0.0, count: 9 )     // eine Zeile mit messung-zeit und 8 floats
          tempwerte[0] = Float(tempzeit) // Abszisse
+
+         var werteArray = [[Float:Float]]( repeating: [0.0:0.0], count: 9 )
+
          var kanalindex = 1    // index 0 ist abszisse (zeit)                                   // Index des zu speichernden Kanals
          
+         
+         let anzdevice = swiftArray.count      // Anzahl
+         for device in 0..<anzdevice
+         {
+            let devicedata = swiftArray[device]
+            if (devicedata["on"] == "1") // device vorhanden
+            {
+               let analog = UInt8(devicedata["A"]!)! // code fuer tasten des SegmentedControl
+               let messungfloatzeilenarray:[Float] = messungfloatarray[device]
+               print("device: \(String(describing: devicedata["device"]!)) analogtasten: \(String(describing: analog)) messungfloatzeilenarray: \(messungfloatzeilenarray)")
+               let devicecode = UInt8(device)
+               
+               
+               
+               for kanal in 0..<4
+               {
+                  let kanalint = UInt8(kanal)
+                  if (analog & (1<<kanalint) > 0)
+                  {
+                     let wert = messungfloatzeilenarray[Int(kanal) + DIAGRAMMDATA_OFFSET]
+
+                     var wert_norm:Float = wert
+                     let deviceID = Int(devicearray.index(of:devicedata["device"]!)!)
+                     
+                     switch deviceID
+                     {
+                     case 0: break // teensy
+                        
+                     case 1:
+                        let abszisseMajorTeileY = dataAbszisse_Temperatur.AbszisseVorgaben.MajorTeileY
+                        let abszisseNullpunkt = dataAbszisse_Temperatur.AbszisseVorgaben.Nullpunkt
+
+                        switch kanal
+                        {
+                        case 0: // LM35
+                           wert_norm = wert / 10.0 // LM-Wert kommt mit Faktor 10
+                           
+                        case 1: // KTY
+                           wert_norm = wert // KTY_FAKTOR
+                        case 2: // PT100
+                           wert_norm = wert
+                           
+                        default: break
+                        }// swicht kanal
+                        break // THERMOMETER
+                        
+                     case 2:  // ADC12BIT
+                        let abszisseMajorTeileY = dataAbszisse_Volt.AbszisseVorgaben.MajorTeileY
+                        
+                        let abszisseNullpunkt = dataAbszisse_Volt.AbszisseVorgaben.Nullpunkt
+
+
+                        if (kanal == 0 || kanal == 2) // 8V, geteilt durch 2
+                        {
+                           wert_norm = wert / 0x1000 * 4.096 * 20
+                           AnzeigeFaktor = 2.0 // Anzeige strecken
+                        }
+                        if (kanal == 1 || kanal == 3)// 16V, geteilt durch 4
+                        {
+                           wert_norm = wert / 0x1000 * 4.096 * 40
+                           
+                        }
+                        print("wert_norm: \(wert_norm)")
+                     default: break
+                     }// switch device
+                     
+                     tempwerte[kanalindex] = wert_norm
+                     // Zeile im Textfeld als string aufbauen
+                     tempinputDataFeldstring = tempinputDataFeldstring + "\t" + (NSString(format:"%.01f", wert_norm) as String)
+                     kanalindex += 1
+                  }
+               }
+               
+            } // if on
+         }// for device
+ 
+       
+         /*
          // taskarray: array der 8 kanaele; aktivierte sind 1
          for storeindex in 0..<8
          {
-            print("storeindex: \(storeindex) taskArray: \(taskArray[storeindex])")
+            //print("storeindex: \(storeindex) taskArray: \(taskArray[storeindex])")[67]
             let check = Int(taskArray[storeindex]["taskcheck"]!)!
             if (check > 0)    // der Kanal ist aktiviert
             {
@@ -1405,6 +1491,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                kanalindex = kanalindex + 1 // weiterschalten
             }
          }
+ */
          print ("tempinputDataFeldstring \(tempinputDataFeldstring)\n")
          
          
@@ -1427,7 +1514,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //print("DiagrammDataArray: \(DiagrammDataArray)")
          
          // Daten einsetzen in graph
-         self.datagraph.setWerteArray(werteArray:tempwerte)
+//         self.datagraph.setWerteArray(werteArray:tempwerte)
+
+         self.datagraph.setWerteArray(werteArray:tempwerte, anzeigefaktor:AnzeigeFaktor, nullpunktoffset: NullpunktOffset)
          
          let PlatzRechts:Float = 20.0
          
@@ -1814,8 +1903,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       {
          print("hauptfenster")
          
-         
-         
          //teensycode &= ~(1<<7)
          //teensy.write_byteArray[15] = teensycode
          
@@ -1922,13 +2009,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       selectedDevice /= 10
       print("tag: \(sender.tag)")
       print("reportBereichPop: selectedDevice: \(selectedDevice)")
+      
+      let bereichselektion = sender.indexOfSelectedItem
       switch (selectedDevice)
       {
-      case 0: // Tempertur
+      case 1: // Tempertur
          
          
          dataAbszisse_Temperatur.setStellen(stellen:0)
-         switch sender.indexOfSelectedItem
+         switch bereichselektion
          {
          case 0: // 0-80
             let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4 ,"Nullpunkt":0]
@@ -1941,23 +2030,26 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             dataAbszisse_Temperatur.setVorgaben(vorgaben: Vorgaben_Temperatur)
          default: break
          }
+         swiftArray[selectedDevice]["bereichwahl"] = String(bereichselektion)
          dataAbszisse_Temperatur.update()
          //dataAbszisse_Temperatur.setMaxY(maxY: 160)
          
-      case 1: // ADC
+      case 2: // ADC
          dataAbszisse_Volt.setStellen(stellen:1)
 
-         switch sender.indexOfSelectedItem
+         switch bereichselektion
          {
          case 0: // 0-8
             let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4]
             dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
-         case 1:
+            
+         case 1: // 0-16
             let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 2]
             dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
          default:
             break
          }// switch index
+         swiftArray[selectedDevice]["bereichwahl"] = String(bereichselektion)
          dataAbszisse_Volt.update()
       default:
             break;
@@ -2215,11 +2307,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBAction func report_start_messung(_ sender: NSButton)
    {
-      print("start_messung sender: \(sender.state)") // gibt neuen State an
+      //print("start_messung sender: \(sender.state)") // gibt neuen State an
       var lineindex = 0
       for line in taskArray
       {
-         print("kanal: \(lineindex)\t\(String(describing: line["taskcheck"]!))")
+         //print("kanal: \(lineindex)\t\(String(describing: line["taskcheck"]!))")
          lineindex += 1
       }
       
@@ -2337,7 +2429,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             self.datagraph.initGraphArray()
             self.datagraph.setStartsekunde(startsekunde:self.tagsekunde())
-            self.datagraph.setMaxY(maxY: 150)
+            self.datagraph.setMaxY(maxY: 160)
             self.datagraph.setDisplayRect()
             
             self.usb_read_cont = (self.cont_read_check.state == 1) // cont_Read wird bei aktiviertem check eingeschaltet
@@ -3181,6 +3273,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          let element = result.subviews[0]
 //         print("check element on: \(element)")
          let knopf = element as! NSButton
+         knopf.toolTip = "Knopf"
          knopf.tag = 1000 + row
          let status = Int(knopf.state)
          let sollstatus = (swiftArray[row][(tableColumn?.identifier)!]! )
@@ -3240,12 +3333,14 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
          let wert = (swiftArray[row][(tableColumn?.identifier)!])
-         print("A value: \(wert)")
+    //     print("A value: \(wert)")
          let sub = result.subviews
          
          let element = result.subviews[0]
          //         print("check element A0: \(element)")
          let knopf = element as! NSSegmentedControl
+         
+         knopf.toolTip = "Kanal waehlen"
          knopf.tag = 1500 + row
          let anz = Int(knopf.segmentCount)
          // https://stackoverflow.com/questions/38369544/how-to-convert-anyobject-type-to-int-in-swift
@@ -3298,7 +3393,9 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
             knopf.item(at: zeilenindex)?.tag = knopftag * 10 + 10 * row + zeilenindex
             zeilenindex += 1
          }
-
+         let bereichwahl = Int(swiftArray[row]["bereichwahl"]!)
+         
+         knopf.selectItem(at: bereichwahl!)
          return result
 
       }
