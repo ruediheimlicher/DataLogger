@@ -581,6 +581,8 @@ class DataPlot: NSView
       {
          if (KanalArray[i] < 8)
          {
+            // werteArray[kanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
+            
             neuerPunkt.y = feld.origin.y
             //            Swift.print("i: \(i) werteArray 0: \(werteArray[0]) neuerPunkt.x nach: \(neuerPunkt.x)")
             
@@ -600,9 +602,7 @@ class DataPlot: NSView
             
             let rawWert = graphZahl //* SortenFaktor
             
-            
-            
-            tempKanalDatenDic[String(i)] = InputZahl / SortenFaktor// input mit key i
+            tempKanalDatenDic[String(i)] = InputZahl / SortenFaktor// input mit key i. Gibt numerische Anzeige im Diagramm
             let DiagrammWert = rawWert * AnzeigeFaktor
             
             let AnzeigeWert = DiagrammWert / SortenFaktor // Wert, der im Diagramm am Ende Angeschrieben wird
@@ -1097,7 +1097,7 @@ extension DataPlot
       {
          return
       }
-      Swift.print("lastdata: \(lastdata)")
+      //Swift.print("lastdata: \(lastdata)")
       let lastdatax = lastdata?["x"]
       let lastdatay = lastdata?["0"]
       let lastzeit = lastdata?["time"] // Zeit ab Start Messung

@@ -91,7 +91,7 @@ open class usb_teensy: NSObject
          let str1 = String(cString: get_manu())
          
          let str2 = String(cString: manu!)
-         print ("manu l: \(l) \(manu!) str2: \(str2)")
+         //print ("manu l: \(l) \(manu!) str2: \(str2)")
          if (strlen(manu) > 1)
          {
             let manustr:String = String(cString: manu!)
@@ -170,16 +170,21 @@ open class usb_teensy: NSObject
       
       let result = rawhid_recv(0, &read_byteArray, Int32(BUFFER_SIZE), 50);
       
-      print("*report_start_read_USB result: \(result)")
+      print("\n*report_start_read_USB result: \(result) cont: \(cont)")
       print("usb.swift start_read_byteArray start: *\n\(read_byteArray)*")
       
+      let nc = NotificationCenter.default
+      nc.post(name:Notification.Name(rawValue:"newdata"),
+              object: nil,
+              userInfo: ["message":"neue Daten", "data":read_byteArray])
+
       // var somethingToPass = "It worked in teensy_send_USB"
-      let xcont = true;
+      let xcont = cont;
       
       if (xcont == true)
       {
          var timer : Timer? = nil
-         timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(usb_teensy.cont_read_USB(_:)), userInfo: timerDic, repeats: true)
+         timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(usb_teensy.cont_read_USB(_:)), userInfo: timerDic, repeats: true)
       }
       return Int(result) //
    }
@@ -194,8 +199,9 @@ open class usb_teensy: NSObject
          
          var result = rawhid_recv(0, &read_byteArray, Int32(BUFFER_SIZE), 50)
          
+ 
          // println("*cont_read_USB result: \(result)")
-         // println("tempbyteArray in Timer: *\(read_byteArray)*")
+ //         print("tempbyteArray in Timer: *\(read_byteArray)*")
          // var timerdic: [String: Int]
          
          /*
@@ -392,7 +398,7 @@ open class usb_teensy: NSObject
       //print("dauer rawhid_send: \(diff)")
 
       
-      print("senderfolg: \(senderfolg)", terminator: "\n")
+      //print("senderfolg: \(senderfolg)", terminator: "\n")
      
       if hid_usbstatus == 0
       {

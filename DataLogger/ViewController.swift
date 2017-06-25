@@ -103,6 +103,9 @@ let MESSUNG_DATA    =  0xB1 // Setzen der Settings fuer die Messungen
 
 let USB_STOP    = 0xAA
 
+
+let CHECK_WL = 0xBA
+
 let TEENSYVREF:Float = 249.0 // Korrektur von Vref des Teensy: nomineller Wert ist 256 2.56V
 
 class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDelegate,NSMenuDelegate
@@ -238,7 +241,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBOutlet  var extstrom: NSTextField!
    @IBOutlet  var Teensy_Status: NSButton!
-   
+ 
+   @IBOutlet  var WL_Status: NSButton!
+
    
    @IBOutlet  var extspannungStepper: NSStepper!
    
@@ -689,17 +694,71 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       // NSBeep()
       let code:Int = Int(teensy.read_byteArray[0])
       let codestring = int2hex(UInt8(code))
-      //print("newLoggerDataAktion code: \(code) \(codestring)")
+      print("newLoggerDataAktion code: \(code) \(codestring)")
+      
+      /*
+      print("read_byteArray code: ")
+      for  index in 0..<16
+      {
+         print("\(teensy.read_byteArray[index])", terminator: "\t")
+      }
+      print("\n")
+      
+      print("last_read_byteArray code: ")
+      for  index in 0..<16
+      {
+         print("\(teensy.last_read_byteArray[index])", terminator: "\t")
+      }
+      print("\n")
+
+      print("newLoggerDataAktion data: ")
       for  index in 16..<38
       {
-         
-         //print("\(teensy.last_read_byteArray[index])", terminator: "\t")
+         print("\(teensy.last_read_byteArray[index])", terminator: "\t")
       }
-      //print("\n")
-      
+      print("\n")
+      */
       
       switch (code)
       {
+         //MARK: CHECK_WL
+      case CHECK_WL:
+         print("CHECK_WL:")
+         print("WL-status: \(teensy.read_byteArray[2])")
+         // status der  device checken
+         
+         let wl_callback_status = (teensy.read_byteArray[2])
+         var deviceindex:Int = 0
+         for devicelinie in swiftArray
+         {
+            var zeile = devicelinie
+            let device = devicelinie["device"]!
+            let analog = devicelinie["A"]! // Tastenstatus Kanaele            print ("deviceindex: \(deviceindex) analog: \(analog)")
+            let devicecode = UInt8(deviceindex)
+            if (wl_callback_status & (1<<devicecode) > 0)
+            {
+               //print("device \(String(describing: device)) ist da")
+               swiftArray[deviceindex]["on"] = "1"
+            }
+            else
+            {
+               swiftArray[deviceindex]["on"] = "0"
+            }
+            deviceindex += 1
+            
+         }
+         
+         print("wl_callback_status:\t\(wl_callback_status)")
+         wl_callback_status_Feld.intValue = Int32(wl_callback_status)
+
+         teensy.read_OK = false
+         usb_read_cont = false
+         cont_read_check.state = 0;
+         
+         TaskListe.reloadData()
+
+         break
+         
          // ****************************************************************************
          //MARK: LOGGER_SETTINGS
       // ****************************************************************************
@@ -936,7 +995,20 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("teensy.read_byteArray")
          print("\n\(teensy.read_byteArray)")
          blockcounter.intValue = 0
-         
+ 
+         // ****************************************************************************
+         // MARK: MESSUNG_STOP
+         // ****************************************************************************
+
+      case MESSUNG_STOP:
+         print("code ist MESSUNG_STOP")
+         print("teensy.read_byteArray")
+         print("\n\(teensy.read_byteArray)")
+         //blockcounter.intValue = 0
+          //teensy.read_OK = false
+        // usb_read_cont = false
+        // cont_read_check.state = 0;
+
          
          
          
@@ -944,7 +1016,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // MARK: MESSUNG_DATA
       // ****************************************************************************
       case MESSUNG_DATA: // wird gesetzt, wenn vom Teensy im Timertakt Daten gesendet werden
-         //print("code ist MESSUNG_DATA")
+         print("code ist MESSUNG_DATA")
          //        print("teensy.read_byteArray")
          //        print("\(teensy.last_read_byteArray)")
          let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO])
@@ -970,6 +1042,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let device = devicelinie["device"]!
             let analog = devicelinie["A"]! // Tastenstatus Kanaele            print ("deviceindex: \(deviceindex) analog: \(analog)")
             let devicecode = UInt8(deviceindex)
+            
             if (wl_callback_status & (1<<devicecode) > 0)
             {
                //print("device \(String(describing: device)) ist da")
@@ -983,7 +1056,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
          }
          
-         print("wl_callback_status:\t\(wl_callback_status)")
+         //print("wl_callback_status:\t\(wl_callback_status)")
          wl_callback_status_Feld.intValue = Int32(wl_callback_status)
          
          let counter = (counterLO & 0x00FF) | ((counterHI & 0xFF00)>>8)
@@ -1072,7 +1145,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let analog0 = analog0lo | (analog0hi<<8)
             //print ("analog0lo: \(analog0lo) analog0hi: \(analog0hi)  analog0: \(analog0)");
             analog0float = Float(analog0) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-            print ("task 1 analog0float: \(analog0float)");
+            //print ("task 1 analog0float: \(analog0float)");
             
             devicearray[0] = analog0float
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 0] = analog0float
@@ -1084,7 +1157,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let analog1hi:Int32 =  Int32(teensy.read_byteArray[ANALOG1+1 + DATA_START_BYTE])
             let analog1 = analog1lo | (analog1hi<<8)
             analog1float = Float(analog1) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-            print ("task 1 analog1float: \(analog1float)");
+            //print ("task 1 analog1float: \(analog1float)");
             
             analog1float = floorf(fabs(analog1float)*2.f) / 2.f
             //print ("analog1float floor: \(analog1float)");
@@ -1109,7 +1182,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             devicearray[2] = analog2float
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 2] = analog2float
 
-            print("task 1 analog2float: \(analog2float) )");
+            //print("task 1 analog2float: \(analog2float) )");
  
             
             let analog3lo:Int32 =  Int32(teensy.read_byteArray[ANALOG3 + DATA_START_BYTE])
@@ -1121,7 +1194,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             devicearray[3] = analog3float
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 3] = analog3float
 
-            print("task 1 analog3float: \(analog3float) )");
+            //print("task 1 analog3float: \(analog3float) )");
 
             /*
              analog2float = analog2float * 2.56 / 1023
@@ -1134,7 +1207,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let batteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
             batteriefloat = Float(batteriespannung)
             
-            
+            print(")task 1 analog0float: \(analog0float) analog1float: \(analog1float) analog2float: \(analog2float) analog3float: \(analog3float)")
             
             
             break
@@ -1165,7 +1238,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let analog0float_norm = analog0float / 0x1000 * 4.096
             adcfloatarray[5]  = analog0float / 0x800 * 4.096 * 10 // Wert wird im device halbiert, max ist 8V
 
-            print ("task 2 analog0float_norm: \(analog0float_norm)");
+            //print ("task 2 analog0float_norm: \(analog0float_norm)");
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 0] = analog0float
 
             //adcfloatarray[4]  = analog0float/4
@@ -1174,7 +1247,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let analog1hi:Int32 =  Int32(teensy.read_byteArray[ANALOG1+1 + DATA_START_BYTE])
             let analog1 = analog1lo | (analog1hi<<8)
             analog1float = Float(analog1) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-            print ("task 2 analog1float: \(analog1float)");
+            //print ("task 2 analog1float: \(analog1float)");
             
             analog1float = floorf(fabs(analog1float)*2.f) / 2.f
             //print ("analog1float floor: \(analog1float)");
@@ -1194,7 +1267,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //adcfloatarray[4]  = analog2float / 4
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 2] = analog2float
 
-            print("task 2 analog2float: \(analog2float)");
+            //print("task 2 analog2float: \(analog2float)");
             
             let analog3lo:Int32 =  Int32(teensy.read_byteArray[ANALOG3 + DATA_START_BYTE])
             let analog3hi:Int32 =  Int32(teensy.read_byteArray[ANALOG3+1 + DATA_START_BYTE])
@@ -1203,8 +1276,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //            adcfloatarray[3]  = analog3float
             messungfloatarray[task][DIAGRAMMDATA_OFFSET + 3] = analog3float
 
-            print("task 2 analog3float: \(analog3float) )");
+            //print("task 2 analog3float: \(analog3float) )");
             
+            print(")task 2 analog0float: \(analog0float) analog1float: \(analog1float) analog2float: \(analog2float) analog3float: \(analog3float)")
+
             /*
              analog2float = analog2float * 2.56 / 1023
              print("analog2float B: \(analog2float) )");
@@ -1402,7 +1477,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             {
                let analog = UInt8(devicedata["A"]!)! // code fuer tasten des SegmentedControl
                let messungfloatzeilenarray:[Float] = messungfloatarray[device]
-               print("device: \(String(describing: devicedata["device"]!)) analogtasten: \(String(describing: analog)) messungfloatzeilenarray: \(messungfloatzeilenarray)")
+               //print("device: \(String(describing: devicedata["device"]!)) analogtasten: \(String(describing: analog)) messungfloatzeilenarray: \(messungfloatzeilenarray)")
                
                let devicecode = UInt8(device)
                
@@ -1974,7 +2049,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          stop_read_USB_Knopf?.isEnabled = true;
          start_write_USB_Knopf?.isEnabled = true;
          stop_write_USB_Knopf?.isEnabled = true;
+         WL_Status?.isEnabled = true;
+         Start_Messung?.isEnabled = true;
+         Set_Settings?.isEnabled = true;
+         cont_read_check?.isEnabled = true;
+         cont_write_check?.isEnabled = true;
          NSSound(named: "Glass")?.play()
+         
+         check_WL()
          
       }
       else
@@ -1988,6 +2070,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          stop_read_USB_Knopf?.isEnabled = false;
          start_write_USB_Knopf?.isEnabled = false;
          stop_write_USB_Knopf?.isEnabled = false;
+         cont_read_check?.isEnabled = false;
+         cont_write_check?.isEnabled = false;
+         
+         Start_Messung?.isEnabled = false;
+         Set_Settings?.isEnabled = false;
+
+         WL_Status?.isEnabled = false;
       }
       print("antwort: \(teensy.status())")
       
@@ -2274,10 +2363,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let segment = sender.selectedSegment
       let segtag = sender.tag
       let zeile =  sender.tag % 10
-      print("vor: \(swiftArray[zeile]["A"]!)")
+      //print("vor: \(swiftArray[zeile]["A"]!)")
       let wert = swiftArray[zeile]["A"]!
       var selectcode = UInt8(wert)!
-      print("reportAnalogTasten: anz: \(anz)  segment: \(segment)  segtag: \(segtag) zeile: \(zeile)")
+      //print("reportAnalogTasten: anz: \(anz)  segment: \(segment)  segtag: \(segtag) zeile: \(zeile)")
       let status =  sender.isSelected(forSegment:segment)
       
       let seg = UInt8(segment)
@@ -2291,7 +2380,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //swiftArray[zeile]["A"] = "0"
       }
        swiftArray[zeile]["A"] = String(describing: selectcode)
-      print("nach: \(swiftArray[zeile]["A"]!)")
+      //print("nach: \(swiftArray[zeile]["A"]!)")
    }
    
    func countChannels() ->Int
@@ -2320,6 +2409,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
    }
    
+   
+   
    @IBAction func report_start_messung(_ sender: NSButton)
    {
       //print("start_messung sender: \(sender.state)") // gibt neuen State an
@@ -2335,6 +2426,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("kein Kanal")
          return
       }
+      
+      // Messung starten
       if (sender.state == 1)
       {
          //print("start_messung start ")
@@ -2353,6 +2446,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print("start_messung error ")
          }
          
+//         cont_read_check.state = 0;
+         WL_Status.isEnabled = false
+
          //http://stackoverflow.com/questions/38031137/how-to-program-a-delay-in-swift-3
          //        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { (timer) in
          // do stuff 1 seconds later
@@ -2435,7 +2531,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          teensy.write_byteArray[STARTMINUTELO_BYTE] = UInt8(startminute & 0x00FF)
          teensy.write_byteArray[STARTMINUTEHI_BYTE] = UInt8((startminute & 0xFF00)>>8)
          //        print("\nreport start messungT: teensy.last_read_byteArray: \(teensy.last_read_byteArray)")
-         print("\nreport start messungT: teensy.write_byteArray: \(teensy.write_byteArray)")
+         print("\nreport start messung: teensy.write_byteArray: \(teensy.write_byteArray)")
          
          delayWithSeconds(1)
          {
@@ -2471,10 +2567,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
          teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
          
-         teensy.read_OK = false
-         usb_read_cont = false
-         cont_read_check.state = 0;
+ //        teensy.read_OK = false
+  //       usb_read_cont = false
+ //        cont_read_check.state = 0;
          
+         WL_Status.isEnabled = true
+
          //print("DiagrammDataArray: \(DiagrammDataArray)")
          
          var messungstring:String = MessungDataString(data:DiagrammDataArray)
@@ -2527,9 +2625,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
       teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
       
-      teensy.read_OK = false
-      usb_read_cont = false
-      cont_read_check.state = 0;
+//      teensy.read_OK = false
+//      usb_read_cont = false
+//      cont_read_check.state = 0;
       
       //print("DiagrammDataArray: \(DiagrammDataArray)")
       
@@ -2628,6 +2726,69 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
    }
    
+   func check_WL()
+   {
+//      teensy.close_hid()
+      /*
+      let erfolg = UInt8(teensy.USBOpen())
+
+      if (erfolg == 0)
+         {
+            print("check_WL: kein teensy da");
+            return
+         }
+ */
+  //    print("\nreportcheck_WL: teensy.write_byteArray vor: \(teensy.write_byteArray)")
+      MessungStartzeit = tagsekunde()
+      teensy.write_byteArray[TAKT_LO_BYTE] = 1
+      teensy.write_byteArray[TAKT_HI_BYTE] = 0
+      // code setzen
+      teensy.write_byteArray[0] = UInt8(CHECK_WL)
+      
+      // Sichern auf SD
+      teensy.write_byteArray[1] = 0
+      
+      // Abschnitt auf SD
+      teensy.write_byteArray[ABSCHNITT_BYTE] = 0
+
+      //Angabe zum  Startblock aktualisieren
+      startblock = 1
+      teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
+      teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
+      cont_read_check.state = 1
+      self.usb_read_cont = true
+      print("\nreportcheck_WL: teensy.write_byteArray nach: \(teensy.write_byteArray)")
+      
+      delayWithSeconds(1)
+      {
+         self.Counter.intValue = 0
+         
+         
+         self.usb_read_cont = true // cont_Read ausschalten
+         
+         self.teensy.write_byteArray[0] = UInt8(CHECK_WL)
+         //Do something
+         
+         let readerr = self.teensy.start_read_USB(true)
+         if (readerr == 0)
+         {
+            print("Fehler in check_WL")
+         }
+      }
+
+
+      var senderfolg = teensy.start_write_USB()
+      if (senderfolg > 0)
+      {
+         NSSound(named: "Glass")?.play()
+      }
+
+   }
+   
+   @IBAction func report_check_WL(_ sender: AnyObject)
+   {
+      check_WL()
+   }
    
    @IBAction func report_start_write_USB(_ sender: AnyObject)
    {

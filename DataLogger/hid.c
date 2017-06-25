@@ -86,23 +86,26 @@ int rawhid_recv(int num, void *buf, int len, int timeout)
       
       hid->first_buffer = b->next;
       free(b);
+      
+      // fprintf(stderr,"rawhid_recv  len: %d \n",len);
       /*
-       fprintf(stderr,"rawhid_recv  len: %d \n",len);
        for (int i=0;i<len;i++)
        {
        fprintf(stderr,"i: %d\t %us\n",i,(char)buf);
        }
        fprintf(stderr,"\n");
-       */
+      */
       return len;
    }
    memset(&context, 0, sizeof(context));
    context.info = &timeout_occurred;
    timer = CFRunLoopTimerCreate(NULL, CFAbsoluteTimeGetCurrent() +(double)timeout / 1000.0, 0, 0, 0, timeout_callback, &context);
    CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopDefaultMode);
-   while (1) {
+   while (1)
+   {
       CFRunLoopRun();
-      if ((b = hid->first_buffer) != NULL) {
+      if ((b = hid->first_buffer) != NULL)
+      {
          if (len > b->len) len = b->len;
          memcpy(buf, b->buf, len);
          hid->first_buffer = b->next;
@@ -110,7 +113,8 @@ int rawhid_recv(int num, void *buf, int len, int timeout)
          ret = len;
          break;
       }
-      if (!hid->open) {
+      if (!hid->open)
+      {
          //printf("rawhid_recv, device not open\n");
          ret = -1;
          break;
@@ -119,7 +123,7 @@ int rawhid_recv(int num, void *buf, int len, int timeout)
    }
    CFRunLoopTimerInvalidate(timer);
    CFRelease(timer);
-   //fprintf(stderr,"rawhid_recv ret: %d\n",ret);
+  // fprintf(stderr,"rawhid_recv ret: %d\n",ret);
    return ret;
    
 }
@@ -302,7 +306,7 @@ int rawhid_send(int num, void *buf, int len, int timeout)
 		}
 	}
 #endif
-   fprintf(stderr,"rawhid_send function result: %d\n",result);
+   //fprintf(stderr,"rawhid_send function result: %d\n",result);
    free ((void*)reportData);
 	return result;
 }
@@ -559,6 +563,7 @@ static void detach_callback(void *context, IOReturn r, void *hid_mgr, IOHIDDevic
 			return;
 		}
 	}
+   
 }
 
 
