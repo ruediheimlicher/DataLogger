@@ -1,6 +1,6 @@
 Images.*
 *Tests*
-*.xcodeproj/*
+*xcodeproj/*
 *.eep
 *.elf
 *.hex
@@ -16,5 +16,7 @@ Power_InterfaceTests/
 *.appiconset
 *.aif*
 *.xcuserdata/*
+xcuserdata/
+xcdebugger/
 *.lproj/*
 *.storyboard/*
