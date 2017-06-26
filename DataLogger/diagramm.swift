@@ -22,6 +22,11 @@ class DataPlot: NSView
    var FaktorArray:[CGFloat]! = [CGFloat](repeating:0.5,count:8)
    var DatafarbeArray:[NSColor]! = [NSColor](repeating:NSColor.gray,count:8) // Strichfarbe im Diagramm
    
+   var linienfarbeArray:[[NSColor]] = [[NSColor]](repeating: [NSColor](repeating:NSColor.gray,count:8) ,count: 8 )
+   
+   
+   
+   
    var diagrammfeld:CGRect = CGRect.zero
    
    ///var Abszisse_A:Abszisse
@@ -83,12 +88,11 @@ class DataPlot: NSView
    
    required init(coder: NSCoder)
    {
-      //Swift.print("DataPlot coder")
+      Swift.print("DataPlot coder")
   //    Abszisse_A = Abszisse.init(coder:coder)
       
       super.init(coder: coder)!
       diagrammfeld = DiagrammRect(rect:  self.bounds)
-      
    }
    
    open func diagrammDataDicFromLoggerData(loggerdata:String) ->[[String:CGFloat]]
@@ -220,6 +224,17 @@ class DataPlot: NSView
       DatafarbeArray[index] = farbe
    }
    
+   open func setDatafarbeArray(farbearray:[NSColor])
+   {
+      DatafarbeArray = farbearray
+   }
+
+   open func setlinienfarbeArray(farbearray:[NSColor], index:Int)
+   {
+      
+      linienfarbeArray[index] = farbearray
+   }
+
    open func setVorgaben(vorgaben:[String:Float])
    {
       /*
@@ -542,8 +557,9 @@ class DataPlot: NSView
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
       //     Swift.print("")
-      var AnzeigeFaktor:CGFloat = 1.1 //= maxSortenwert/maxAnzeigewert;
+      var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
+      var deviceID:CGFloat  = 0
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
       let FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
@@ -588,10 +604,14 @@ class DataPlot: NSView
             
             let InputZahl = CGFloat(werteArray[i+1][0])	// Input vom teensy, 0-255
             
-            SortenFaktor = CGFloat(werteArray[i+1][2])
-            tempKanalDatenDic["sf\(i)"] = SortenFaktor // Sortenfaktro mitgeben
+            deviceID = CGFloat(werteArray[i+1][1]) // ID des device
+            tempKanalDatenDic["dev\(i)"] = deviceID // deviceID mitgeben
+ 
             
-            AnzeigeFaktor = CGFloat(werteArray[i+1][1])
+            SortenFaktor = CGFloat(werteArray[i+1][2])
+            tempKanalDatenDic["sf\(i)"] = SortenFaktor // Sortenfaktor mitgeben
+            
+            AnzeigeFaktor = CGFloat(werteArray[i+1][3])
             tempKanalDatenDic["af\(i)"] = AnzeigeFaktor // Anzeigefaktor mitgeben
             
             tempKanalDatenDic["rawy\(i)"] = InputZahl // Input vom teensy, 0-255, rawy1, rawy2, ...
@@ -1080,7 +1100,7 @@ extension DataPlot
       var abszisserect = diagrammfeld
       abszisserect.size.width = abszissebreite
       abszisserect.origin.x -= abszissebreite
-      let abszissefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
+      //let abszissefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
       
       /*
        let abszissepath = abszisse(rect:abszisserect)
@@ -1134,6 +1154,7 @@ extension DataPlot
          }
          let tempanzeigefaktor = lastdata?["af\(i)"]
          let tempsortenfaktor = Int((lastdata?["sf\(i)"])!)
+         let tempdeviceID = Int((lastdata?["dev\(i)"])!)
          var stellenzahl = 1
          if (tempsortenfaktor >= 10) // division durch 10, mehr Stellen angeben
          {
@@ -1148,7 +1169,8 @@ extension DataPlot
          
          context?.setLineWidth(1.5)
          //    context?.setFillColor(fillColor)
-         context?.setStrokeColor(DatafarbeArray[i].cgColor)
+         //context?.setStrokeColor(DatafarbeArray[i].cgColor)
+         context?.setStrokeColor(linienfarbeArray[tempdeviceID][i].cgColor)
          
          // 4
          context?.addPath(GraphArray[i])

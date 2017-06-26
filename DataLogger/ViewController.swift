@@ -625,14 +625,58 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       bereichDic ["ADC 12Bit"] = ["0 - 8V","0-16V"]
 
       //MARK: -   datagraph
-      var data = datadiagramm.init(nibName: "Datadiagramm", bundle: nil)
+      
+      var farbe = NSColor.init(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
+      var linienfarbeArray_blue = [NSColor](repeating:farbe, count:8)
+      linienfarbeArray_blue[0] = NSColor( red: (0.69), green: (0.69), blue: (0.94), alpha: (1.00))
+      linienfarbeArray_blue[1] = NSColor( red: (0.65), green: (0.65), blue: (0.94), alpha: (1.00))
+      linienfarbeArray_blue[2] = NSColor( red: (0.61), green: (0.61), blue: (0.94), alpha: (1.00))
+      linienfarbeArray_blue[3] = NSColor( red: (0.57), green: (0.57), blue: (0.94), alpha: (1.00))
+      linienfarbeArray_blue[4] = NSColor( red: (0.53), green: (0.53), blue: (0.94), alpha: (1.00))
+      linienfarbeArray_blue[5] = NSColor( red: (0.49), green: (0.49), blue: (0.94), alpha: (1.00))
+      linienfarbeArray_blue[6] = NSColor( red: (0.45), green: (0.45), blue: (0.94), alpha: (1.00))
+      linienfarbeArray_blue[7] = NSColor( red: (0.41), green: (0.41), blue: (0.94), alpha: (1.00))
+      
+      
+      
+      var linienfarbeArray_red = [NSColor](repeating:farbe, count:8)
+      linienfarbeArray_red[0] = NSColor( red: (0.98), green: (0.41), blue: (0.41), alpha: (1.00))
+      linienfarbeArray_red[1] = NSColor( red: (0.98), green: (0.45), blue: (0.45), alpha: (1.00))
+      linienfarbeArray_red[2] = NSColor( red: (0.98), green: (0.49), blue: (0.49), alpha: (1.00))
+      linienfarbeArray_red[3] = NSColor( red: (0.98), green: (0.53), blue: (0.53), alpha: (1.00))
+      linienfarbeArray_red[4] = NSColor( red: (0.98), green: (0.57), blue: (0.57), alpha: (1.00))
+      linienfarbeArray_red[5] = NSColor( red: (0.98), green: (0.61), blue: (0.61), alpha: (1.00))
+      linienfarbeArray_red[6] = NSColor( red: (0.98), green: (0.65), blue: (0.65), alpha: (1.00))
+      linienfarbeArray_red[7] = NSColor( red: (0.98), green: (0.69), blue: (0.69), alpha: (1.00))
+      
+      var linienfarbeArray_green = [NSColor](repeating:farbe, count:8)
+      
+      linienfarbeArray_green[0] = NSColor( red: (0.69), green: (0.98), blue: (0.69), alpha: (1.00))
+      linienfarbeArray_green[1] = NSColor( red: (0.64), green: (0.98), blue: (0.64), alpha: (1.00))
+      linienfarbeArray_green[2] = NSColor( red: (0.60), green: (0.98), blue: (0.60), alpha: (1.00))
+      linienfarbeArray_green[3] = NSColor( red: (0.56), green: (0.98), blue: (0.56), alpha: (1.00))
+      linienfarbeArray_green[4] = NSColor( red: (0.52), green: (0.98), blue: (0.52), alpha: (1.00))
+      linienfarbeArray_green[5] = NSColor( red: (0.48), green: (0.98), blue: (0.48), alpha: (1.00))
+      linienfarbeArray_green[6] = NSColor( red: (0.43), green: (0.98), blue: (0.43), alpha: (1.00))
+      linienfarbeArray_green[7] = NSColor( red: (0.39), green: (0.98), blue: (0.39), alpha: (1.00))      
+      
       self.datagraph.wantsLayer = true
       
       //self.datagraph.layer?.backgroundColor = CGColor.black
-      self.datagraph.setDatafarbe(farbe:NSColor.red, index:0)
+     // self.datagraph.setDatafarbe(farbe:NSColor.red, index:0)
+      
+      self.datagraph.linienfarbeArray[0] = linienfarbeArray_green
+      self.datagraph.linienfarbeArray[1] = linienfarbeArray_red
+      self.datagraph.linienfarbeArray[2] = linienfarbeArray_blue
+      
+      self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_blue, index:0)
+      self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_red, index:1)
+      self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_green, index:2)
       
       let abszissebgfarbe:NSColor  = NSColor(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
-      
+      let linienfarbe_Temperatur = NSColor(red: (0.0), green: (0.0), blue: (1.0), alpha: 1.0)
+      self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Temperatur.cgColor)
+
       self.dataAbszisse_Temperatur.backgroundColor_n(color:abszissebgfarbe)
       self.dataAbszisse_Temperatur.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
       
@@ -643,8 +687,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       self.dataAbszisse_Volt.backgroundColor_n(color:abszisse_Voltbgfarbe)
       self.dataAbszisse_Volt.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
       self.dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
-      let linienfarbe = NSColor(red: (1.0), green: (0.0), blue: (0.0), alpha: 1.0)
-      self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe.cgColor)
+      let linienfarbe_Volt = NSColor(red: (1.0), green: (0.0), blue: (0.0), alpha: 1.0)
+      self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Volt.cgColor)
       
       dataAbszisse_Volt.setStellen(stellen:1)
       //var tasklist:[String] = ["Temperatur","ADC12Bit","Aux"]
