@@ -13,13 +13,15 @@ import AppKit
 import Cocoa
 
 
-class Abszisse: NSView
-{
+class Abszisse: NSView{
+   //override var tag:Int
+   
+   
    var abszissefeld:CGRect = CGRect.zero
    var randfarbe =  CGColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
    var feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
    var linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
-
+   
    /*
    fileprivate struct   Geom
    {
@@ -110,7 +112,16 @@ class Abszisse: NSView
       //Swift.print("abszisse init coder")
       super.init(coder: aDecoder)!
       abszissefeld = AbszisseRect(rect:self.bounds)
+      //Swift.print("abzisse frame: \(self.frame)")
+      
       //abszissefeld = PlotRect()
+   }
+   
+   override init(frame frameRect: NSRect) 
+   {
+      super.init(frame:frameRect);
+      abszissefeld = AbszisseRect(rect:self.bounds)
+      
    }
    
    func PlotRect() -> CGRect

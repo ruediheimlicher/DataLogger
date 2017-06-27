@@ -169,6 +169,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    var bereicharray:[[String]] = [[]]
    
     var devicearray:[String] = ["Teensy","Temperatur","ADC12BIT"]
+   
+   var tempAbszisse:Abszisse!
+   
+   var abszisseArray:[Abszisse] = [Abszisse]() // Abszissen
+   var abszisseFeldArray:[NSRect] = [NSRect](repeating:NSZeroRect, count:8) // Felder der Abszissen
+   
    // Diagramm
    @IBOutlet  var datagraph: DataPlot!
    @IBOutlet  var dataScroller: NSScrollView!
@@ -179,6 +185,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
   
    @IBOutlet  var dataAbszisse_Volt: Abszisse!
   
+   @IBOutlet  var taskTab: NSTabView!
    
    @IBOutlet  var save_SD_check: NSButton!
    @IBOutlet  var Start_Messung: NSButton!
@@ -209,7 +216,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBOutlet  var inputDataFeld: NSTextView!
    
-   @IBOutlet  var TaskTab: NSTabView!
    
    @IBOutlet  var write_sd_startblock: NSTextField!
    @IBOutlet  var write_sd_anzahl: NSTextField!
@@ -624,10 +630,40 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       bereichDic ["temperatur"] = ["0-100","0-150","-30-150"]
       bereichDic ["ADC 12Bit"] = ["0 - 8V","0-16V"]
 
+      // MARK: - taskTab
+      
+      let datatabsubviews = taskTab.tabViewItem(at:0).view?.subviews 
+      var abszisseframe:NSRect = NSZeroRect
+      for tempview in datatabsubviews!
+      {
+         print("ident: \(tempview.identifier)")
+         if tempview.identifier == "abszisse"
+         {
+               abszisseframe = tempview.frame
+         }
+      }
+      print("abszisseframe: \(abszisseframe)")
+       abszisseframe.origin.x -= 80
+      let abszisseoffsetx = abszisseframe.size.width // verschiebung der einzelnen abszissen
+
+      for nr in 0..<4
+      {
+         var dataabszisse:Abszisse = Abszisse.init(frame: abszisseframe)
+         dataabszisse.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
+         dataabszisse.identifier = "dataabszisse\(nr)"
+         taskTab.tabViewItem(at:0).view?.addSubview(dataabszisse)
+      
+         abszisseArray.append(dataabszisse)
+         abszisseframe.origin.x -= abszisseoffsetx
+      }
+      
+      
       //MARK: -   datagraph
+      
       
       var farbe = NSColor.init(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
       var linienfarbeArray_blue = [NSColor](repeating:farbe, count:8)
+
       linienfarbeArray_blue[0] = NSColor( red: (0.69), green: (0.69), blue: (0.94), alpha: (1.00))
       linienfarbeArray_blue[1] = NSColor( red: (0.65), green: (0.65), blue: (0.94), alpha: (1.00))
       linienfarbeArray_blue[2] = NSColor( red: (0.61), green: (0.61), blue: (0.94), alpha: (1.00))
@@ -637,9 +673,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       linienfarbeArray_blue[6] = NSColor( red: (0.45), green: (0.45), blue: (0.94), alpha: (1.00))
       linienfarbeArray_blue[7] = NSColor( red: (0.41), green: (0.41), blue: (0.94), alpha: (1.00))
       
-      
-      
       var linienfarbeArray_red = [NSColor](repeating:farbe, count:8)
+
       linienfarbeArray_red[0] = NSColor( red: (0.98), green: (0.41), blue: (0.41), alpha: (1.00))
       linienfarbeArray_red[1] = NSColor( red: (0.98), green: (0.45), blue: (0.45), alpha: (1.00))
       linienfarbeArray_red[2] = NSColor( red: (0.98), green: (0.49), blue: (0.49), alpha: (1.00))
@@ -665,21 +700,28 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       //self.datagraph.layer?.backgroundColor = CGColor.black
      // self.datagraph.setDatafarbe(farbe:NSColor.red, index:0)
       
-      self.datagraph.linienfarbeArray[0] = linienfarbeArray_green
+      self.datagraph.linienfarbeArray[0] = linienfarbeArray_blue
       self.datagraph.linienfarbeArray[1] = linienfarbeArray_red
       self.datagraph.linienfarbeArray[2] = linienfarbeArray_blue
       
-      self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_blue, index:0)
-      self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_red, index:1)
-      self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_green, index:2)
+//    self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_blue, index:0)
+//    self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_red, index:1)
+//    self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_green, index:2)
       
       let abszissebgfarbe:NSColor  = NSColor(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
       let linienfarbe_Temperatur = NSColor(red: (0.0), green: (0.0), blue: (1.0), alpha: 1.0)
-      self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Temperatur.cgColor)
-
+      //self.dataAbszisse_Volt.tag = 1
+      
+      abszisseArray.append(dataAbszisse_Volt)
+      abszisseFeldArray.append(dataAbszisse_Volt.frame)
+      dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbeArray_red[0].cgColor)
+      
       self.dataAbszisse_Temperatur.backgroundColor_n(color:abszissebgfarbe)
       self.dataAbszisse_Temperatur.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
-      
+      abszisseArray.append(dataAbszisse_Temperatur)
+      abszisseFeldArray.append(dataAbszisse_Temperatur.frame)
+      dataAbszisse_Temperatur.setLinienfarbe(farbe: linienfarbeArray_blue[0].cgColor)
+    
       let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 2, "MaxY": 4.0,"MinY": 0.0,"MaxX": 1000]
  
       let abszisse_Voltbgfarbe:NSColor  = NSColor(red: (1.0), green: (0.0), blue: (0.0), alpha: 0.0)
@@ -688,8 +730,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       self.dataAbszisse_Volt.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
       self.dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
       let linienfarbe_Volt = NSColor(red: (1.0), green: (0.0), blue: (0.0), alpha: 1.0)
-      self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Volt.cgColor)
-      
+  //    self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Volt.cgColor)
+//      self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Temperatur.cgColor)
+
       dataAbszisse_Volt.setStellen(stellen:1)
       //var tasklist:[String] = ["Temperatur","ADC12Bit","Aux"]
       
@@ -2088,7 +2131,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          USB_OK.stringValue = "OK";
          manufactorer.stringValue = "Manufactorer: " + teensy.manufactorer()!
          
-         Teensy_Status.isEnabled = true;
+         Teensy_Status?.isEnabled = true;
          start_read_USB_Knopf?.isEnabled = true;
          stop_read_USB_Knopf?.isEnabled = true;
          start_write_USB_Knopf?.isEnabled = true;
