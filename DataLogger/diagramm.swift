@@ -94,6 +94,7 @@ class DataPlot: NSView
       
       super.init(coder: coder)!
       diagrammfeld = DiagrammRect(rect:  self.bounds)
+      
    }
    
    open func diagrammDataDicFromLoggerData(loggerdata:String) ->[[String:CGFloat]]
@@ -568,8 +569,8 @@ class DataPlot: NSView
       var deviceID:CGFloat  = 0
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
-      let FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
-      
+      var FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
+      FaktorX = 1.0
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
