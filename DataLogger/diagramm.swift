@@ -15,6 +15,7 @@ import Cocoa
 
 class DataPlot: NSView
 {
+   var Device:String = "home"
    var DatenDicArray:[[String:CGFloat]]! = [[:]]
    var DatenArray:[[CGFloat]]! = [[]]
    var GraphArray = [CGMutablePath]( repeating: CGMutablePath(), count: 8 )
@@ -227,6 +228,11 @@ class DataPlot: NSView
    open func setDatafarbeArray(farbearray:[NSColor])
    {
       DatafarbeArray = farbearray
+   }
+
+   open func setDevice(devicestring:String)
+   {
+      Device = devicestring
    }
 
    open func setlinienfarbeArray(farbearray:[NSColor], index:Int)

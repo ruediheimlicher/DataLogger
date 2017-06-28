@@ -141,8 +141,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    var anzahlChannels = 0
    var anzahlStoreChannels = 1
-   var swiftArray: [[String:String]] = [[:]]//()
+   var swiftArray: [[String:String]] = [[:]]
+
+ //  var swiftArray = [[String:String]](repeating:["on":"1"], count:8)
    
+ //  var swifftArray = [[String:String]](repeating:[[String:String]](repeating:["x":"x"], count:20),count:8)
+   var bb = Array(repeating:[[String:String]](repeating:["on":"1"], count:8),count:6)
+   var aa = [[String:String]](repeating:["on":"1"], count:20)
    var BereichArray = [[Int:String]]()
    
 //   var testArray = [[String:AnyObject]]()
@@ -178,12 +183,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    // Diagramm
    @IBOutlet  var datagraph: DataPlot!
    @IBOutlet  var dataScroller: NSScrollView!
-   @IBOutlet  var dataAbszisse_Temperatur: Abszisse!
+//   @IBOutlet  var dataAbszisse_Temperatur: Abszisse!
    
    @IBOutlet  var datagraph_Volt: DataPlot!
    @IBOutlet  var dataScroller_Volt: NSScrollView!
   
-   @IBOutlet  var dataAbszisse_Volt: Abszisse!
+//   @IBOutlet  var dataAbszisse_Volt: Abszisse!
   
    @IBOutlet  var taskTab: NSTabView!
    
@@ -560,102 +565,100 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       IntervallPop.addItems(withObjectValues:["1","2","5","10","20","30","60","120","180","300"])
       IntervallPop.selectItem(at:0)
       
-      
+      // var swiftArray: [[String:String]] = [[:]]
       swiftArray.removeAll()
-      
+      // var devicedic = [[String:String]](repeating:["":""], count:20)
+      var dic = [[String:String]](repeating:["on":"1"], count:20)
+     
+      dic[0]["on"] = String(1)
+      dic[0]["device"] = devicearray[0]
+      dic[0]["deviceID"] = "0"
+      dic[0]["description"] = "Home"
+
       var tempDic = [String:String]()
- 
-      tempDic["on"] = String(1)
       
-      tempDic["device"] = devicearray[0]
+      tempDic["on"] = String(1)
+//      tempDic["device"] = "abcd"//devicearray[0]
+ //     tempDic["deviceID"] = "0"
       tempDic["description"] = "Home"
       tempDic["A0"] = String(0)
       tempDic["A1"] = String(1)
-      
-      tempDic["A"] = String(7) // Kanaele Analog
-      
+      tempDic["A"] = String(0) // Kanaele Analog
       tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
+      tempDic["analog"] = "0"
       tempDic["bereichwahl"] = "0"
       tempDic["temperatur"] = "16.5°"
       tempDic["batterie"] = "4.01V"
+      tempDic["stellen"] = "1"
+      tempDic["majorteiley"] = "8"
+      tempDic["minorteiley"] = "2"
+      print("tempDic: \(tempDic)")
+      
+       
       
       swiftArray.append(tempDic )
+      
+      aa[0]["on"] = String(1)
+      aa[0]["device"] = devicearray[0]
+      aa[0]["deviceID"] = "0"
+      aa[0]["description"] = "Home"
+
+      //aa[0] = tempDic 
+
+
 
       tempDic["on"] = String(1)
-
-      tempDic["device"] = devicearray[1]
-      tempDic["description"] = "Temperatur messen"
+//      tempDic["device"] = devicearray[1]
+ //     tempDic["deviceID"] = "1"
+      tempDic["description"] = "Temperaturen messen"
       tempDic["A0"] = String(0)
       tempDic["A1"] = String(1)
-
-      tempDic["A"] = String(7)
-      tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
-      tempDic["bereichwahl"] = "0"
+      tempDic["A"] = String(15)
+      tempDic["bereich"] = "0-80°\t0-160°\t-20-140°"
+      tempDic["bereichwahl"] = "1"
       tempDic["analog"] = "6"
       tempDic["temperatur"] = "25.5°"
       tempDic["batterie"] = "5.01V"
-      
-      swiftArray.append(tempDic )
+      tempDic["stellen"] = "0"
+      tempDic["majorteiley"] = "16"
+      tempDic["minorteiley"] = "2"
 
+      swiftArray.append(tempDic )
+      //swiftArray[1] = tempDic 
+      
       tempDic["on"] = String(1 )
-      tempDic["device"] = devicearray[2]
-      tempDic["description"] = "Spannung messen"
+//      tempDic["device"] = devicearray[2]
+//      tempDic["deviceID"] = "2"
+      tempDic["description"] = "Spannung messen mit 12 Bit"
       tempDic["A0"] = "1"
       tempDic["A1"] = "1"
-      tempDic["A"] = "6"
-      tempDic["bereich"] = "0 - 8V\t0 - 16V"
-      tempDic["bereichwahl"] = "0"
+      tempDic["A"] = "15"
+      tempDic["bereich"] = "0-8V\t0-16V"
+      tempDic["bereichwahl"] = "1"
       tempDic["temperatur"] = "20.1°"
       tempDic["batterie"] = "4.20V"
+      tempDic["stellen"] = "1"
+      tempDic["majorteiley"] = "8"
+      tempDic["minorteiley"] = "2"
+      
       swiftArray.append(tempDic )
       
-      /*
-      var bereichDic = [Int:String]()
-      bereichDic[0] = "AAA"
-      bereichDic[1] = "BBB"
-      bereichDic[2] = "CCC"
-      BereichArray.append(bereichDic)
-      
-      bereichDic[0] = "0 - 100°"
-      bereichDic[1] = "0 - 150°"
-      bereichDic[2] = "-30 - 150°"
-      BereichArray.append(bereichDic)
+      var lineindex=0
+      for var deviceline in swiftArray
+      {
+         if (lineindex < devicearray.count)
+         {
+            swiftArray[lineindex]["device"] = devicearray[lineindex]
+            swiftArray[lineindex]["deviceID"] = String(lineindex)
 
-      bereichDic[0] = "0 - 8V"
-      bereichDic[1] = "0 - 16V"
-      BereichArray.append(bereichDic)
-  */
+         }
+         lineindex += 1
+      }
       var bereichDic = [String:[String]]()
       var zeile:[String] =  ["0-100","0-150","-30-150"]
       bereichDic ["temperatur"] = ["0-100","0-150","-30-150"]
       bereichDic ["ADC 12Bit"] = ["0 - 8V","0-16V"]
 
-      // MARK: - taskTab
-      
-      let datatabsubviews = taskTab.tabViewItem(at:0).view?.subviews 
-      var abszisseframe:NSRect = NSZeroRect
-      for tempview in datatabsubviews!
-      {
-         print("ident: \(tempview.identifier)")
-         if tempview.identifier == "abszisse"
-         {
-               abszisseframe = tempview.frame
-         }
-      }
-      print("abszisseframe: \(abszisseframe)")
-       abszisseframe.origin.x -= 80
-      let abszisseoffsetx = abszisseframe.size.width // verschiebung der einzelnen abszissen
-
-      for nr in 0..<4
-      {
-         var dataabszisse:Abszisse = Abszisse.init(frame: abszisseframe)
-         dataabszisse.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
-         dataabszisse.identifier = "dataabszisse\(nr)"
-         taskTab.tabViewItem(at:0).view?.addSubview(dataabszisse)
-      
-         abszisseArray.append(dataabszisse)
-         abszisseframe.origin.x -= abszisseoffsetx
-      }
       
       
       //MARK: -   datagraph
@@ -664,81 +667,93 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       var farbe = NSColor.init(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
       var linienfarbeArray_blue = [NSColor](repeating:farbe, count:8)
 
-      linienfarbeArray_blue[0] = NSColor( red: (0.69), green: (0.69), blue: (0.94), alpha: (1.00))
-      linienfarbeArray_blue[1] = NSColor( red: (0.65), green: (0.65), blue: (0.94), alpha: (1.00))
-      linienfarbeArray_blue[2] = NSColor( red: (0.61), green: (0.61), blue: (0.94), alpha: (1.00))
-      linienfarbeArray_blue[3] = NSColor( red: (0.57), green: (0.57), blue: (0.94), alpha: (1.00))
-      linienfarbeArray_blue[4] = NSColor( red: (0.53), green: (0.53), blue: (0.94), alpha: (1.00))
-      linienfarbeArray_blue[5] = NSColor( red: (0.49), green: (0.49), blue: (0.94), alpha: (1.00))
-      linienfarbeArray_blue[6] = NSColor( red: (0.45), green: (0.45), blue: (0.94), alpha: (1.00))
-      linienfarbeArray_blue[7] = NSColor( red: (0.41), green: (0.41), blue: (0.94), alpha: (1.00))
-      
+      linienfarbeArray_blue[0] = NSColor( red: (0.69), green: (0.69), blue: (0.98), alpha: (1.00))
+      linienfarbeArray_blue[1] = NSColor( red: (0.59), green: (0.59), blue: (0.98), alpha: (1.00))
+      linienfarbeArray_blue[2] = NSColor( red: (0.50), green: (0.49), blue: (0.98), alpha: (1.00))
+      linienfarbeArray_blue[3] = NSColor( red: (0.41), green: (0.39), blue: (0.98), alpha: (1.00))
+      linienfarbeArray_blue[4] = NSColor( red: (0.32), green: (0.29), blue: (0.98), alpha: (1.00))
+      linienfarbeArray_blue[5] = NSColor( red: (0.23), green: (0.20), blue: (0.98), alpha: (1.00))
+      linienfarbeArray_blue[6] = NSColor( red: (0.14), green: (0.10), blue: (0.98), alpha: (1.00))
+      linienfarbeArray_blue[7] = NSColor( red: (0.05), green: (0.00), blue: (0.98), alpha: (1.00))      
       var linienfarbeArray_red = [NSColor](repeating:farbe, count:8)
 
-      linienfarbeArray_red[0] = NSColor( red: (0.98), green: (0.41), blue: (0.41), alpha: (1.00))
-      linienfarbeArray_red[1] = NSColor( red: (0.98), green: (0.45), blue: (0.45), alpha: (1.00))
-      linienfarbeArray_red[2] = NSColor( red: (0.98), green: (0.49), blue: (0.49), alpha: (1.00))
-      linienfarbeArray_red[3] = NSColor( red: (0.98), green: (0.53), blue: (0.53), alpha: (1.00))
-      linienfarbeArray_red[4] = NSColor( red: (0.98), green: (0.57), blue: (0.57), alpha: (1.00))
-      linienfarbeArray_red[5] = NSColor( red: (0.98), green: (0.61), blue: (0.61), alpha: (1.00))
-      linienfarbeArray_red[6] = NSColor( red: (0.98), green: (0.65), blue: (0.65), alpha: (1.00))
-      linienfarbeArray_red[7] = NSColor( red: (0.98), green: (0.69), blue: (0.69), alpha: (1.00))
-      
+      linienfarbeArray_red[0] = NSColor( red: (0.98), green: (0.57), blue: (0.59), alpha: (1.00))
+      linienfarbeArray_red[1] = NSColor( red: (0.98), green: (0.49), blue: (0.52), alpha: (1.00))
+      linienfarbeArray_red[2] = NSColor( red: (0.98), green: (0.41), blue: (0.45), alpha: (1.00))
+      linienfarbeArray_red[3] = NSColor( red: (0.98), green: (0.32), blue: (0.38), alpha: (1.00))
+      linienfarbeArray_red[4] = NSColor( red: (0.98), green: (0.24), blue: (0.31), alpha: (1.00))
+      linienfarbeArray_red[5] = NSColor( red: (0.98), green: (0.16), blue: (0.24), alpha: (1.00))
+      linienfarbeArray_red[6] = NSColor( red: (0.98), green: (0.08), blue: (0.16), alpha: (1.00))
+      linienfarbeArray_red[7] = NSColor( red: (0.98), green: (0.00), blue: (0.09), alpha: (1.00))
       var linienfarbeArray_green = [NSColor](repeating:farbe, count:8)
       
       linienfarbeArray_green[0] = NSColor( red: (0.69), green: (0.98), blue: (0.69), alpha: (1.00))
-      linienfarbeArray_green[1] = NSColor( red: (0.64), green: (0.98), blue: (0.64), alpha: (1.00))
-      linienfarbeArray_green[2] = NSColor( red: (0.60), green: (0.98), blue: (0.60), alpha: (1.00))
-      linienfarbeArray_green[3] = NSColor( red: (0.56), green: (0.98), blue: (0.56), alpha: (1.00))
-      linienfarbeArray_green[4] = NSColor( red: (0.52), green: (0.98), blue: (0.52), alpha: (1.00))
-      linienfarbeArray_green[5] = NSColor( red: (0.48), green: (0.98), blue: (0.48), alpha: (1.00))
-      linienfarbeArray_green[6] = NSColor( red: (0.43), green: (0.98), blue: (0.43), alpha: (1.00))
-      linienfarbeArray_green[7] = NSColor( red: (0.39), green: (0.98), blue: (0.39), alpha: (1.00))      
-      
+      linienfarbeArray_green[1] = NSColor( red: (0.60), green: (0.91), blue: (0.60), alpha: (1.00))
+      linienfarbeArray_green[2] = NSColor( red: (0.52), green: (0.83), blue: (0.50), alpha: (1.00))
+      linienfarbeArray_green[3] = NSColor( red: (0.44), green: (0.76), blue: (0.41), alpha: (1.00))
+      linienfarbeArray_green[4] = NSColor( red: (0.35), green: (0.68), blue: (0.32), alpha: (1.00))
+      linienfarbeArray_green[5] = NSColor( red: (0.27), green: (0.61), blue: (0.23), alpha: (1.00))
+      linienfarbeArray_green[6] = NSColor( red: (0.19), green: (0.53), blue: (0.14), alpha: (1.00))
+      linienfarbeArray_green[7] = NSColor( red: (0.11), green: (0.45), blue: (0.05), alpha: (1.00))
       self.datagraph.wantsLayer = true
       
       //self.datagraph.layer?.backgroundColor = CGColor.black
      // self.datagraph.setDatafarbe(farbe:NSColor.red, index:0)
       
-      self.datagraph.linienfarbeArray[0] = linienfarbeArray_blue
-      self.datagraph.linienfarbeArray[1] = linienfarbeArray_red
-      self.datagraph.linienfarbeArray[2] = linienfarbeArray_blue
+      self.datagraph.linienfarbeArray[0] = linienfarbeArray_green
+      self.datagraph.linienfarbeArray[1] = linienfarbeArray_blue
+      self.datagraph.linienfarbeArray[2] = linienfarbeArray_red
       
 //    self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_blue, index:0)
 //    self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_red, index:1)
 //    self.datagraph.setlinienfarbeArray(farbearray:linienfarbeArray_green, index:2)
       
+
+      // MARK: - taskTab
+ //     taskTab.selectTabViewItem(withIdentifier: "data")
+      let ident = taskTab.selectedTabViewItem?.identifier
+      let datatabsubviews = taskTab.tabViewItem(at:0).view?.subviews 
+      var abszisseframe:NSRect = NSZeroRect
+      abszisseframe.size.width = 28
+      abszisseframe.size.height = datagraph.frame.size.height
+      abszisseframe.origin.x = dataScroller.frame.origin.x - abszisseframe.size.width
+      abszisseframe.origin.y = dataScroller.frame.origin.y + dataScroller.frame.size.height - dataScroller.contentView.frame.size.height // addidtion der Scrollerhoehe
+      
+      print("abszisseframe: \(abszisseframe)")
+      //abszisseframe.origin.x -= 100
+      let abszisseoffsetx = abszisseframe.size.width // verschiebung der einzelnen abszissen
+      
+      for nr in 0..<swiftArray.count 
+      {
+         var dataabszisse:Abszisse = Abszisse.init(frame: abszisseframe)
+         dataabszisse.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
+         dataabszisse.identifier = "dataabszisse\(nr)"
+         dataabszisse.setLinienfarbe(farbe: datagraph.linienfarbeArray[nr][7].cgColor)
+         dataabszisse.setMajorTeileY(majorteiley: Int(swiftArray[nr]["majorteiley"]!)!)
+         dataabszisse.setMinorTeileY(minorteiley: Int(swiftArray[nr]["minorteiley"]!)!)
+         dataabszisse.setStellen(stellen: Int(swiftArray[nr]["stellen"]!)!)
+         dataabszisse.setDevice(devicestring:swiftArray[nr]["device"]!)
+         
+         abszisseArray.append(dataabszisse)
+         
+         taskTab.tabViewItem(at:0).view?.addSubview(dataabszisse)
+         abszisseframe.origin.x -= abszisseoffsetx
+      }
+
+      
       let abszissebgfarbe:NSColor  = NSColor(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
-      let linienfarbe_Temperatur = NSColor(red: (0.0), green: (0.0), blue: (1.0), alpha: 1.0)
       //self.dataAbszisse_Volt.tag = 1
       
-      abszisseArray.append(dataAbszisse_Volt)
-      abszisseFeldArray.append(dataAbszisse_Volt.frame)
-      dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbeArray_red[0].cgColor)
-      
-      self.dataAbszisse_Temperatur.backgroundColor_n(color:abszissebgfarbe)
-      self.dataAbszisse_Temperatur.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
-      abszisseArray.append(dataAbszisse_Temperatur)
-      abszisseFeldArray.append(dataAbszisse_Temperatur.frame)
-      dataAbszisse_Temperatur.setLinienfarbe(farbe: linienfarbeArray_blue[0].cgColor)
-    
-      let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 2, "MaxY": 4.0,"MinY": 0.0,"MaxX": 1000]
+     
  
-      let abszisse_Voltbgfarbe:NSColor  = NSColor(red: (1.0), green: (0.0), blue: (0.0), alpha: 0.0)
-
-      self.dataAbszisse_Volt.backgroundColor_n(color:abszisse_Voltbgfarbe)
-      self.dataAbszisse_Volt.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
-      self.dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
-      let linienfarbe_Volt = NSColor(red: (1.0), green: (0.0), blue: (0.0), alpha: 1.0)
   //    self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Volt.cgColor)
 //      self.dataAbszisse_Volt.setLinienfarbe(farbe: linienfarbe_Temperatur.cgColor)
 
-      dataAbszisse_Volt.setStellen(stellen:1)
       //var tasklist:[String] = ["Temperatur","ADC12Bit","Aux"]
       
       var kanaldic:[String:String] = [:]
       
-         kanaldic["taskwahl"] = "0"
+      kanaldic["taskwahl"] = "0"
       kanaldic["taskcheck"] = "0"
       taskArray.removeAll()
       for _ in 0..<8
@@ -816,20 +831,31 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          let wl_callback_status = (teensy.read_byteArray[2])
          var deviceindex:Int = 0
+         var changestatus = false
          for devicelinie in swiftArray
          {
             var zeile = devicelinie
             let device = devicelinie["device"]!
             let analog = devicelinie["A"]! // Tastenstatus Kanaele            print ("deviceindex: \(deviceindex) analog: \(analog)")
             let devicecode = UInt8(deviceindex)
+            let oldstatus = Int(swiftArray[deviceindex]["on"]!)
+            
             if (wl_callback_status & (1<<devicecode) > 0)
             {
                //print("device \(String(describing: device)) ist da")
-               swiftArray[deviceindex]["on"] = "1"
+               if (oldstatus == 0)
+               {
+                  swiftArray[deviceindex]["on"] = "1"
+                  changestatus = true
+               }
             }
             else
             {
-               swiftArray[deviceindex]["on"] = "0"
+               if (oldstatus == 1)
+               {
+                  swiftArray[deviceindex]["on"] = "0"
+                  changestatus = true
+               } 
             }
             deviceindex += 1
             
@@ -842,8 +868,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          usb_read_cont = false
          cont_read_check.state = 0;
          
-         TaskListe.reloadData()
-
+         if (changestatus == true)
+         {
+            TaskListe.reloadData()
+         }
          break
          
          // ****************************************************************************
@@ -1064,15 +1092,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // ****************************************************************************
       // ****************************************************************************
-      case WRITE_MMC_TEST:
-         print("code ist WRITE_MMC_TEST")
+      case WRITE_MMC_TEST: break
+         //print("code ist WRITE_MMC_TEST")
          
          // ****************************************************************************
          // MARK: USB_STOP
          // ****************************************************************************
          
-      case USB_STOP:
-         print("code ist USB_STOP")
+      case USB_STOP: break
+         //print("code ist USB_STOP")
          
          // ****************************************************************************
          // MARK: MESSUNG_START
@@ -1114,7 +1142,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
          
-         print ("\ndevicenummer: \(devicenummer)\tchannelnummer: \(channelnummer)")
+         print ("devicenummer: \(devicenummer)\tchannelnummer: \(channelnummer)")
          devicenummer &= 0x0F
          //print ("\ndevicenummer B: \(devicenummer)")
 
@@ -1123,26 +1151,42 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // status der  device checken
          var deviceindex:Int = 0
+         
+         var changestatus = false
+         
          for devicelinie in swiftArray
          {
             var zeile = devicelinie
             let device = devicelinie["device"]!
             let analog = devicelinie["A"]! // Tastenstatus Kanaele            print ("deviceindex: \(deviceindex) analog: \(analog)")
             let devicecode = UInt8(deviceindex)
-            
+            let oldstatus = Int(swiftArray[deviceindex]["on"]!) // bisheriger status, nur update wenn changed
             if (wl_callback_status & (1<<devicecode) > 0)
             {
                //print("device \(String(describing: device)) ist da")
-               swiftArray[deviceindex]["on"] = "1"
+               if (oldstatus == 0)
+               {
+                  swiftArray[deviceindex]["on"] = "1"
+                  changestatus = true
+               }
             }
             else
             {
-               swiftArray[deviceindex]["on"] = "0"
+               if (oldstatus == 1)
+               {
+                  swiftArray[deviceindex]["on"] = "0"
+                  changestatus = true
+               } 
             }
             deviceindex += 1
             
          }
          
+         if (changestatus == true)
+         {
+            TaskListe.reloadData()
+         }
+
          //print("wl_callback_status:\t\(wl_callback_status)")
          wl_callback_status_Feld.intValue = Int32(wl_callback_status)
          
@@ -1294,7 +1338,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let batteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
             batteriefloat = Float(batteriespannung)
             
-            print(")task 1 analog0float: \(analog0float) analog1float: \(analog1float) analog2float: \(analog2float) analog3float: \(analog3float)")
+            //print(")task 1 analog0float: \(analog0float) analog1float: \(analog1float) analog2float: \(analog2float) analog3float: \(analog3float)")
             
             
             break
@@ -1321,7 +1365,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let analog0 = analog0lo | (analog0hi<<8)
             //print ("analog0lo: \(analog0lo) analog0hi: \(analog0hi)  analog0: \(analog0)");
             analog0float = Float(analog0) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-            print ("task 2 analog0float: \(analog0float)");
+            //print ("task 2 analog0float: \(analog0float)");
             let analog0float_norm = analog0float / 0x1000 * 4.096
             adcfloatarray[5]  = analog0float / 0x800 * 4.096 * 10 // Wert wird im device halbiert, max ist 8V
 
@@ -1365,7 +1409,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
             //print("task 2 analog3float: \(analog3float) )");
             
-            print(")task 2 analog0float: \(analog0float) analog1float: \(analog1float) analog2float: \(analog2float) analog3float: \(analog3float)")
+            //print(")task 2 analog0float: \(analog0float) analog1float: \(analog1float) analog2float: \(analog2float) analog3float: \(analog3float)")
 
             /*
              analog2float = analog2float * 2.56 / 1023
@@ -1386,7 +1430,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             break
          }
          
-         TaskListe.reloadData()
+         //TaskListe.reloadData()
          var tl = 0
          /*
          for taskline in messungfloatarray
@@ -1587,8 +1631,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      case 0: break // teensy
                         
                      case 1:
-                        let abszisseMajorTeileY = dataAbszisse_Temperatur.AbszisseVorgaben.MajorTeileY
-                        let abszisseNullpunkt = dataAbszisse_Temperatur.AbszisseVorgaben.Nullpunkt
+                        //let abszisseMajorTeileY = dataAbszisse_Temperatur.AbszisseVorgaben.MajorTeileY
+                        //let abszisseNullpunkt = dataAbszisse_Temperatur.AbszisseVorgaben.Nullpunkt
 
                         switch kanal
                         {
@@ -1605,9 +1649,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                         break // THERMOMETER
                         
                      case 2:  // ADC12BIT
-                        let abszisseMajorTeileY = dataAbszisse_Volt.AbszisseVorgaben.MajorTeileY
+                        //let abszisseMajorTeileY = dataAbszisse_Volt.AbszisseVorgaben.MajorTeileY
                         
-                        let abszisseNullpunkt = dataAbszisse_Volt.AbszisseVorgaben.Nullpunkt
+                        //let abszisseNullpunkt = dataAbszisse_Volt.AbszisseVorgaben.Nullpunkt
 
 
                         if (kanal == 0 || kanal == 2) // 8V, geteilt durch 2
@@ -2204,48 +2248,50 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let bereichselektion = sender.indexOfSelectedItem
       switch (selectedDevice)
       {
-      case 1: // Tempertur
+      case 0: // teensy
+         abszisseArray[selectedDevice].setStellen(stellen:0)
+         swiftArray[selectedDevice]["bereichwahl"] = String(bereichselektion)
+
          
+      case 1: // Temperatur
          
-         dataAbszisse_Temperatur.setStellen(stellen:0)
+         abszisseArray[selectedDevice].setStellen(stellen:0)
          switch bereichselektion
          {
          case 0: // 0-80
-            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4 ,"Nullpunkt":0]
-            dataAbszisse_Temperatur.setVorgaben(vorgaben: Vorgaben_Temperatur)
+            let Vorgaben:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4 ,"Nullpunkt":0]
+            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          case 1: // 0-160
-            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4 ,"Nullpunkt":0]
-            dataAbszisse_Temperatur.setVorgaben(vorgaben: Vorgaben_Temperatur)
+            let Vorgaben:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4 ,"Nullpunkt":0]
+            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          case 2: // -30-100
-            let Vorgaben_Temperatur:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4,"Nullpunkt":2]
-            dataAbszisse_Temperatur.setVorgaben(vorgaben: Vorgaben_Temperatur)
+            let Vorgaben:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4,"Nullpunkt":2]
+            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          default: break
          }
          swiftArray[selectedDevice]["bereichwahl"] = String(bereichselektion)
-         dataAbszisse_Temperatur.update()
          //dataAbszisse_Temperatur.setMaxY(maxY: 160)
          
       case 2: // ADC
-         dataAbszisse_Volt.setStellen(stellen:1)
-
+         abszisseArray[selectedDevice].setStellen(stellen:1)
          switch bereichselektion
          {
          case 0: // 0-8
-            let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4]
-            dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
-            
+            let Vorgaben:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4]
+            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          case 1: // 0-16
-            let Vorgaben_Volt:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 2]
-            dataAbszisse_Volt.setVorgaben(vorgaben: Vorgaben_Volt)
+            let Vorgaben:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 2]
+            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
+
          default:
             break
          }// switch index
          swiftArray[selectedDevice]["bereichwahl"] = String(bereichselektion)
-         dataAbszisse_Volt.update()
+         
       default:
             break;
       }
-      
+      abszisseArray[selectedDevice].update()
    }
    
    
@@ -2436,11 +2482,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBAction func reportTaskCheck(_ sender: NSButton)
    {
       print("reportTaskCheck  sender tag: \(sender.tag) state: \(sender.state)")
-      let index = (sender.tag / 10) - 20
+      let index = (sender.tag / 1000) 
+      let laststate = taskArray[index]["taskcheck"]
+      print("reportTaskCheck  taskArray: \n\(taskArray) laststate: \(laststate)")
+
       taskArray[index]["taskcheck"] = String(sender.state)
-      //print("reportTaskCheck  taskArray: \n\(taskArray)")
+      print("reportTaskCheck  taskArray: \n\(taskArray)")
       anzahlChannels = countChannels()
       Channels_Feld.intValue  = Int32(anzahlChannels)
+   
    }
    
    
@@ -3516,13 +3566,13 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
       if tableColumn?.identifier == "imageIcon"
       {
          let result = tableView.make(withIdentifier: "imageIcon", owner: self) as! NSTableCellView
-         result.imageView?.image = NSImage(named:swiftArray[row]["imageIcon"]! as! String)
+         result.imageView?.image = NSImage(named:swiftArray[row]["imageIcon"]!)
          return result
       }
       else if tableColumn?.identifier == "jobTitle"
       {
          let result:NSPopUpButton = tableView.make(withIdentifier: "jobTitle", owner: self) as! NSPopUpButton
-         result.selectItem(withTitle: swiftArray[row]["jobTitle"] as! String)
+         result.selectItem(withTitle: swiftArray[row]["jobTitle"]! )
          return result
       }
       else if  tableColumn?.identifier == "on"
@@ -3532,6 +3582,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          //print("check value: \(wert)")
          let sub = result.subviews
          
+         print("check element on sub: \(sub)")
          //var checkbox:NSButton = result.objectValue as! NSButton
          let element = result.subviews[0]
 //         print("check element on: \(element)")

@@ -368,7 +368,7 @@ open class usb_teensy: NSObject
       //write_byteArray[6] = 43;
       //write_byteArray[7] = 44;
 
-      print("\nusb.swift  write_byteArray in start_write_USB code: \(write_byteArray[0])\nSettings: ", terminator: "\n")
+      print("\nusb.swift  write_byteArray in start_write_USB code: \(write_byteArray[0])\nSettings: ", terminator: "\t")
       var i=0;
       
       i = 0 // 16, beginn Data in USB-Buffer
@@ -377,15 +377,15 @@ open class usb_teensy: NSObject
          print("\(write_byteArray[i])", terminator: " ")
          i = i+1
       }
-      print("\nData:")
+    //  print("\nData:")
       //for  i in 0...63
       i = DATA_START_BYTE // 16, beginn Data in USB-Buffer
       while i < BUFFER_SIZE - 1
       {
-         print("\(write_byteArray[i])", terminator: " ")
+        // print("\(write_byteArray[i])", terminator: " ")
          i = i+1
       }
-      print("")
+  //    print("")
       
       //let dateA = Date()
       

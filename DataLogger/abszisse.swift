@@ -16,7 +16,7 @@ import Cocoa
 class Abszisse: NSView{
    //override var tag:Int
    
-   
+   var device:String = "home"
    var abszissefeld:CGRect = CGRect.zero
    var randfarbe =  CGColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
    var feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
@@ -102,7 +102,7 @@ class Abszisse: NSView{
       let StartwertX: CGFloat = 0.0 // Abszisse des ersten Wertew
       
       let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
-      
+      let Device = "home"
    }
 
    var AbszisseVorgaben = Vorgaben()
@@ -156,7 +156,7 @@ class Abszisse: NSView{
       let subdistanz = CGFloat(markdistanz) / CGFloat(AbszisseVorgaben.MinorTeileY)
       var posy = rect.origin.y
       let deznummer = NSDecimalNumber(decimal:pow(10,AbszisseVorgaben.Exponent)).intValue
-      
+      let textfarbe:NSColor = NSColor.init(cgColor:linienfarbe)!
       var tempWertString = ""
       
       for pos in 0...(AbszisseVorgaben.MajorTeileY - 1)
@@ -195,7 +195,7 @@ class Abszisse: NSView{
             
        //     let textfarbe:NSColor? = NSColor.init(cgColor:linienfarbe)
             
-            let textfarbe:NSColor = NSColor.init(cgColor:linienfarbe)!
+            
             
        //     let textfarbe = NSColor.init?(colorSpace:colspace ,components:comp)
        //     let textfarbe = NSColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
@@ -241,7 +241,7 @@ class Abszisse: NSView{
       //Swift.print("p: \(p) tempWertString: \(tempWertString)")
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .right
-      let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 9)!, NSParagraphStyleAttributeName: paragraphStyle]
+      let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 9)!, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName:textfarbe]
       
       tempWertString.draw(with: CGRect(x: p.x - 42 , y: p.y - 5, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
       
@@ -350,7 +350,23 @@ extension Abszisse
    {
       AbszisseVorgaben.MaxY = CGFloat(maxY)
    }
-   
+
+   open func setMinorTeileY(minorteiley:Int)
+   {
+      AbszisseVorgaben.MinorTeileY = Int(minorteiley)
+   }
+
+   open func setMajorTeileY(majorteiley:Int)
+   {
+      AbszisseVorgaben.MajorTeileY = Int(majorteiley)
+   }
+
+   open func setDevice(devicestring:String)
+   {
+      device  = devicestring 
+   }
+
+
    open func setExponent(exponent:Int)
    {
       AbszisseVorgaben.Exponent = exponent
@@ -455,7 +471,7 @@ extension Abszisse
       var abszisserect = abszissefeld
       abszisserect.size.width = abszissebreite
       abszisserect.origin.x -= 1
-      let abszissefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
+      //let abszissefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
       
       
       let abszissepath = abszisse(rect:abszisserect)
