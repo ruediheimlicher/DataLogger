@@ -717,7 +717,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       abszisseframe.size.width = 28
       abszisseframe.size.height = datagraph.frame.size.height
       abszisseframe.origin.x = dataScroller.frame.origin.x - abszisseframe.size.width
-      abszisseframe.origin.y = dataScroller.frame.origin.y + dataScroller.frame.size.height - dataScroller.contentView.frame.size.height // addidtion der Scrollerhoehe
+      abszisseframe.origin.y = dataScroller.frame.origin.y + dataScroller.frame.size.height - dataScroller.contentView.frame.size.height - 1// addidtion der Scrollerhoehe, korr um 1 px
       
       print("abszisseframe: \(abszisseframe)")
       //abszisseframe.origin.x -= 100
@@ -733,13 +733,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          dataabszisse.setMinorTeileY(minorteiley: Int(swiftArray[nr]["minorteiley"]!)!)
          dataabszisse.setStellen(stellen: Int(swiftArray[nr]["stellen"]!)!)
          dataabszisse.setDevice(devicestring:swiftArray[nr]["device"]!)
+         dataabszisse.setDeviceID(deviceIDstring:swiftArray[nr]["deviceID"]!)
+
          
          abszisseArray.append(dataabszisse)
          
          taskTab.tabViewItem(at:0).view?.addSubview(dataabszisse)
+         
+         abszisseFeldArray[nr] = abszisseframe
          abszisseframe.origin.x -= abszisseoffsetx
       }
-
+      abszisseFeldArray[3] = abszisseframe
       
       let abszissebgfarbe:NSColor  = NSColor(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
       //self.dataAbszisse_Volt.tag = 1
@@ -776,6 +780,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       // var tempwerte = [Float] ( repeating: 0.0, count: 9 )
       
       TaskListe.reloadData()
+      
+      //abszisseArray[0].frame.origin.y += 10
+      //abszisseArray[0].frame = abszisseFeldArray[3]
+  //    abszisseArray[2].frame = abszisseFeldArray[0]
       
    }//viewDidLoad
    
@@ -872,6 +880,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          {
             TaskListe.reloadData()
          }
+         reorderAbszisse()
          break
          
          // ****************************************************************************
@@ -1591,7 +1600,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var SortenFaktor:Float = 1.0 // Anzeige in Diagramm durch Sortenfaktor teilen
          var NullpunktOffset:Int = 0
          
-         var tempwerte = [Float] ( repeating: 0.0, count: 9 )     // eine Zeile mit messung-zeit und 8 floats
+         var tempwerte = [Float] ( repeating: 0.00, count: 9 )     // eine Zeile mit messung-zeit und 8 floats
          tempwerte[0] = Float(tempzeit) // Abszisse
 
          var werteArray = [[Float]](repeating: [0.0,0.0,1.0,1.0], count: 9 ) // Data mit wert sortenfaktor anzeigefaktor
@@ -1674,7 +1683,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      werteArray[kanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
                      
                      // Zeile im Textfeld als string aufbauen
-                     tempinputDataFeldstring = tempinputDataFeldstring + "\t" + (NSString(format:"%.01f", wert_norm) as String)
+                     tempinputDataFeldstring = tempinputDataFeldstring + "\t" + (NSString(format:"%.02f", wert_norm) as String)
                      kanalindex += 1
                   } // if (analog & (1<<kanalint) > 0)
                } // for kanal
@@ -2165,8 +2174,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let erfolg = UInt8(teensy.USBOpen())
       usbstatus = erfolg
       print("USBOpen erfolg: \(erfolg) usbstatus: \(usbstatus)")
-      
-      
+ //     abszisseArray[0].frame = abszisseFeldArray[3]
+ //     abszisseArray[0].needsDisplay = true
       if (rawhid_status()==1)
       {
          // NSBeep()
@@ -2925,6 +2934,40 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBAction func report_check_WL(_ sender: AnyObject)
    {
       check_WL()
+   }
+   
+   func reorderAbszisse()
+   {
+      for abszisse in abszisseArray
+      {
+         abszisse.isHidden = true
+      }
+      var posarray:[Int] = []
+      var pos:Int = 0
+      for ind in 0..<swiftArray.count
+      {
+         if Int(swiftArray[ind]["on"]!) == 0
+         {
+            
+         }
+         else
+         {
+            posarray.append(Int(swiftArray[ind]["deviceID"]!)!)
+            
+         }
+      
+      }
+      
+      for ind in 0..<posarray.count
+      {
+         let deviceid = posarray[ind]
+         let abszissefeld = abszisseFeldArray[pos] 
+         abszisseArray[deviceid].frame = abszissefeld
+         abszisseArray[deviceid].isHidden = false
+         abszisseArray[deviceid].needsDisplay = true
+         pos += 1
+      }
+      print("reorderAbszisse posarray: \(posarray)")
    }
    
    @IBAction func report_start_write_USB(_ sender: AnyObject)

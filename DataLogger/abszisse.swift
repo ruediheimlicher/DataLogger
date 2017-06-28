@@ -17,6 +17,7 @@ class Abszisse: NSView{
    //override var tag:Int
    
    var device:String = "home"
+   var deviceID:String = "0"
    var abszissefeld:CGRect = CGRect.zero
    var randfarbe =  CGColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
    var feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
@@ -366,6 +367,11 @@ extension Abszisse
       device  = devicestring 
    }
 
+   open func setDeviceID(deviceIDstring:String)
+   {
+      deviceID  = deviceIDstring 
+   }
+   
 
    open func setExponent(exponent:Int)
    {
