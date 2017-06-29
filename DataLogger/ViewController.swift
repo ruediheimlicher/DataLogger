@@ -177,8 +177,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    var tempAbszisse:Abszisse!
    
-   var abszisseArray:[Abszisse] = [Abszisse]() // Abszissen
-   var abszisseFeldArray:[NSRect] = [NSRect](repeating:NSZeroRect, count:8) // Felder der Abszissen
+   var ordinateArray:[Abszisse] = [Abszisse]() // Abszissen
+   var ordinateFeldArray:[NSRect] = [NSRect](repeating:NSZeroRect, count:8) // Felder der Abszissen
    
    // Diagramm
    @IBOutlet  var datagraph: DataPlot!
@@ -713,39 +713,42 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  //     taskTab.selectTabViewItem(withIdentifier: "data")
       let ident = taskTab.selectedTabViewItem?.identifier
       let datatabsubviews = taskTab.tabViewItem(at:0).view?.subviews 
-      var abszisseframe:NSRect = NSZeroRect
-      abszisseframe.size.width = 28
-      abszisseframe.size.height = datagraph.frame.size.height
-      abszisseframe.origin.x = dataScroller.frame.origin.x - abszisseframe.size.width
-      abszisseframe.origin.y = dataScroller.frame.origin.y + dataScroller.frame.size.height - dataScroller.contentView.frame.size.height - 1// addidtion der Scrollerhoehe, korr um 1 px
+      var ordinateframe:NSRect = NSZeroRect
+      ordinateframe.size.width = 28
+      ordinateframe.size.height = datagraph.frame.size.height
+      ordinateframe.origin.x = dataScroller.frame.origin.x - ordinateframe.size.width
+      ordinateframe.origin.y = dataScroller.frame.origin.y + dataScroller.frame.size.height - dataScroller.contentView.frame.size.height - 1// addidtion der Scrollerhoehe, korr um 1 px
       
-      print("abszisseframe: \(abszisseframe)")
-      //abszisseframe.origin.x -= 100
-      let abszisseoffsetx = abszisseframe.size.width // verschiebung der einzelnen abszissen
+      print("ordinateframe: \(ordinateframe)")
+      //ordinateframe.origin.x -= 100
+      let ordinateoffsetx = ordinateframe.size.width // verschiebung der einzelnen ordinaten
       
       for nr in 0..<swiftArray.count 
       {
-         var dataabszisse:Abszisse = Abszisse.init(frame: abszisseframe)
-         dataabszisse.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
-         dataabszisse.identifier = "dataabszisse\(nr)"
-         dataabszisse.setLinienfarbe(farbe: datagraph.linienfarbeArray[nr][7].cgColor)
-         dataabszisse.setMajorTeileY(majorteiley: Int(swiftArray[nr]["majorteiley"]!)!)
-         dataabszisse.setMinorTeileY(minorteiley: Int(swiftArray[nr]["minorteiley"]!)!)
-         dataabszisse.setStellen(stellen: Int(swiftArray[nr]["stellen"]!)!)
-         dataabszisse.setDevice(devicestring:swiftArray[nr]["device"]!)
-         dataabszisse.setDeviceID(deviceIDstring:swiftArray[nr]["deviceID"]!)
+         var dataordinate:Abszisse = Abszisse.init(frame: ordinateframe)
+         dataordinate.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
+         dataordinate.identifier = "dataordinate\(nr)"
+         dataordinate.setLinienfarbe(farbe: datagraph.linienfarbeArray[nr][7].cgColor)
+         dataordinate.setMajorTeileY(majorteiley: Int(swiftArray[nr]["majorteiley"]!)!)
+         dataordinate.setMinorTeileY(minorteiley: Int(swiftArray[nr]["minorteiley"]!)!)
+         dataordinate.setStellen(stellen: Int(swiftArray[nr]["stellen"]!)!)
+         dataordinate.setDevice(devicestring:swiftArray[nr]["device"]!)
+         dataordinate.setDeviceID(deviceIDstring:swiftArray[nr]["deviceID"]!)
+         dataordinate.wantsLayer = true
+         let color : CGColor = CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+         dataordinate.layer?.backgroundColor = color
 
          
-         abszisseArray.append(dataabszisse)
+         ordinateArray.append(dataordinate)
          
-         taskTab.tabViewItem(at:0).view?.addSubview(dataabszisse)
+         taskTab.tabViewItem(at:0).view?.addSubview(dataordinate)
          
-         abszisseFeldArray[nr] = abszisseframe
-         abszisseframe.origin.x -= abszisseoffsetx
+         ordinateFeldArray[nr] = ordinateframe
+         ordinateframe.origin.x -= ordinateoffsetx
       }
-      abszisseFeldArray[3] = abszisseframe
+      ordinateFeldArray[3] = ordinateframe
       
-      let abszissebgfarbe:NSColor  = NSColor(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
+      let ordinatebgfarbe:NSColor  = NSColor(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
       //self.dataAbszisse_Volt.tag = 1
       
      
@@ -781,9 +784,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       TaskListe.reloadData()
       
-      //abszisseArray[0].frame.origin.y += 10
-      //abszisseArray[0].frame = abszisseFeldArray[3]
-  //    abszisseArray[2].frame = abszisseFeldArray[0]
+      //ordinateArray[0].frame.origin.y += 10
+      //ordinateArray[0].frame = ordinateFeldArray[3]
+  //    ordinateArray[2].frame = ordinateFeldArray[0]
       
    }//viewDidLoad
    
@@ -1606,7 +1609,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var werteArray = [[Float]](repeating: [0.0,0.0,1.0,1.0], count: 9 ) // Data mit wert sortenfaktor anzeigefaktor
          
          werteArray[0] = [Float(tempzeit),1.0,1.0] // Abszisse
-         var kanalindex = 1    // index 0 ist abszisse (zeit)                                   // Index des zu speichernden Kanals
+         var kanalindex = 1    // index 0 ist ordinate (zeit)                                   // Index des zu speichernden Kanals
          
          
          let anzdevice = swiftArray.count      // Anzahl
@@ -1640,8 +1643,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      case 0: break // teensy
                         
                      case 1:
-                        //let abszisseMajorTeileY = dataAbszisse_Temperatur.AbszisseVorgaben.MajorTeileY
-                        //let abszisseNullpunkt = dataAbszisse_Temperatur.AbszisseVorgaben.Nullpunkt
+                        //let ordinateMajorTeileY = dataAbszisse_Temperatur.AbszisseVorgaben.MajorTeileY
+                        //let ordinateNullpunkt = dataAbszisse_Temperatur.AbszisseVorgaben.Nullpunkt
 
                         switch kanal
                         {
@@ -1658,9 +1661,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                         break // THERMOMETER
                         
                      case 2:  // ADC12BIT
-                        //let abszisseMajorTeileY = dataAbszisse_Volt.AbszisseVorgaben.MajorTeileY
+                        //let ordinateMajorTeileY = dataAbszisse_Volt.AbszisseVorgaben.MajorTeileY
                         
-                        //let abszisseNullpunkt = dataAbszisse_Volt.AbszisseVorgaben.Nullpunkt
+                        //let ordinateNullpunkt = dataAbszisse_Volt.AbszisseVorgaben.Nullpunkt
 
 
                         if (kanal == 0 || kanal == 2) // 8V, geteilt durch 2
@@ -1755,7 +1758,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // The scroll view’s content view, the view that clips the document view
          
          // let lastdata = self.datagraph.DatenArray.last
-         let lastxold = Float((self.datagraph.DatenArray.last?[0])!) // letzte abszisse
+         let lastxold = Float((self.datagraph.DatenArray.last?[0])!) // letzte ordinate
          let lastx = Float((self.datagraph.DatenDicArray.last?["x"])!)
          
 /*
@@ -2186,8 +2189,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let erfolg = UInt8(teensy.USBOpen())
       usbstatus = erfolg
       print("USBOpen erfolg: \(erfolg) usbstatus: \(usbstatus)")
- //     abszisseArray[0].frame = abszisseFeldArray[3]
- //     abszisseArray[0].needsDisplay = true
+ //     ordinateArray[0].frame = ordinateFeldArray[3]
+ //     ordinateArray[0].needsDisplay = true
       if (rawhid_status()==1)
       {
          // NSBeep()
@@ -2270,39 +2273,39 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       switch (selectedDevice)
       {
       case 0: // teensy
-         abszisseArray[selectedDevice].setStellen(stellen:0)
+         ordinateArray[selectedDevice].setStellen(stellen:0)
          swiftArray[selectedDevice]["bereichwahl"] = String(bereichselektion)
 
          
       case 1: // Temperatur
          
-         abszisseArray[selectedDevice].setStellen(stellen:0)
+         ordinateArray[selectedDevice].setStellen(stellen:0)
          switch bereichselektion
          {
          case 0: // 0-80
             let Vorgaben:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4 ,"Nullpunkt":0]
-            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
+            ordinateArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          case 1: // 0-160
             let Vorgaben:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4 ,"Nullpunkt":0]
-            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
+            ordinateArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          case 2: // -30-100
             let Vorgaben:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 4,"Nullpunkt":2]
-            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
+            ordinateArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          default: break
          }
          swiftArray[selectedDevice]["bereichwahl"] = String(bereichselektion)
          //dataAbszisse_Temperatur.setMaxY(maxY: 160)
          
       case 2: // ADC
-         abszisseArray[selectedDevice].setStellen(stellen:1)
+         ordinateArray[selectedDevice].setStellen(stellen:1)
          switch bereichselektion
          {
          case 0: // 0-8
             let Vorgaben:[String:Float] = ["MajorTeileY": 8,"MinorTeileY": 4]
-            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
+            ordinateArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
          case 1: // 0-16
             let Vorgaben:[String:Float] = ["MajorTeileY": 16,"MinorTeileY": 2]
-            abszisseArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
+            ordinateArray[selectedDevice].setVorgaben(vorgaben: Vorgaben)
 
          default:
             break
@@ -2312,7 +2315,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       default:
             break;
       }
-      abszisseArray[selectedDevice].update()
+      ordinateArray[selectedDevice].update()
    }
    
    
@@ -2950,9 +2953,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    func reorderAbszisse()
    {
-      for abszisse in abszisseArray
+      for ordinate in ordinateArray
       {
-         abszisse.isHidden = true
+         ordinate.isHidden = true
       }
       var posarray:[Int] = []
       var pos:Int = 0
@@ -2973,10 +2976,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       for ind in 0..<posarray.count
       {
          let deviceid = posarray[ind]
-         let abszissefeld = abszisseFeldArray[pos] 
-         abszisseArray[deviceid].frame = abszissefeld
-         abszisseArray[deviceid].isHidden = false
-         abszisseArray[deviceid].needsDisplay = true
+         let ordinatefeld = ordinateFeldArray[pos] 
+         ordinateArray[deviceid].frame = ordinatefeld
+         ordinateArray[deviceid].isHidden = false
+         ordinateArray[deviceid].needsDisplay = true
          pos += 1
       }
       print("reorderAbszisse posarray: \(posarray)")

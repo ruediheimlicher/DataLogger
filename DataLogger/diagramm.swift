@@ -151,7 +151,7 @@ class DataPlot: NSView
          if (zeilenarray.count == 8) // loggerdump
          {
             tempDatenArray[0] = Float(index)
-            var kol = 1 // kolonne 0 ist abszisse
+            var kol = 1 // kolonne 0 ist ordinate
             for kolonnenwert in zeilenarray
             {
                let kolonnenfloat = (kolonnenwert as NSString).floatValue
@@ -177,7 +177,7 @@ class DataPlot: NSView
             
             // startsekunde wegzaehlen
             tempDatenArray[0] = tempDatenArray[0] - startsekunde
-            //var kol = 1 // kolonne 0 ist abszisse, Startsekunde wegzaehlen
+            //var kol = 1 // kolonne 0 ist ordinate, Startsekunde wegzaehlen
             //for kolonnenwert in zeilenarray
             for kol in 1..<9
             {
@@ -346,7 +346,7 @@ class DataPlot: NSView
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
-      //Swift.print("abszisse feld height: \(feld.size.height) Vorgaben.MaxY: \(Vorgaben.MaxY) FaktorY: \(FaktorY) ")
+      //Swift.print("ordinate feld height: \(feld.size.height) Vorgaben.MaxY: \(Vorgaben.MaxY) FaktorY: \(FaktorY) ")
       
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
@@ -461,7 +461,7 @@ class DataPlot: NSView
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
-      //Swift.print("abszisse feld height: \(feld.size.height) Vorgaben.MaxY: \(Vorgaben.MaxY) FaktorY: \(FaktorY) ")
+      //Swift.print("ordinate feld height: \(feld.size.height) Vorgaben.MaxY: \(Vorgaben.MaxY) FaktorY: \(FaktorY) ")
       
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
@@ -575,7 +575,7 @@ class DataPlot: NSView
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
-      //Swift.print("abszisse feld height: \(feld.size.height) Vorgaben.MaxY: \(Vorgaben.MaxY) FaktorY: \(FaktorY) ")
+      //Swift.print("ordinate feld height: \(feld.size.height) Vorgaben.MaxY: \(Vorgaben.MaxY) FaktorY: \(FaktorY) ")
       
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
@@ -785,28 +785,28 @@ extension DataPlot
    }
    
    /*
-    func abszisse(rect: CGRect)->CGPath
+    func ordinate(rect: CGRect)->CGPath
     {
     let path = CGMutablePath()
     
-    let abszissex = rect.origin.x + rect.size.width
+    let ordinatex = rect.origin.x + rect.size.width
     let bigmark = CGFloat(6)
     let submark = CGFloat(3)
     
-    path.move(to: CGPoint(x:  abszissex, y: rect.origin.y ))
+    path.move(to: CGPoint(x:  ordinatex, y: rect.origin.y ))
     //path.move(to: rect.origin)
     // linie nach oben
-    path.addLine(to: CGPoint(x:  abszissex, y: rect.origin.y + rect.size.height))
+    path.addLine(to: CGPoint(x:  ordinatex, y: rect.origin.y + rect.size.height))
     
     // wieder nach unten
-    path.move(to: CGPoint(x:  abszissex, y: rect.origin.y ))
+    path.move(to: CGPoint(x:  ordinatex, y: rect.origin.y ))
     //marken setzen
     let markdistanz = rect.size.height / (CGFloat(Vorgaben.MajorTeileY ) )
     let subdistanz = CGFloat(markdistanz) / CGFloat(Vorgaben.MinorTeileY)
     var posy = rect.origin.y
     for pos in 0...(Vorgaben.MajorTeileY - 1)
     {
-    path.addLine(to: CGPoint(x:abszissex - bigmark, y: posy))
+    path.addLine(to: CGPoint(x:ordinatex - bigmark, y: posy))
     
     // Wert
     let p = path.currentPoint
@@ -823,17 +823,17 @@ extension DataPlot
     for sub in 1..<(Vorgaben.MinorTeileY)
     {
     subposy += subdistanz
-    path.move(to: CGPoint(x:  abszissex, y: subposy ))
-    path.addLine(to: CGPoint(x:abszissex - submark,y: subposy))
+    path.move(to: CGPoint(x:  ordinatex, y: subposy ))
+    path.addLine(to: CGPoint(x:ordinatex - submark,y: subposy))
     
     }
     
     posy += markdistanz
     //posy = rect.origin.y + CGFloat(pos) * markdistanz
-    path.move(to: CGPoint(x:  abszissex, y: posy))
+    path.move(to: CGPoint(x:  ordinatex, y: posy))
     
     }
-    path.addLine(to: CGPoint(x:abszissex - bigmark, y: posy))
+    path.addLine(to: CGPoint(x:ordinatex - bigmark, y: posy))
     // Wert
     let p = path.currentPoint
     let wert = Vorgaben.MajorTeileY
@@ -853,19 +853,19 @@ extension DataPlot
    {
       let path = CGMutablePath()
       
-      let abszissestart = rect.origin.y
-      let abszisseend = rect.origin.y + rect.size.height + 10
+      let ordinatestart = rect.origin.y
+      let ordinateend = rect.origin.y + rect.size.height + 10
       
-      let ordinatestart = rect.origin.x
-      let ordinateend = rect.origin.x + rect.size.width + 10
+      let abszissestart = rect.origin.x
+      let abszisseend = rect.origin.x + rect.size.width + 10
       
       let bigmark = CGFloat(10)
       let submark = CGFloat(3)
       
-      path.move(to: CGPoint(x: rect.origin.x , y: abszissestart ))
+      path.move(to: CGPoint(x: rect.origin.x , y: ordinatestart ))
       //path.move(to: rect.origin)
       // linie nach oben
-      path.addLine(to: CGPoint(x: rect.origin.x, y: abszisseend))
+      path.addLine(to: CGPoint(x: rect.origin.x, y: ordinateend))
       // wieder nach unten
       path.move(to: CGPoint(x: ordinatestart , y: rect.origin.y ))
       path.addLine(to: CGPoint(x: ordinateend , y: rect.origin.y))
@@ -909,10 +909,10 @@ extension DataPlot
    }
    
    
-   func vertikalelinen(rect: CGRect, abszisse: CGFloat, zeit: CGFloat)->CGPath
+   func vertikalelinen(rect: CGRect, ordinate: CGFloat, zeit: CGFloat)->CGPath
    {
       let path = CGMutablePath()
-      if (abszisse > 0)
+      if (ordinate > 0)
       {
          //Swift.print("\n********************************")
          //
@@ -921,14 +921,14 @@ extension DataPlot
          
          //    let anzahlmajormarks = Int(Float(zeit) / Float(Vorgaben.majorrasterhorizontal))
          //     let anzahlmarks = anzahlmajormarks * Vorgaben.minorrasterhorizontal
-         let quote = Float(abszisse/zeit)  // 2.475
+         let quote = Float(ordinate/zeit)  // 2.475
          //Swift.print("quote: \(quote)")
          
-         //let delta = Float(abszisse) / Float(anzahlminormarks) // Abstand der Marken
+         //let delta = Float(ordinate) / Float(anzahlminormarks) // Abstand der Marken
          let delta = Float(Vorgaben.minorrasterhorizontal) * quote // Abstand der Marken
          
          
-         //Swift.print("abszisse: \(abszisse)  zeit: \(zeit)   anzahlminormarks: \(anzahlminormarks) delta: \(delta)" )
+         //Swift.print("ordinate: \(ordinate)  zeit: \(zeit)   anzahlminormarks: \(anzahlminormarks) delta: \(delta)" )
          //let path = CGMutablePath()
          let bigmark = CGFloat(10)
          let submark = CGFloat(4)
@@ -979,14 +979,14 @@ extension DataPlot
          /*
           //let deltax = rect.size.height / CGFloat(Vorgaben.MajorTeileY)  * CGFloat(Vorgaben.rastervertikal)
           //var posy = rect.origin.y
-          // if ((Int(abszisse) % Vorgaben.rasterhorizontal) == 0)
+          // if ((Int(ordinate) % Vorgaben.rasterhorizontal) == 0)
           
           let minor = Float(Vorgaben.minorrasterhorizontal) * quote
           let minorint = Int(minor)
           let major = Float(Vorgaben.majorrasterhorizontal) * quote
           let majorint = Int(major)
           Swift.print("quote: \(quote) minorint: \(minorint) majorint: \(majorint)")
-          for pos in Int(rect.origin.x)..<Int(abszisse)
+          for pos in Int(rect.origin.x)..<Int(ordinate)
           {
           //let posfloat = CGFloat(pos) / quote
           //let posint = Int(posfloat)
@@ -1000,7 +1000,7 @@ extension DataPlot
           path.move(to: CGPoint(x: posx, y: liniestart ))
           let a = pos % Vorgaben.majorrasterhorizontal
           
-          //             Swift.print("abszisse: \(abszisse) pos: \(pos) a: \(a)")
+          //             Swift.print("ordinate: \(ordinate) pos: \(pos) a: \(a)")
           
           //if ((pos > 0)&&(pos % Vorgaben.majorrasterhorizontal == 0))
           //if ((posint > 0)&&(posint % Vorgaben.majorrasterhorizontal == 0))
@@ -1030,7 +1030,7 @@ extension DataPlot
           }
           }
           */
-      }// if abszisse
+      }// if ordinate
       
       return path
    }
@@ -1104,18 +1104,18 @@ extension DataPlot
       
       context?.drawPath(using: .stroke)
       
-      let abszissebreite = CGFloat(10.0)
-      var abszisserect = diagrammfeld
-      abszisserect.size.width = abszissebreite
-      abszisserect.origin.x -= abszissebreite
-      //let abszissefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
+      let ordinatebreite = CGFloat(10.0)
+      var ordinaterect = diagrammfeld
+      ordinaterect.size.width = ordinatebreite
+      ordinaterect.origin.x -= ordinatebreite
+      //let ordinatefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
       
       /*
-       let abszissepath = abszisse(rect:abszisserect)
-       // let abszissepath = abszisse(rect:rect,linienfarbe:borderColor)
+       let ordinatepath = ordinate(rect:ordinaterect)
+       // let ordinatepath = ordinate(rect:rect,linienfarbe:borderColor)
        context?.setLineWidth(1.0)
-       context?.addPath(abszissepath)
-       context?.setStrokeColor(abszissefarbe)
+       context?.addPath(ordinatepath)
+       context?.setStrokeColor(ordinatefarbe)
        //context?.setFillColor(CGColor.init(red:0x00,green: 0xFF, blue: 0xFF,alpha:1.0))
        context?.drawPath(using: .stroke)
       */
@@ -1141,9 +1141,9 @@ extension DataPlot
       
       if ((lastdatax) != nil)
       {
-         //let vertikalpfad = vertikalelinen(rect: diagrammfeld, abszisse: CGFloat(lastdatax!))
+         //let vertikalpfad = vertikalelinen(rect: diagrammfeld, ordinate: CGFloat(lastdatax!))
          
-         let vertikalpfad = vertikalelinen(rect: diagrammfeld, abszisse: CGFloat(lastdatax!) , zeit:CGFloat(lastzeit!))
+         let vertikalpfad = vertikalelinen(rect: diagrammfeld, ordinate: CGFloat(lastdatax!) , zeit:CGFloat(lastzeit!))
          context?.setLineWidth(0.4)
          context?.addPath(vertikalpfad)
          context?.drawPath(using: .stroke)

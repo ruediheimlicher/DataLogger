@@ -1,5 +1,5 @@
 //
-//  abszisse.swift
+//  ordinate.swift
 //  DataLogger
 //
 //  Created by Ruedi Heimlicher on 17.06.2017.
@@ -18,7 +18,7 @@ class Abszisse: NSView{
    
    var device:String = "home"
    var deviceID:String = "0"
-   var abszissefeld:CGRect = CGRect.zero
+   var ordinatefeld:CGRect = CGRect.zero
    var randfarbe =  CGColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
    var feldfarbe = CGColor.init(red:0.8,green: 0.8, blue: 0.0,alpha:1.0)
    var linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
@@ -110,48 +110,48 @@ class Abszisse: NSView{
    
    required init(coder aDecoder: NSCoder)
    {
-      //Swift.print("abszisse init coder")
+      //Swift.print("ordinate init coder")
       super.init(coder: aDecoder)!
-      abszissefeld = AbszisseRect(rect:self.bounds)
+      ordinatefeld = AbszisseRect(rect:self.bounds)
       //Swift.print("abzisse frame: \(self.frame)")
       
-      //abszissefeld = PlotRect()
+      //ordinatefeld = PlotRect()
    }
    
    override init(frame frameRect: NSRect) 
    {
       super.init(frame:frameRect);
-      abszissefeld = AbszisseRect(rect:self.bounds)
+      ordinatefeld = AbszisseRect(rect:self.bounds)
       
    }
    
    func PlotRect() -> CGRect
    {
-      Swift.print("abszisse PlotRect bounds: \(bounds)")
+      Swift.print("ordinate PlotRect bounds: \(bounds)")
       let breite = bounds.size.width // -  AbszisseGeom.randlinks - AbszisseGeom.randrechts
       let hoehe = bounds.size.height - AbszisseGeom.randoben - AbszisseGeom.randunten
       let rect = CGRect(x:0 ,
                         y: AbszisseGeom.randunten ,
                         width: breite, height: hoehe)
-      Swift.print("abszisse PlotRect rect: \(rect)")
+      Swift.print("ordinate PlotRect rect: \(rect)")
       return rect
    }
    
-   func abszisse(rect: CGRect)->CGPath
+   func ordinate(rect: CGRect)->CGPath
    {
       let path = CGMutablePath()
       
-      let abszissex = rect.origin.x + rect.size.width - AbszisseVorgaben.legendebreite
+      let ordinatex = rect.origin.x + rect.size.width - AbszisseVorgaben.legendebreite
       let bigmark = CGFloat(6)
       let submark = CGFloat(3)
       
-      path.move(to: CGPoint(x:  abszissex, y: rect.origin.y ))
+      path.move(to: CGPoint(x:  ordinatex, y: rect.origin.y ))
       //path.move(to: rect.origin)
       // linie nach oben
-      path.addLine(to: CGPoint(x:  abszissex, y: rect.origin.y + rect.size.height))
+      path.addLine(to: CGPoint(x:  ordinatex, y: rect.origin.y + rect.size.height))
       
       // wieder nach unten
-      path.move(to: CGPoint(x:  abszissex, y: rect.origin.y ))
+      path.move(to: CGPoint(x:  ordinatex, y: rect.origin.y ))
       //marken setzen
       let markdistanz = rect.size.height / (CGFloat(AbszisseVorgaben.MajorTeileY ) )
       let subdistanz = CGFloat(markdistanz) / CGFloat(AbszisseVorgaben.MinorTeileY)
@@ -162,7 +162,7 @@ class Abszisse: NSView{
       
       for pos in 0...(AbszisseVorgaben.MajorTeileY - 1)
       {
-         path.addLine(to: CGPoint(x:abszissex - bigmark, y: posy))
+         path.addLine(to: CGPoint(x:ordinatex - bigmark, y: posy))
          
          if (( pos % AbszisseVorgaben.rastervertikal ) == 0)
          {
@@ -209,17 +209,17 @@ class Abszisse: NSView{
          for _ in 1..<(AbszisseVorgaben.MinorTeileY)
          {
             subposy = subposy + subdistanz
-            path.move(to: CGPoint(x:  abszissex, y: subposy ))
-            path.addLine(to: CGPoint(x:abszissex - submark,y: subposy))
+            path.move(to: CGPoint(x:  ordinatex, y: subposy ))
+            path.addLine(to: CGPoint(x:ordinatex - submark,y: subposy))
             
          }
          
          posy = posy + markdistanz
          //posy = rect.origin.y + CGFloat(pos) * markdistanz
-         path.move(to: CGPoint(x:  abszissex, y: posy))
+         path.move(to: CGPoint(x:  ordinatex, y: posy))
          
       }
-      path.addLine(to: CGPoint(x:abszissex - bigmark, y: posy))
+      path.addLine(to: CGPoint(x:ordinatex - bigmark, y: posy))
       // Wert
       
       let p = path.currentPoint
@@ -262,19 +262,19 @@ extension Abszisse
 {
    func AbszisseFeld() -> CGRect
    {
-      return abszissefeld
+      return ordinatefeld
    }
    
    func AbszisseFeldHeight()->CGFloat
    {
       //Swift.print("")
-      return abszissefeld.size.height
+      return ordinatefeld.size.height
    }
    
    func setAbszisseFeldHeight(h:CGFloat)
    {
       
-      abszissefeld.size.height = h
+      ordinatefeld.size.height = h
    }
    
    open func setVorgaben(vorgaben:[String:Float])
@@ -393,7 +393,7 @@ extension Abszisse
 
    open func update()
    {
-      self.setNeedsDisplay(self.abszissefeld)
+      self.setNeedsDisplay(self.ordinatefeld)
    }
    
    func AbszisseRect(rect: CGRect) -> CGRect
@@ -426,7 +426,7 @@ extension Abszisse
       context!.setLineWidth(0.6)
       //let diagrammRect = PlotRect()
       context?.setStrokeColor(linienfarbe)
-      drawAbszisseRect(rect: abszissefeld, inContext: context,
+      drawAbszisseRect(rect: ordinatefeld, inContext: context,
                        borderColor: randfarbe,
                        fillColor: feldfarbe)
       
@@ -447,7 +447,7 @@ extension Abszisse
       
       // Feld fuer das Diagramm
       //  let diagrammrect = CGRect.init(x: rect.origin.x + AbszisseGeom.offsetx, y: rect.origin.y + AbszisseGeom.offsety, width: rect.size.width - AbszisseGeom.offsetx - AbszisseGeom.freex , height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey)
-      // abszissefeld = DiagrammRect(rect: PlotRect())
+      // ordinatefeld = DiagrammRect(rect: PlotRect())
       
       //let diagrammrect = DiagrammRect(rect: PlotRect())
       
@@ -456,11 +456,11 @@ extension Abszisse
       let a = rect.origin.x + rect.size.width
       let b = rect.origin.y + rect.size.height
       /*
-       path.move(to: CGPoint(x:  abszissefeld.origin.x, y: abszissefeld.origin.y ))
-       path.addLine(to: NSMakePoint(abszissefeld.origin.x + abszissefeld.size.width, abszissefeld.origin.y )) // > rechts
-       path.addLine(to: NSMakePoint(abszissefeld.origin.x + abszissefeld.size.width, abszissefeld.origin.y + abszissefeld.size.height)) // > oben
-       path.addLine(to: NSMakePoint(abszissefeld.origin.x , abszissefeld.origin.y + abszissefeld.size.height)) // > links
-       path.addLine(to: NSMakePoint(abszissefeld.origin.x , abszissefeld.origin.y))
+       path.move(to: CGPoint(x:  ordinatefeld.origin.x, y: ordinatefeld.origin.y ))
+       path.addLine(to: NSMakePoint(ordinatefeld.origin.x + ordinatefeld.size.width, ordinatefeld.origin.y )) // > rechts
+       path.addLine(to: NSMakePoint(ordinatefeld.origin.x + ordinatefeld.size.width, ordinatefeld.origin.y + ordinatefeld.size.height)) // > oben
+       path.addLine(to: NSMakePoint(ordinatefeld.origin.x , ordinatefeld.origin.y + ordinatefeld.size.height)) // > links
+       path.addLine(to: NSMakePoint(ordinatefeld.origin.x , ordinatefeld.origin.y))
        //    path.addLine(to: NSMakePoint(diagrammrect.origin.x + diagrammrect.size.width, diagrammrect.origin.y + diagrammrect.size.height))
        path.closeSubpath()
        
@@ -471,19 +471,19 @@ extension Abszisse
       // 4
       //     context?.addPath(path)
       // context?.drawPath(using: .fillStroke)
-      //let achsenpath = achsen(rect:abszissefeld)
+      //let achsenpath = achsen(rect:ordinatefeld)
       //context?.addPath(achsenpath)
-      let abszissebreite = CGFloat(10.0)
-      var abszisserect = abszissefeld
-      abszisserect.size.width = abszissebreite
-      abszisserect.origin.x -= 1
-      //let abszissefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
+      let ordinatebreite = CGFloat(10.0)
+      var ordinaterect = ordinatefeld
+      ordinaterect.size.width = ordinatebreite
+      ordinaterect.origin.x -= 1
+      //let ordinatefarbe = CGColor.init(red:0.0,green:0.5, blue: 0.5,alpha:1.0)
       
       
-      let abszissepath = abszisse(rect:abszisserect)
-      // let abszissepath = abszisse(rect:rect,linienfarbe:borderColor)
+      let ordinatepath = ordinate(rect:ordinaterect)
+      // let ordinatepath = ordinate(rect:rect,linienfarbe:borderColor)
       context?.setLineWidth(1.0)
-      context?.addPath(abszissepath)
+      context?.addPath(ordinatepath)
       context?.setStrokeColor(linienfarbe)
       //context?.setFillColor(CGColor.init(red:0x00,green: 0xFF, blue: 0xFF,alpha:1.0))
       context?.drawPath(using: .stroke)
