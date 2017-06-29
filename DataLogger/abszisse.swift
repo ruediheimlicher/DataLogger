@@ -13,7 +13,7 @@ import AppKit
 import Cocoa
 
 
-class Abszisse: NSView{
+class Ordinate: NSView{
    //override var tag:Int
    
    var device:String = "home"
@@ -54,9 +54,9 @@ class Abszisse: NSView{
        let freex: CGFloat = 15.0 // Freier Raum rechts
       
    }
-   var AbszisseGeom = Geom()
+   var OrdinateGeom = Geom()
    /*
-   struct AbszisseVorgaben
+   struct OrdinateVorgaben
    {
       static let legendebreite: CGFloat = 10.0
       
@@ -65,7 +65,7 @@ class Abszisse: NSView{
       static var MinorTeileY: Int = 2                             // Teile der Subskala
       static var MaxY: CGFloat = 160.0                            // Obere Grenze der Anzeige, muss zu MajorTeileY passen
       static var MinY: CGFloat = 0.0                              // Untere Grenze der Anzeige
-      static var MaxX: CGFloat = 1000                             // Obere Grenze der Abszisse
+      static var MaxX: CGFloat = 1000                             // Obere Grenze der Ordinate
       
       static var ZeitKompression: CGFloat = 1.0
       static var Startsekunde: Int = 0
@@ -106,13 +106,13 @@ class Abszisse: NSView{
       let Device = "home"
    }
 
-   var AbszisseVorgaben = Vorgaben()
+   var OrdinateVorgaben = Vorgaben()
    
    required init(coder aDecoder: NSCoder)
    {
       //Swift.print("ordinate init coder")
       super.init(coder: aDecoder)!
-      ordinatefeld = AbszisseRect(rect:self.bounds)
+      ordinatefeld = OrdinateRect(rect:self.bounds)
       //Swift.print("abzisse frame: \(self.frame)")
       
       //ordinatefeld = PlotRect()
@@ -121,17 +121,17 @@ class Abszisse: NSView{
    override init(frame frameRect: NSRect) 
    {
       super.init(frame:frameRect);
-      ordinatefeld = AbszisseRect(rect:self.bounds)
+      ordinatefeld = OrdinateRect(rect:self.bounds)
       
    }
    
    func PlotRect() -> CGRect
    {
       Swift.print("ordinate PlotRect bounds: \(bounds)")
-      let breite = bounds.size.width // -  AbszisseGeom.randlinks - AbszisseGeom.randrechts
-      let hoehe = bounds.size.height - AbszisseGeom.randoben - AbszisseGeom.randunten
+      let breite = bounds.size.width // -  OrdinateGeom.randlinks - OrdinateGeom.randrechts
+      let hoehe = bounds.size.height - OrdinateGeom.randoben - OrdinateGeom.randunten
       let rect = CGRect(x:0 ,
-                        y: AbszisseGeom.randunten ,
+                        y: OrdinateGeom.randunten ,
                         width: breite, height: hoehe)
       Swift.print("ordinate PlotRect rect: \(rect)")
       return rect
@@ -141,7 +141,7 @@ class Abszisse: NSView{
    {
       let path = CGMutablePath()
       
-      let ordinatex = rect.origin.x + rect.size.width - AbszisseVorgaben.legendebreite
+      let ordinatex = rect.origin.x + rect.size.width - OrdinateVorgaben.legendebreite
       let bigmark = CGFloat(6)
       let submark = CGFloat(3)
       
@@ -153,26 +153,26 @@ class Abszisse: NSView{
       // wieder nach unten
       path.move(to: CGPoint(x:  ordinatex, y: rect.origin.y ))
       //marken setzen
-      let markdistanz = rect.size.height / (CGFloat(AbszisseVorgaben.MajorTeileY ) )
-      let subdistanz = CGFloat(markdistanz) / CGFloat(AbszisseVorgaben.MinorTeileY)
+      let markdistanz = rect.size.height / (CGFloat(OrdinateVorgaben.MajorTeileY ) )
+      let subdistanz = CGFloat(markdistanz) / CGFloat(OrdinateVorgaben.MinorTeileY)
       var posy = rect.origin.y
-      let deznummer = NSDecimalNumber(decimal:pow(10,AbszisseVorgaben.Exponent)).intValue
+      let deznummer = NSDecimalNumber(decimal:pow(10,OrdinateVorgaben.Exponent)).intValue
       let textfarbe:NSColor = NSColor.init(cgColor:linienfarbe)!
       var tempWertString = ""
       
-      for pos in 0...(AbszisseVorgaben.MajorTeileY - 1)
+      for pos in 0...(OrdinateVorgaben.MajorTeileY - 1)
       {
          path.addLine(to: CGPoint(x:ordinatex - bigmark, y: posy))
          
-         if (( pos % AbszisseVorgaben.rastervertikal ) == 0)
+         if (( pos % OrdinateVorgaben.rastervertikal ) == 0)
          {
             // Wert
             let p = path.currentPoint
             
-            let wert = (pos - AbszisseVorgaben.Nullpunkt) * deznummer
+            let wert = (pos - OrdinateVorgaben.Nullpunkt) * deznummer
 
            
-            switch (AbszisseVorgaben.Stellen)
+            switch (OrdinateVorgaben.Stellen)
             {
             case 0:
                tempWertString = String(format: "%d",  wert)
@@ -185,7 +185,7 @@ class Abszisse: NSView{
             default:
                break
             }
-            let zehnerpotenz = pow(10,AbszisseVorgaben.Exponent)
+            let zehnerpotenz = pow(10,OrdinateVorgaben.Exponent)
             
             
             
@@ -206,7 +206,7 @@ class Abszisse: NSView{
          }
          
          var subposy = posy // aktuelle Position
-         for _ in 1..<(AbszisseVorgaben.MinorTeileY)
+         for _ in 1..<(OrdinateVorgaben.MinorTeileY)
          {
             subposy = subposy + subdistanz
             path.move(to: CGPoint(x:  ordinatex, y: subposy ))
@@ -223,8 +223,8 @@ class Abszisse: NSView{
       // Wert
       
       let p = path.currentPoint
-      let wert = (AbszisseVorgaben.MajorTeileY - AbszisseVorgaben.Nullpunkt) * deznummer
-      switch (AbszisseVorgaben.Stellen)
+      let wert = (OrdinateVorgaben.MajorTeileY - OrdinateVorgaben.Nullpunkt) * deznummer
+      switch (OrdinateVorgaben.Stellen)
       {
       case 0:
          tempWertString = String(format: "%d",  wert)
@@ -258,20 +258,20 @@ class Abszisse: NSView{
    
 }
 
-extension Abszisse
+extension Ordinate
 {
-   func AbszisseFeld() -> CGRect
+   func OrdinateFeld() -> CGRect
    {
       return ordinatefeld
    }
    
-   func AbszisseFeldHeight()->CGFloat
+   func OrdinateFeldHeight()->CGFloat
    {
       //Swift.print("")
       return ordinatefeld.size.height
    }
    
-   func setAbszisseFeldHeight(h:CGFloat)
+   func setOrdinateFeldHeight(h:CGFloat)
    {
       
       ordinatefeld.size.height = h
@@ -305,36 +305,36 @@ extension Abszisse
        */
       if (vorgaben["zeitkompression"] != nil)
       {
-         AbszisseVorgaben.ZeitKompression = CGFloat(vorgaben["zeitkompression"]!)
+         OrdinateVorgaben.ZeitKompression = CGFloat(vorgaben["zeitkompression"]!)
       }
       if (vorgaben["MajorTeileY"] != nil)
       {
-         AbszisseVorgaben.MajorTeileY = Int((vorgaben["MajorTeileY"])!)
+         OrdinateVorgaben.MajorTeileY = Int((vorgaben["MajorTeileY"])!)
       }
       
       if (vorgaben["MinorTeileY"] != nil)
       {
-         AbszisseVorgaben.MinorTeileY = Int((vorgaben["MinorTeileY"])!)
+         OrdinateVorgaben.MinorTeileY = Int((vorgaben["MinorTeileY"])!)
       }
       
       if (vorgaben["MaxY"] != nil)
       {
-         AbszisseVorgaben.MaxY = CGFloat((vorgaben["MaxY"])!)
+         OrdinateVorgaben.MaxY = CGFloat((vorgaben["MaxY"])!)
       }
       
       if (vorgaben["MinY"] != nil)
       {
-         AbszisseVorgaben.MinY = CGFloat((vorgaben["MinY"])!)
+         OrdinateVorgaben.MinY = CGFloat((vorgaben["MinY"])!)
       }
       
       if (vorgaben["MaxX"] != nil)
       {
-         AbszisseVorgaben.MaxX = CGFloat((vorgaben["MaxX"])!)
+         OrdinateVorgaben.MaxX = CGFloat((vorgaben["MaxX"])!)
       }
       
       if (vorgaben["Nullpunkt"] != nil)
       {
-         AbszisseVorgaben.Nullpunkt = Int((vorgaben["Nullpunkt"])!)
+         OrdinateVorgaben.Nullpunkt = Int((vorgaben["Nullpunkt"])!)
       }
       
       
@@ -344,22 +344,22 @@ extension Abszisse
    
    open func setMaxX(maxX:Int)
    {
-      AbszisseVorgaben.MaxX = CGFloat(maxX)
+      OrdinateVorgaben.MaxX = CGFloat(maxX)
    }
    
    open func setMaxY(maxY:Int)
    {
-      AbszisseVorgaben.MaxY = CGFloat(maxY)
+      OrdinateVorgaben.MaxY = CGFloat(maxY)
    }
 
    open func setMinorTeileY(minorteiley:Int)
    {
-      AbszisseVorgaben.MinorTeileY = Int(minorteiley)
+      OrdinateVorgaben.MinorTeileY = Int(minorteiley)
    }
 
    open func setMajorTeileY(majorteiley:Int)
    {
-      AbszisseVorgaben.MajorTeileY = Int(majorteiley)
+      OrdinateVorgaben.MajorTeileY = Int(majorteiley)
    }
 
    open func setDevice(devicestring:String)
@@ -375,13 +375,13 @@ extension Abszisse
 
    open func setExponent(exponent:Int)
    {
-      AbszisseVorgaben.Exponent = exponent
+      OrdinateVorgaben.Exponent = exponent
       
    }
    
    open func setStellen(stellen:Int)
    {
-      AbszisseVorgaben.Stellen = stellen
+      OrdinateVorgaben.Stellen = stellen
       
    }
    
@@ -396,14 +396,14 @@ extension Abszisse
       self.setNeedsDisplay(self.ordinatefeld)
    }
    
-   func AbszisseRect(rect: CGRect) -> CGRect
+   func OrdinateRect(rect: CGRect) -> CGRect
    {
       /*
-       let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + AbszisseGeom.offsety + AbszisseGeom.randunten, width: rect.size.width  , height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey)
+       let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + OrdinateGeom.offsety + OrdinateGeom.randunten, width: rect.size.width  , height: rect.size.height - OrdinateGeom.offsety - OrdinateGeom.freey)
        return diagrammrect
        */
       
-      let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + AbszisseGeom.offsety  + AbszisseGeom.offsety, width: rect.size.width - AbszisseGeom.offsetx - AbszisseGeom.freex  - AbszisseGeom.randrechts  -  AbszisseGeom.randlinks, height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey  - AbszisseGeom.randoben - AbszisseGeom.randunten)
+      let diagrammrect = CGRect.init(x: rect.origin.x +  rect.size.width  , y: rect.origin.y + OrdinateGeom.offsety  + OrdinateGeom.offsety, width: rect.size.width - OrdinateGeom.offsetx - OrdinateGeom.freex  - OrdinateGeom.randrechts  -  OrdinateGeom.randlinks, height: rect.size.height - OrdinateGeom.offsety - OrdinateGeom.freey  - OrdinateGeom.randoben - OrdinateGeom.randunten)
       
       return diagrammrect
       
@@ -411,7 +411,7 @@ extension Abszisse
       
       /*
        // DATA_INTERFACE 5
-       let diagrammrect = CGRect.init(x: rect.origin.x + AbszisseGeom.offsetx, y: rect.origin.y + AbszisseGeom.offsety  + AbszisseGeom.offsety, width: rect.size.width - AbszisseGeom.offsetx - AbszisseGeom.freex  - AbszisseGeom.randrechts  -  AbszisseGeom.randlinks, height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey  - AbszisseGeom.randoben - AbszisseGeom.randunten)
+       let diagrammrect = CGRect.init(x: rect.origin.x + OrdinateGeom.offsetx, y: rect.origin.y + OrdinateGeom.offsety  + OrdinateGeom.offsety, width: rect.size.width - OrdinateGeom.offsetx - OrdinateGeom.freex  - OrdinateGeom.randrechts  -  OrdinateGeom.randlinks, height: rect.size.height - OrdinateGeom.offsety - OrdinateGeom.freey  - OrdinateGeom.randoben - OrdinateGeom.randunten)
        return diagrammrect
        */
       
@@ -446,7 +446,7 @@ extension Abszisse
       //path.addRect(rect)
       
       // Feld fuer das Diagramm
-      //  let diagrammrect = CGRect.init(x: rect.origin.x + AbszisseGeom.offsetx, y: rect.origin.y + AbszisseGeom.offsety, width: rect.size.width - AbszisseGeom.offsetx - AbszisseGeom.freex , height: rect.size.height - AbszisseGeom.offsety - AbszisseGeom.freey)
+      //  let diagrammrect = CGRect.init(x: rect.origin.x + OrdinateGeom.offsetx, y: rect.origin.y + OrdinateGeom.offsety, width: rect.size.width - OrdinateGeom.offsetx - OrdinateGeom.freex , height: rect.size.height - OrdinateGeom.offsety - OrdinateGeom.freey)
       // ordinatefeld = DiagrammRect(rect: PlotRect())
       
       //let diagrammrect = DiagrammRect(rect: PlotRect())

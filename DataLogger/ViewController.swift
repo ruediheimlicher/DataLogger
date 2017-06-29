@@ -175,9 +175,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
     var devicearray:[String] = ["Teensy","Temperatur","ADC12BIT"]
    
-   var tempAbszisse:Abszisse!
+   var tempAbszisse:Ordinate!
    
-   var ordinateArray:[Abszisse] = [Abszisse]() // Abszissen
+   var ordinateArray:[Ordinate] = [Ordinate]() // Abszissen
    var ordinateFeldArray:[NSRect] = [NSRect](repeating:NSZeroRect, count:8) // Felder der Abszissen
    
    // Diagramm
@@ -725,8 +725,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       for nr in 0..<swiftArray.count 
       {
-         var dataordinate:Abszisse = Abszisse.init(frame: ordinateframe)
-         dataordinate.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
+         var dataordinate:Ordinate = Ordinate.init(frame: ordinateframe)
+         dataordinate.setOrdinateFeldHeight(h: self.datagraph.DiagrammFeldHeight())
          dataordinate.identifier = "dataordinate\(nr)"
          dataordinate.setLinienfarbe(farbe: datagraph.linienfarbeArray[nr][7].cgColor)
          dataordinate.setMajorTeileY(majorteiley: Int(swiftArray[nr]["majorteiley"]!)!)
