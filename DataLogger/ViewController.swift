@@ -1140,7 +1140,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // MARK: MESSUNG_DATA
       // ****************************************************************************
       case MESSUNG_DATA: // wird gesetzt, wenn vom Teensy im Timertakt Daten gesendet werden
-         print("code ist MESSUNG_DATA")
+         //print("code ist MESSUNG_DATA")
          //        print("teensy.read_byteArray")
          //        print("\(teensy.last_read_byteArray)")
          let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO])
@@ -1355,7 +1355,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          case 2:
             //print ("")
             
-            print ("switch devicenummer: \(devicenummer)")
+            //print ("switch devicenummer: \(devicenummer)")
             //print("task 2 teensy.read_byteArray")
             
             for index in 16...33
@@ -1674,7 +1674,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                            wert_norm = wert / 0x1000 * 4.096 * 40
                            SortenFaktor = 10 
                         }
-                        print("wert_norm: \(wert_norm)")
+                        //print("wert_norm: \(wert_norm)")
                      default: break
                      }// switch device
                      
@@ -1751,14 +1751,23 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let PlatzRechts:Float = 20.0
          
          // breite des sichtbaren Bereichs
-         let contentwidth = Float(self.dataScroller.contentView.bounds.size.width)
+         let contentwidth = Float(self.dataScroller.contentView.bounds.size.width) 
+         // The scroll view’s content view, the view that clips the document view
          
          // let lastdata = self.datagraph.DatenArray.last
-         let lastxold = Float((self.datagraph.DatenArray.last?[0])!)
+         let lastxold = Float((self.datagraph.DatenArray.last?[0])!) // letzte abszisse
          let lastx = Float((self.datagraph.DatenDicArray.last?["x"])!)
          
-         let maxx = NSMaxX((self.dataScroller.documentView?.frame)!)
-         let maxwidth = NSWidth((self.dataScroller.documentView?.bounds)!)
+/*
+          Scrolling:
+ https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/NSScrollViewGuide/Articles/Scrolling.html#//apple_ref/doc/uid/TP40003463-SW1
+ Adjust scroller: 
+          https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/NSScrollViewGuide/Articles/SynchroScroll.html#//apple_ref/doc/uid/TP40003537-SW5
+  
+          
+          documentVisibleRect: The portion of the document view, in its own coordinate system, visible through the scroll view’s content view.
+ 
+          */
          
          let currentScrollPosition = self.dataScroller.contentView.bounds.origin.x
          
@@ -1767,9 +1776,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          //// restore the scroll location
-         // [[theScrollView documentView] scrollPoint:currentScrollPosition];
+          //[[theScrollView documentView] scrollPoint:currentScrollPosition];
          
-         //      self.dataScroller.documentView?.scroll(newscrollorigin)
+ //           self.dataScroller.documentView?.scroll(newscrollorigin)
          
          // http://stackoverflow.com/questions/9820669/i-dont-fully-understand-scrollrecttovisible-when-im-using-contentinset
          // https://developer.apple.com/reference/appkit/nsview/1483811-scrollrecttovisible?language=objc
@@ -1809,7 +1818,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             print("lastdata zu gross \(lastx) delta:  \(delta)")
             self.dataScroller.documentView?.frame.origin.x -=   CGFloat(delta)
+            
             self.dataScroller.contentView.needsDisplay = true
+        
+         
          }
          
          if (lastx > Float((self.dataScroller.documentView?.frame.size.width)! * 0.9))

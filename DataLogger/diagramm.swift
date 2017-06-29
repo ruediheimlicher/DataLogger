@@ -74,7 +74,7 @@ class DataPlot: NSView
       static let rastervertikal = 2 // Sprung innerhalb MajorTeileY + MinorTeileY
       
       
-      static let majorrasterhorizontal = 20 // Sprung innerhalb Zeitachse
+      static let majorrasterhorizontal = 30 // Sprung innerhalb Zeitachse
       static let minorrasterhorizontal = 5
    }
    
@@ -319,6 +319,7 @@ class DataPlot: NSView
    open func augmentMaxX(maxX:Int)
    {
       Vorgaben.MaxX += CGFloat(maxX)
+      self.diagrammfeld.size.width += CGFloat(maxX)
    }
 
    
@@ -570,7 +571,7 @@ class DataPlot: NSView
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
       var FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
-      FaktorX = 1.0
+      FaktorX = 8.0
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
