@@ -561,7 +561,7 @@ class DataPlot: NSView
       //self.setNeedsDisplay(self.bounds)
       //self.displayIfNeeded()
    }
-   
+   // MARK: setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
       //     Swift.print("")
@@ -571,14 +571,16 @@ class DataPlot: NSView
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
       var FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
-      FaktorX = 8.0
-      //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
+      FaktorX = 10.0
+      //      
+      //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
       //Swift.print("ordinate feld height: \(feld.size.height) Vorgaben.MaxY: \(Vorgaben.MaxY) FaktorY: \(FaktorY) ")
       
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
+      
       var neuerPunkt:CGPoint = feld.origin
       
       neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0][0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	//	Zeit, x-Wert, erster Wert im WerteArray

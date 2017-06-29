@@ -807,7 +807,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       // NSBeep()
       let code:Int = Int(teensy.read_byteArray[0])
       let codestring = int2hex(UInt8(code))
-      print("newLoggerDataAktion code: \(code) \(codestring)")
+//      print("newLoggerDataAktion code: \(code) \(codestring)")
       
       /*
       print("read_byteArray code: ")
@@ -1154,7 +1154,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
          
-         print ("devicenummer: \(devicenummer)\tchannelnummer: \(channelnummer)")
+ //        print ("devicenummer: \(devicenummer)\tchannelnummer: \(channelnummer)")
          devicenummer &= 0x0F
          //print ("\ndevicenummer B: \(devicenummer)")
 
@@ -1248,10 +1248,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
          switch (task)
          {
-         case 0:
-            
-            print ("switch keine devicenummer: \(devicenummer)")
-            
+         case 0:            
+  //          print ("switch keine devicenummer: \(devicenummer)")
+            break
+
          case 1:
             //print ("")
             
@@ -1260,10 +1260,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             for index in 16...33
             {
                
-               print("\(teensy.read_byteArray[index])\t", terminator: "")
+//               print("\(teensy.read_byteArray[index])\t", terminator: "")
             }
            
-            print ("")
+ //           print ("")
             
             if (wl_callback_status & (1<<UInt8(task)) > 0)
             {
@@ -1720,7 +1720,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
          }
  */
-         print ("tempinputDataFeldstring \(tempinputDataFeldstring)\n")
+ //        print ("tempinputDataFeldstring \(tempinputDataFeldstring)\n")
          
          
          
@@ -1752,13 +1752,16 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          self.datagraph.setWerteArray(werteArray:werteArray,  nullpunktoffset: NullpunktOffset)
          
          let PlatzRechts:Float = 20.0
-         
+
+         // MARK: SCROLL
          // breite des sichtbaren Bereichs
          let contentwidth = Float(self.dataScroller.contentView.bounds.size.width) 
          // The scroll view’s content view, the view that clips the document view
          
          // let lastdata = self.datagraph.DatenArray.last
-         let lastxold = Float((self.datagraph.DatenArray.last?[0])!) // letzte ordinate
+//         let lastxold = Float((self.datagraph.DatenArray.last?[0])!) // letzte ordinate
+
+         
          let lastx = Float((self.datagraph.DatenDicArray.last?["x"])!)
          
 /*
@@ -1772,7 +1775,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  
           */
          
-         let currentScrollPosition = self.dataScroller.contentView.bounds.origin.x
+         let currentScrollPosition = self.dataScroller.contentView.bounds.origin.x // aktueller Nullpunkt des contentview
          
          
          let newscrollorigin = NSMakePoint(currentScrollPosition - CGFloat(lastx),0.0)
@@ -1803,6 +1806,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          let aktuelledocpos = lastx + docviewx
+        
          let grenze = (contentwidth / 10 * 8 ) + PlatzRechts
          
          //print(" docviewx:  \(docviewx)  aktuelledocpos: \(aktuelledocpos) grenze: \(grenze)")
@@ -1814,24 +1818,23 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          //         print("$$$\(counter)\t\(docviewx)\t\(lastx) \t\(docviewx)\t\(lastx + docviewx)\t\(currentScrollPosition)")
          
-         
-         if (((lastx) + docviewx ) > grenze) // docviewx ist negativ, wenn gegen links gescrollt wurde
+         print("currentScrollPosition: \(currentScrollPosition)\t lastx: \(lastx) \tdocviewx: \(docviewx)  ")    
+         if (((lastx) + docviewx - Float(currentScrollPosition)) > grenze) // docviewx ist negativ, wenn gegen links gescrollt wurde
          {
             let delta = contentwidth / 10 * 8
             
             print("lastdata zu gross \(lastx) delta:  \(delta)")
             self.dataScroller.documentView?.frame.origin.x -=   CGFloat(delta)
             
-            self.dataScroller.contentView.needsDisplay = true
+  //          self.dataScroller.contentView.needsDisplay = true
         
-         
          }
          
          if (lastx > Float((self.dataScroller.documentView?.frame.size.width)! * 0.9))
          {
-             self.dataScroller.documentView?.frame.size.width += 1000
+         //    self.dataScroller.documentView?.frame.size.width += 1000
             
-            self.datagraph.augmentMaxX(maxX:1000)
+         //   self.datagraph.augmentMaxX(maxX:1000)
          }
          
          let batteriespannung = Int32(teensy.read_byteArray[BATT])
