@@ -89,7 +89,7 @@ class DataPlot: NSView
    
    required init(coder: NSCoder)
    {
-      Swift.print("DataPlot coder")
+      //Swift.print("DataPlot coder")
   //    Abszisse_A = Abszisse.init(coder:coder)
       
       super.init(coder: coder)!
@@ -562,6 +562,7 @@ class DataPlot: NSView
       //self.displayIfNeeded()
    }
    
+   // MARK: *** setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
       //     Swift.print("")
@@ -571,7 +572,7 @@ class DataPlot: NSView
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
       var FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
-      FaktorX = 8.0
+      FaktorX = 1.0
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
@@ -605,7 +606,7 @@ class DataPlot: NSView
       {
          if (KanalArray[i] < 8)
          {
-            // werteArray[kanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
+            // werteArray[diagrammkanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
             
             neuerPunkt.y = feld.origin.y
             //            Swift.print("i: \(i) werteArray 0: \(werteArray[0]) neuerPunkt.x nach: \(neuerPunkt.x)")

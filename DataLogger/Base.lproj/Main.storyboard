@@ -875,7 +875,7 @@
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="heH-S0-xIW" customClass="DataPlot" customModule="DataLogger" customModuleProvider="target">
-                                                                <rect key="frame" x="0.0" y="0.0" width="648" height="281"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="1000" height="281"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             </view>
                                                         </subviews>
@@ -939,7 +939,7 @@
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dQW-9w-GLc">
                                                     <rect key="frame" x="22" y="100" width="119" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <buttonCell key="cell" type="push" title="WL-Status" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eq4-Uw-Lt1">
+                                                    <buttonCell key="cell" type="push" title="WL-Status" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eq4-Uw-Lt1">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
@@ -1728,30 +1728,30 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="3hT-lw-jfj"/>
                             </slider>
-                            <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9fT-Zk-EM6">
-                                <rect key="frame" x="602" y="582" width="435" height="135"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <clipView key="contentView" ambiguous="YES" id="otk-91-Y9T">
-                                    <rect key="frame" x="1" y="1" width="418" height="133"/>
+                            <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wCg-M1-dki">
+                                <rect key="frame" x="605" y="571" width="500" height="135"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <clipView key="contentView" ambiguous="YES" id="wwn-dX-4IW">
+                                    <rect key="frame" x="1" y="1" width="483" height="118"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView ambiguous="YES" importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="HAl-fw-e7v">
-                                            <rect key="frame" x="0.0" y="0.0" width="418" height="133"/>
+                                        <textView ambiguous="YES" importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="Ono-wZ-DOf">
+                                            <rect key="frame" x="0.0" y="0.0" width="483" height="118"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="418" height="133"/>
-                                            <size key="maxSize" width="544" height="10000000"/>
+                                            <size key="minSize" width="483" height="118"/>
+                                            <size key="maxSize" width="10531" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         </textView>
                                     </subviews>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="6TQ-dj-yov">
-                                    <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                                <edgeInsets key="contentInsets" left="0.0" right="0.0" top="0.0" bottom="0.0"/>
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="nu5-mz-YSS">
+                                    <rect key="frame" x="1" y="119" width="483" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="UxM-U5-1Ij">
-                                    <rect key="frame" x="419" y="1" width="15" height="133"/>
+                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="oJh-nA-Zv3">
+                                    <rect key="frame" x="484" y="1" width="15" height="118"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -1781,7 +1781,7 @@
                         <outlet property="datagraph_Volt" destination="MQl-xa-lLF" id="hP0-oV-4rI"/>
                         <outlet property="datum_Feld" destination="aLK-lp-xer" id="5fj-RT-mhB"/>
                         <outlet property="downloadDataFeld" destination="6BR-t2-hl6" id="Sdy-CE-7tk"/>
-                        <outlet property="inputDataFeld" destination="HAl-fw-e7v" id="NnH-7d-ACo"/>
+                        <outlet property="inputDataFeld" destination="Ono-wZ-DOf" id="vjT-E1-D61"/>
                         <outlet property="jahr_Feld" destination="3Y0-dY-M5g" id="09G-cL-YFe"/>
                         <outlet property="manufactorer" destination="fuN-0r-42P" id="0GZ-FA-wDE"/>
                         <outlet property="messungcounter" destination="QdV-Iu-KQH" id="sOD-Nj-NZn"/>

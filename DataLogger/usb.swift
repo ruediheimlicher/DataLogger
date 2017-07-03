@@ -61,7 +61,7 @@ open class usb_teensy: NSObject
       var r:Int32 = 0
       
       let    out = rawhid_open(1, 0x16C0, 0x0480, 0xFFAB, 0x0200)
-      print("func usb_teensy.USBOpen out: \(out)")
+      //print("func usb_teensy.USBOpen out: \(out)")
       
       hid_usbstatus = out as Int32;
       
@@ -170,8 +170,8 @@ open class usb_teensy: NSObject
       
       let result = rawhid_recv(0, &read_byteArray, Int32(BUFFER_SIZE), 50);
       
-      print("\n*report_start_read_USB result: \(result) cont: \(cont)")
-      print("usb.swift start_read_byteArray start: *\n\(read_byteArray)*")
+      //print("\n*report_start_read_USB result: \(result) cont: \(cont)")
+      //print("usb.swift start_read_byteArray start: *\n\(read_byteArray)*")
       
       let nc = NotificationCenter.default
       nc.post(name:Notification.Name(rawValue:"newdata"),
@@ -251,7 +251,7 @@ open class usb_teensy: NSObject
             new_Data = true
             datatruecounter += 1
             let codehex = read_byteArray[0]
-            let codehexstring = String(format:"%2X", codehex)
+//            let codehexstring = String(format:"%2X", codehex)
             //print("+++\t\tnewData in usb.swift cont_Read code: \(read_byteArray[0]) \(codehexstring)")
  //           print("\(read_byteArray)")
             
@@ -368,13 +368,13 @@ open class usb_teensy: NSObject
       //write_byteArray[6] = 43;
       //write_byteArray[7] = 44;
 
-      print("\nusb.swift  write_byteArray in start_write_USB code: \(write_byteArray[0])\nSettings: ", terminator: "\t")
+      //print("\nusb.swift  write_byteArray in start_write_USB code: \(write_byteArray[0])\nSettings: ", terminator: "\t")
       var i=0;
       
       i = 0 // 16, beginn Data in USB-Buffer
       while i < DATA_START_BYTE - 1
       {
-         print("\(write_byteArray[i])", terminator: " ")
+//         print("\(write_byteArray[i])", terminator: " ")
          i = i+1
       }
     //  print("\nData:")
@@ -389,7 +389,7 @@ open class usb_teensy: NSObject
       
       //let dateA = Date()
       
-      let senderfolg = rawhid_send(0,&write_byteArray, Int32(BUFFER_SIZE), 500)
+      let senderfolg = rawhid_send(0,&write_byteArray, Int32(BUFFER_SIZE), 50)
     
       
       //let dauer1 = Date() //
@@ -436,7 +436,7 @@ open class usb_teensy: NSObject
       print("")
 //print("a")
       
-      let senderfolg = rawhid_send(0,&write_byteArray, Int32(BUFFER_SIZE), 500)
+      let senderfolg = rawhid_send(0,&write_byteArray, Int32(BUFFER_SIZE), 50)
       
       //print("b")
       return senderfolg
@@ -455,7 +455,7 @@ open class Hello
 {
    open func setU()
    {
-   print("Hi Netzteil")
+      print("Hi Netzteil")
    }
 }
 
