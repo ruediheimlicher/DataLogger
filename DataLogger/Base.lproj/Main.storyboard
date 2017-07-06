@@ -709,15 +709,6 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fuN-0r-42P">
-                                <rect key="frame" x="158" y="720" width="100" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" id="VPD-56-mu6">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i6w-2A-PKp">
                                 <rect key="frame" x="57" y="672" width="103" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1712,7 +1703,7 @@
                             <slider horizontalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5wi-Sp-L3Z">
                                 <rect key="frame" x="539" y="601" width="19" height="96"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="right" sliderType="linear" id="Xo9-Oq-noA"/>
+                                <sliderCell key="cell" continuous="YES" alignment="left" maxValue="4096" doubleValue="50" tickMarkPosition="right" sliderType="linear" id="Xo9-Oq-noA"/>
                             </slider>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BYc-00-GJy">
                                 <rect key="frame" x="1052" y="723" width="63" height="16"/>
@@ -1726,7 +1717,10 @@
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jBH-9o-Sgb">
                                 <rect key="frame" x="377" y="614" width="96" height="19"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="3hT-lw-jfj"/>
+                                <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="512" maxValue="1024" doubleValue="768" tickMarkPosition="above" sliderType="linear" id="3hT-lw-jfj"/>
+                                <connections>
+                                    <action selector="sendServoA:" target="XfG-lQ-9wD" id="6PV-i8-eSM"/>
+                                </connections>
                             </slider>
                             <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wCg-M1-dki">
                                 <rect key="frame" x="605" y="571" width="500" height="135"/>
@@ -1755,6 +1749,19 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J8e-1f-8RY" customClass="rVertikalanzeige">
+                                <rect key="frame" x="491" y="604" width="11" height="147"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </customView>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fuN-0r-42P">
+                                <rect key="frame" x="163" y="720" width="240" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" id="VPD-56-mu6">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>
@@ -1770,6 +1777,7 @@
                         <outlet property="TaskListe" destination="Ygu-ma-myE" id="YJu-M3-4OZ"/>
                         <outlet property="TaskTab" destination="cmV-IO-Cl1" id="VYE-af-uxB"/>
                         <outlet property="USB_OK" destination="gt5-jv-VJI" id="gtD-nt-RC6"/>
+                        <outlet property="Vertikalbalken" destination="J8e-1f-8RY" id="KoM-CU-1ko"/>
                         <outlet property="WL_Status" destination="dQW-9w-GLc" id="Wco-ge-lgn"/>
                         <outlet property="ZeitkompressionPop" destination="bbJ-uc-xzE" id="n6I-Ba-yek"/>
                         <outlet property="blockcounter" destination="UpY-QF-mQi" id="sPJ-V1-XDN"/>
