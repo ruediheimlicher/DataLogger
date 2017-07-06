@@ -51,6 +51,8 @@ let DIGI1 = 14	// Digi Eingang
 let SERVOALO = 10
 let SERVOAHI = 11
 
+let SERVO_OUT = 0xD0
+
 let MMCLO = 16
 let MMCHI = 17
 
@@ -265,7 +267,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
    
    @IBOutlet  var extspannungStepper: NSStepper!
-   
+   @IBOutlet var  Vertikalbalken:rVertikalanzeige!
    
    // Datum
    @IBOutlet  var sec_Feld: NSTextField!
@@ -831,7 +833,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  //     var paragraph:NSMutableParagraphStyle = NSMutableParagraphStyle.default() as! NSMutableParagraphStyle
  //     paragraph.lineBreakMode = NSLineBreakMode(rawValue: 2)! 
       
-      
+      // https://stackoverflow.com/questions/24002369/how-to-call-objective-c-code-from-swift
+      let feld:NSRect = Vertikalbalken.frame
+      Vertikalbalken = rVertikalanzeige(frame:feld)
+      self.view.addSubview(Vertikalbalken)
    }//viewDidLoad
    
    
@@ -1352,7 +1357,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                let devicebatteriespannung = Int32(teensy.read_byteArray[BATT  + DATA_START_BYTE])
                //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
-               
+ //              messungfloatarray[task][BATT] = Float(devicebatteriespannung)
                //var messungfloatarray:[[Float]] = Array(repeating:Array(repeating:0,count:10),count:6)
                var devicearray:[Float] = Array(repeating:0.0,count:16)
                
@@ -1393,6 +1398,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                let analog2hi:Int32 =  Int32(teensy.read_byteArray[ANALOG2+1 + DATA_START_BYTE])
                let analog2 = analog2lo | (analog2hi<<8)
                analog2float = Float(analog2)
+               
                adcfloatarray[2]  = analog2float
                
                devicearray[2] = analog2float
@@ -1458,6 +1464,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                let devicebatteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
                //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
+               //messungfloatarray[task][BATT] = Float(devicebatteriespannung)
+     //          swiftArray[task]["batterie"] = String(devicebatteriespannung)
                
                let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0 + DATA_START_BYTE])
                let analog0hi:Int32 =  Int32(teensy.read_byteArray[ANALOG0+1 + DATA_START_BYTE])
@@ -1471,7 +1479,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                //print ("task 2 analog0float_norm: \(analog0float_norm)");
                messungfloatarray[task][DIAGRAMMDATA_OFFSET + 0] = analog0float
                
-               //adcfloatarray[4]  = analog0float/4
                
                let analog1lo:Int32 =  Int32(teensy.read_byteArray[ANALOG1 + DATA_START_BYTE])
                let analog1hi:Int32 =  Int32(teensy.read_byteArray[ANALOG1+1 + DATA_START_BYTE])
@@ -1481,7 +1488,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                analog1float = floorf(fabs(analog1float)*2.f) / 2.f
                //print ("analog1float floor: \(analog1float)");
-               //           adcfloatarray[1]  = analog1float
                messungfloatarray[task][DIAGRAMMDATA_OFFSET + 1] = analog1float
                
                var adc1anzeige = Float(roundit(Double(analog1float), toNearest: 0.5))
@@ -1492,12 +1498,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                let analog2lo:Int32 =  Int32(teensy.read_byteArray[ANALOG2 + DATA_START_BYTE])
                let analog2hi:Int32 =  Int32(teensy.read_byteArray[ANALOG2+1 + DATA_START_BYTE])
                let analog2 = analog2lo | (analog2hi<<8)
-               analog2float = Float(analog2)
-               //adcfloatarray[3]  = analog2float
-               //adcfloatarray[4]  = analog2float / 4
-               messungfloatarray[task][DIAGRAMMDATA_OFFSET + 2] = analog2float
                
-               //print("task 2 analog2float: \(analog2float)");
+               analog2float = Float(analog2)
+               
+               Vertikalbalken.setLevel(Int32(analog2float*0xFF/2500))
+               
+               swiftArray[task]["batterie"] = String(analog2)
+               
+               messungfloatarray[task][DIAGRAMMDATA_OFFSET + 2] = analog2float
+               spannungsanzeige.floatValue = analog2float
+               spannungsanzeige.needsDisplay = true
+               print("task 2 analog2float: \(analog2float)");
                
                let analog3lo:Int32 =  Int32(teensy.read_byteArray[ANALOG3 + DATA_START_BYTE])
                let analog3hi:Int32 =  Int32(teensy.read_byteArray[ANALOG3+1 + DATA_START_BYTE])
@@ -1529,8 +1540,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             break
          }
          
+         TaskListe.reloadData()
          
-         //TaskListe.reloadData()
          var tl = 0
          /*
           for taskline in messungfloatarray
@@ -2181,28 +2192,32 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBAction func sendServoA(_ sender: AnyObject)
    {
-      
+      /*
       var formatter = NumberFormatter()
-      var tempspannung:Double  = extspannungFeld.doubleValue * 100
+      var tempspannung:Double  = (extspannungFeld?.doubleValue)! * 100
       if (tempspannung > 3000)
       {
          tempspannung = 3000
-         
-         
+          
       }
-      
+    */  
       let tempPos = ServoASlider.intValue
       
       //      extspannungFeld.doubleValue = ((tempspannung/100)+1)%12
       //var tempintspannung = UInt16(tempspannung)
-         print("tempPos: \(tempPos)");// L: \(spL.stringValue)\ttempintspannung H: \(spH.stringValue) ")
+      //print("tempPos: \(tempPos)");// L: \(spL.stringValue)\ttempintspannung H: \(spH.stringValue) ")
       //teensy.write_byteArray[0] = 0x01
-      print("write_byteArray 0: \(teensy.write_byteArray[0])")
-      teensy.write_byteArray[10] = UInt8(tempPos & (0x00FF))
-      teensy.write_byteArray[11] = UInt8((tempPos & (0xFF00))>>8)
-      print("write_byteArray 10: \(teensy.write_byteArray[10])\t 11: \(teensy.write_byteArray[11])")
+      //print("write_byteArray 0: \(teensy.write_byteArray[0])")
+      
+      teensy.write_byteArray[0] = UInt8(SERVO_OUT)
+      //teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
+
+      teensy.write_byteArray[SERVOALO] = UInt8(tempPos & (0x00FF))
+      teensy.write_byteArray[SERVOAHI] = UInt8((tempPos & (0xFF00))>>8)
+      //print("sendServoA: \(teensy.write_byteArray[SERVOALO])\t 11: \(teensy.write_byteArray[SERVOAHI])")
       var senderfolg = teensy.start_write_USB()
-      teensy.write_byteArray[0] = 0x00 // bit 0 zuruecksetzen
+      //print("sendServoA senderfolg: \(senderfolg)")
+      //teensy.write_byteArray[0] = 0x00 // bit 0 zuruecksetzen
       //senderfolg = teensy.report_start_write_USB()
    }
    
@@ -2295,12 +2310,16 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       //NSLog("USBfertigAktion will schliessen \(notification)")
       //& http://stackoverflow.com/questions/30027780/swift-accessing-appdelegate-window-from-viewcontroller
- //     let appDelegate = NSApplication.shared().delegate as? AppDelegate
-
+      //     let appDelegate = NSApplication.shared().delegate as? AppDelegate
+      //https://stackoverflow.com/questions/31467531/nswindow-returns-nil-nsapplication
+      NSApp.activate(ignoringOtherApps: true)
+      
       // https://stackoverflow.com/questions/43426391/how-do-you-reference-the-views-window-in-swift-3-x-using-storyboards-cocoa
       
-      let hauptfenster:NSWindow = (NSApplication.shared().mainWindow)!
+      let hauptfenster:NSWindow = ((NSApplication.shared().mainWindow))!
+      
       let objektfenster :NSWindow = notification.object as! NSWindow
+      
       if (hauptfenster == objektfenster)
       {
          print("hauptfenster")
@@ -2319,7 +2338,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             stop_messung()
             stop_read_USB(self)
             stop_write_USB(self)
-
+            
          }
          else
          {
@@ -2327,7 +2346,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             stop_messung()
             //stop_read_USB(self)
             //stop_write_USB(self)
-
+            
             //return
          }
          NSApplication.shared().terminate(self)
@@ -2412,7 +2431,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       teensy.close_hid()
       manufactorer.stringValue = ""
-      USB_OK.stringValue = "?"
+      USB_OK.stringValue = "??"
    }
    
    
@@ -3952,18 +3971,28 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          return result
       }
 
-      else if  tableColumn?.identifier == "temperaturr" // TextField
+      else if  tableColumn?.identifier == "temperatur" // TextField
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
+         let element = result.subviews[0]
+         //         print("check element A0: \(element)")
+         let feld = element as! NSTextField
+         let wertstring = swiftArray[row][(tableColumn?.identifier)!]
+         feld.stringValue = wertstring!
          //print("temperatur")
          
          
          return result
       }
 
-      else if  tableColumn?.identifier == "batteriee" // TextField
+      else if  tableColumn?.identifier == "batterie" // TextField
       {
          let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
+         let element = result.subviews[0]
+         //         print("check element A0: \(element)")
+         let feld = element as! NSTextField
+         let wertstring = swiftArray[row][(tableColumn?.identifier)!]
+         feld.stringValue = wertstring!
          //print("batterie")
          return result
       }
