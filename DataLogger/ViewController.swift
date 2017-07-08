@@ -898,12 +898,38 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       switch (code)
       {
-      //MARK: CHECK_WL
+//MARK: READ_START      
          case READ_START:
-         print("READ_START:")
+         print("\nREAD_START:")
          let batt = (teensy.read_byteArray[BATT])
          print("READ_START batt: \(batt) messungcounter: \(teensy.read_byteArray[3])")
+         print("\nREAD_START: read_byteArray code: ")
+ 
+         for  index in 0..<16
+         {
+            print("\(teensy.read_byteArray[index])", terminator: "\t")
+         }
+         print("")
+         print("\nREAD_START: read_byteArray data: ")
+         for  index in 16..<32
+         {
+            print("\(teensy.read_byteArray[index])", terminator: "\t")
+         }
+         print("")
          
+         for zeilenindex in 0..<swiftArray.count
+         {
+            let startdevicebatteriespannung = Float(teensy.read_byteArray[DATA_START_BYTE + zeilenindex]) * 2
+               if startdevicebatteriespannung > 0
+               {
+                  let s = String(format:"%2.02fV", startdevicebatteriespannung/100)
+                  swiftArray[zeilenindex]["batterie"] = String(format:"%2.02fV", startdevicebatteriespannung/100)
+               }
+         }
+         TaskListe.reloadData()
+
+      
+         //MARK: CHECK_WL
       case CHECK_WL:
          //print("CHECK_WL:")
          //print("WL-status: \(teensy.read_byteArray[2])")
@@ -3299,7 +3325,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBAction func report_start_read_USB(_ sender: AnyObject)
    {
-      
+      // MARK: report_start_read_USB   
          //print("start_messung sender: \(sender.state)") // gibt neuen State an
         
       var lineindex = 0
@@ -3316,10 +3342,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          
          // Messung starten
-         if (sender.state == 1)
+         if (true)
          {
             //print("start_messung start ")
-            
+            /*
            teensy.close_hid()
             
             let erfolg = UInt8(teensy.USBOpen())
@@ -3333,7 +3359,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                print("start_messung error ")
             }
-            
+            */
             //         cont_read_check.state = 0;
             WL_Status.isEnabled = false
             
@@ -3424,7 +3450,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             DiagrammDataArray.removeAll()
             
             
-            inputDataFeld.string = "Messung tagsekunde: \(zeit)\n"
+            inputDataFeld.string = "Start read tagsekunde: \(zeit)\n"
             /*        
              let paragraphStyle = NSMutableParagraphStyle()
              paragraphStyle.tabStops = [NSTextTab(textAlignment: NSTextAlignment.left, location: 100, options: [:])]
@@ -3441,18 +3467,22 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             dataScroller.contentView.scroll(startscrollpunkt)
             self.dataScroller.contentView.needsDisplay = true
             
+            self.codeFeld.intValue = 0
+            
+            
             delayWithSeconds(1)
             {            
+/*
                self.Counter.intValue = 0
                
                self.datagraph.initGraphArray()
                self.datagraph.setStartsekunde(startsekunde:self.tagsekunde())
                self.datagraph.setMaxY(maxY: 160)
                self.datagraph.setDisplayRect()
-               
+ */              
                self.usb_read_cont = (self.cont_read_check.state == 1) // cont_Read wird bei aktiviertem check eingeschaltet
                
-               self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
+               //self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
                //Do something6
                
                let readerr = Int32(self.teensy.start_read_USB(false))
