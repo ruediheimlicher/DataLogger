@@ -99,6 +99,7 @@ int rawhid_recv(int num, void *buf, int len, int timeout)
    }
    memset(&context, 0, sizeof(context));
    context.info = &timeout_occurred;
+  // fprintf(stderr,"rawhid_recv timeout_occurred \n");
    timer = CFRunLoopTimerCreate(NULL, CFAbsoluteTimeGetCurrent() +(double)timeout / 1000.0, 0, 0, 0, timeout_callback, &context);
    CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopDefaultMode);
    while (1)

@@ -900,7 +900,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       {
 //MARK: READ_START      
          case READ_START:
-         print("\nREAD_START:")
+         print("\nnewLoggerDataAktion READ_START:")
          let batt = (teensy.read_byteArray[BATT])
          print("READ_START batt: \(batt) messungcounter: \(teensy.read_byteArray[3])")
          print("\nREAD_START: read_byteArray code: ")
@@ -926,6 +926,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   swiftArray[zeilenindex]["batterie"] = String(format:"%2.02fV", startdevicebatteriespannung/100)
                }
          }
+         cont_read_check.state = 0;
          TaskListe.reloadData()
 
       
@@ -968,6 +969,16 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             deviceindex += 1
             
          }
+         for zeilenindex in 0..<swiftArray.count
+         {
+            let startdevicebatteriespannung = Float(teensy.read_byteArray[DATA_START_BYTE + zeilenindex]) * 2
+            if startdevicebatteriespannung > 0
+            {
+               let s = String(format:"%2.02fV", startdevicebatteriespannung/100)
+               swiftArray[zeilenindex]["batterie"] = String(format:"%2.02fV", startdevicebatteriespannung/100)
+            }
+         }
+
          
   //       print("wl_callback_status:\t\(wl_callback_status) devicecount: \(devicecount)")
          wl_callback_status_Feld.intValue = Int32(wl_callback_status)
@@ -1229,9 +1240,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("teensy.read_byteArray")
          print("\n\(teensy.read_byteArray)")
          //blockcounter.intValue = 0
-         //teensy.read_OK = false
-         // usb_read_cont = false
-         // cont_read_check.state = 0;
+         
+         // USB read beenden
+         teensy.read_OK = false
+          usb_read_cont = false
+          cont_read_check.state = 0;
+         
          
          
          
@@ -1389,7 +1403,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                inputDataFeldstring += ( String(devicenummer) + ":" + "\t")
                
                let devicebatteriespannung = Float(teensy.read_byteArray[BATT  + DATA_START_BYTE]) * 2 // halber Wert vom device
-               print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
+               //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung/100)")
                
                swiftArray[task]["batterie"] = String(format:"%2.02fV", devicebatteriespannung/100)
 
@@ -1501,7 +1515,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                let devicebatteriespannung = Float(teensy.read_byteArray[BATT + DATA_START_BYTE]) * 2 // 
                
-               print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung)")
+               //print ("switch task: \(task)\t devicebatteriespannung: \(devicebatteriespannung/100)")
                let temp = Float(devicebatteriespannung)/100
                let tempstr = String(format:"%2.01f", temp)
                //messungfloatarray[task][BATT] = Float(devicebatteriespannung)
@@ -1548,7 +1562,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                messungfloatarray[task][DIAGRAMMDATA_OFFSET + 2] = analog2float
                spannungsanzeige.floatValue = analog2float
                spannungsanzeige.needsDisplay = true
-               print("task 2 analog2float: \(analog2float)");
+               //print("task 2 analog2float: \(analog2float)");
                
                let analog3lo:Int32 =  Int32(teensy.read_byteArray[ANALOG3 + DATA_START_BYTE])
                let analog3hi:Int32 =  Int32(teensy.read_byteArray[ANALOG3+1 + DATA_START_BYTE])
@@ -2954,7 +2968,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       }
       else
       {
-         print("start_messung stop")
+         //print("start_messung stop")
+         stop_messung()
+         return;
          teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
          teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
          
@@ -2999,7 +3015,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       print("report_stop_messung") // gibt neuen State an
       
-      print("start_messung stop")
+      print("stop_messung")
       teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
       teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
       
@@ -3055,19 +3071,28 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       print("stop_messung") // gibt neuen State an
       
-         print("start_messung stop")
+         print("stop_messung")
          teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
          teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
          
          teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
          teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
          
-         teensy.read_OK = false
-         usb_read_cont = false
-         cont_read_check.state = 0;
+      // in callback-Antwort MESSUNG_STOP verschoben
+ //        teensy.read_OK = false
+ //        usb_read_cont = false
+ //        cont_read_check.state = 0;
          
          print("DiagrammDataArray count: \(DiagrammDataArray.count)")
          
+         var messungstring:String = MessungDataString(data:DiagrammDataArray)
+         
+         let prefix = datumprefix()
+         let intervall = IntervallPop.integerValue
+         //let startblock = write_sd_startblock.integerValue
+         
+      if (DiagrammDataArray.count > 1)
+      {
          var messungstring:String = MessungDataString(data:DiagrammDataArray)
          
          let prefix = datumprefix()
@@ -3081,28 +3106,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let dataname = prefix + "_messungdump.txt"
          
          writeData(name: dataname,data:messungstring)
-         
-         //   let MessungDataString = DiagrammDataArray.map{String($0)}.joined(separator: "\n")
-         /*
-          print("messungstring: \(messungstring)\n")
-          let erfolg = saveData(data: messungstring)
-          if (erfolg == 0)
-          {
-          print("MessData sichern OK")
-          NSSound(named: "Glass")?.play()
-          }
-          else
-          {
-          print("MessData sichern misslungen")
-          
-          }
-          */
+      }
       
       
       var senderfolg = teensy.start_write_USB()
       if (senderfolg > 0)
       {
          NSSound(named: "Glass")?.play()
+         
       }
       
    }
@@ -3145,7 +3156,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          self.Counter.intValue = 0
          
          
-         self.usb_read_cont = true // cont_Read ausschalten
+         self.usb_read_cont = true // cont_Read einschalten
          
          self.teensy.write_byteArray[0] = UInt8(CHECK_WL)
          //Do something
@@ -3485,7 +3496,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                //self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
                //Do something6
                
-               let readerr = Int32(self.teensy.start_read_USB(false))
+               let readerr = Int32(self.teensy.start_read_USB(true))
                self.codeFeld.intValue = readerr
 
                if (readerr == 0)

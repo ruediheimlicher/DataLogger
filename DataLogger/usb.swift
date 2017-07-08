@@ -165,7 +165,7 @@ open class usb_teensy: NSObject
    
    open func start_read_USB(_ cont: Bool)-> Int
    {
-      read_OK = true
+      read_OK = ObjCBool(cont)
       let timerDic:NSMutableDictionary  = ["count": 0]
       
       let result = rawhid_recv(0, &read_byteArray, Int32(BUFFER_SIZE), 50);
@@ -296,6 +296,7 @@ open class usb_teensy: NSObject
       }
       else
       {
+         print("*cont_read_USB timer.invalidate")
          timer.invalidate()
       }
    }
