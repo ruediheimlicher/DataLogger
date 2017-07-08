@@ -716,6 +716,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="smallSystem"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="report_start_read_USB:" target="XfG-lQ-9wD" id="0fT-nc-nhE"/>
+                                </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kXy-4L-GmZ">
                                 <rect key="frame" x="58" y="646" width="101" height="28"/>
@@ -1762,9 +1765,21 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sE5-qg-rgb">
+                                <rect key="frame" x="270" y="604" width="60" height="16"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="bLI-te-oHw">
+                                    <font key="font" metaFont="miniSystem"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>
+                        <outlet property="ADC0Feld" destination="bnn-io-lAX" id="50z-IU-FPf"/>
+                        <outlet property="ADC0HI_Feld" destination="3Ph-vN-BgM" id="GFg-Xz-6ff"/>
+                        <outlet property="ADC0LO_Feld" destination="WvT-OC-gXM" id="No6-MT-ZTd"/>
                         <outlet property="Channels_Feld" destination="g7x-FR-Kku" id="pG5-Ab-ReS"/>
                         <outlet property="Counter" destination="SpV-8h-7G9" id="sch-fm-1df"/>
                         <outlet property="IntervallPop" destination="gCf-4w-O3S" id="Gsc-XC-dsh"/>
@@ -1781,6 +1796,7 @@
                         <outlet property="WL_Status" destination="dQW-9w-GLc" id="Wco-ge-lgn"/>
                         <outlet property="ZeitkompressionPop" destination="bbJ-uc-xzE" id="n6I-Ba-yek"/>
                         <outlet property="blockcounter" destination="UpY-QF-mQi" id="sPJ-V1-XDN"/>
+                        <outlet property="codeFeld" destination="sE5-qg-rgb" id="RdZ-wQ-Sc1"/>
                         <outlet property="cont_read_check" destination="1Kr-9d-W2g" id="mP6-Os-dt5"/>
                         <outlet property="cont_write_check" destination="1eS-Rj-kQf" id="Gk6-7D-7va"/>
                         <outlet property="dataScroller" destination="yKc-TX-1jj" id="qoO-mT-ebQ"/>
