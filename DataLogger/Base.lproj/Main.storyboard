@@ -742,7 +742,7 @@
                                 <font key="font" metaFont="system"/>
                                 <tabViewItems>
                                     <tabViewItem label="Task" identifier="1" id="m0n-52-bSm">
-                                        <view key="view" id="QqV-h6-c3D">
+                                        <view key="view" ambiguous="YES" id="QqV-h6-c3D">
                                             <rect key="frame" x="10" y="33" width="1106" height="489"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
@@ -1335,7 +1335,7 @@
                                         <accessibility identifier="data"/>
                                     </tabViewItem>
                                     <tabViewItem label="Download" identifier="2" id="BKc-ki-Ali">
-                                        <view key="view" ambiguous="YES" id="AOU-xc-VSF">
+                                        <view key="view" id="AOU-xc-VSF">
                                             <rect key="frame" x="10" y="33" width="1106" height="489"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>

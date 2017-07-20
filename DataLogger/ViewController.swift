@@ -82,8 +82,8 @@ let DOWNLOADBLOCKNUMMER_BYTE   =   10 // aktuelle nummer des downloadblocks
 let PACKETCOUNT_BYTE = 8
 
 
-let DATACOUNT_LO    =   12 // Messung, laufende Nummer
-let DATACOUNT_HI    =   13
+let DATACOUNT_LO    =   5 // Messung, laufende Nummer
+let DATACOUNT_HI    =   6
 
 let TAKT_LO_BYTE    =   14
 let TAKT_HI_BYTE    =   15
@@ -92,7 +92,7 @@ let TAKT_HI_BYTE    =   15
 let STARTMINUTELO_BYTE = 5
 let STARTMINUTEHI_BYTE = 6
 
-let DATA_START_BYTE   = 16    // erstes byte fuer Data auf USB
+let DATA_START_BYTE   = 8    // erstes byte fuer Data auf USB
 
 let HEADER_SIZE = 16
 
@@ -916,13 +916,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("READ_START batt: \(batt) messungcounter: \(teensy.read_byteArray[3])")
          print("\nREAD_START: read_byteArray code: ")
  
-         for  index in 0..<16
+         for  index in 0..<DATA_START_BYTE
          {
             print("\(teensy.read_byteArray[index])", terminator: "\t")
          }
          print("")
          print("\nREAD_START: read_byteArray data: ")
-         for  index in 16..<32
+         for  index in DATA_START_BYTE..<BUFFER_SIZE
          {
             print("\(teensy.read_byteArray[index])", terminator: "\t")
          }
@@ -1534,14 +1534,25 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             //print ("switch devicenummer: \(devicenummer)")
             
-            print("task 2 read_byteArray\tcount: \(counter)*\t", terminator: "")
             
-            for index in 16...31
+            print("task 2 CODE read_byteArray\tcount: \(counter)\t", terminator: "")
+            
+            for index in 0..<DATA_START_BYTE
             {
                print("\(teensy.read_byteArray[index])\t", terminator: "")
             }
             
             print ("")
+            
+            print("task 2 DATA read_byteArray\tcount: \(counter)\t", terminator: "")
+            
+            for index in DATA_START_BYTE..<BUFFER_SIZE
+            {
+               print("\(teensy.read_byteArray[index])\t", terminator: "")
+            }
+            
+            print ("")
+
             if (wl_callback_status & (1<<UInt8(task)) > 0)
             {
                devicestatus |= (1<<UInt8(task))
@@ -2142,12 +2153,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
        }
       
       // mmc
+      /*
       let mmcLO:Int32 = Int32(teensy.last_read_byteArray[MMCLO])
       let mmcHI:Int32 = Int32(teensy.last_read_byteArray[MMCHI])
       let mmcData  = mmcLO | (mmcHI << 8)
       mmcLOFeld.intValue = mmcLO
       mmcHIFeld.intValue = mmcHI
       mmcDataFeld.intValue = mmcData
+      */
       teensy.new_Data = false
    }
    
@@ -2928,8 +2941,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          teensy.write_byteArray[0] = UInt8(MESSUNG_START)
          
          // Sichern auf SD?
-         teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
+         let save_SD = save_SD_check?.state
+  //       teensy.write_byteArray[1] = 0
          
+         if (save_SD == 1)
+         {
+            teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
+         }
+ 
+//          teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
          // Abschnitt auf SD
          teensy.write_byteArray[ABSCHNITT_BYTE] = 0
          
