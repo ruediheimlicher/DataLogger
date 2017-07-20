@@ -2638,12 +2638,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       datagraph.setVorgaben(vorgaben:kompvorgabe)
       
       
-      
-      
-      
-      
-      
-      
       //Angabe zum  Startblock lesen. default ist 0
       startblock = UInt16(write_sd_startblock.integerValue)
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
@@ -2927,15 +2921,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((integerwahl! & 0xFF00)>>8)
          
          
-         
-         
          MessungStartzeitFeld.integerValue = tagsekunde()
          MessungStartzeit = tagsekunde()
          
          // code setzen
          teensy.write_byteArray[0] = UInt8(MESSUNG_START)
          
-         // Sichern auf SD
+         // Sichern auf SD?
          teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
          
          // Abschnitt auf SD
@@ -2999,50 +2991,19 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                print("Fehler in report_start_messung")
             }
          }
- 
+         var senderfolg = teensy.start_write_USB()
+         if (senderfolg > 0)
+         {
+            NSSound(named: "Glass")?.play()
+         }
+
       }
       else
       {
          //print("start_messung stop")
          stop_messung()
-         return;
-         teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
-         teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
-         
-         teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
-         teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
-         
-         //        teensy.read_OK = false
-         //       usb_read_cont = false
-         //        cont_read_check.state = 0;
-         
-         WL_Status.isEnabled = true
-         
-         //print("DiagrammDataArray: \(DiagrammDataArray)")
-         
-         if (DiagrammDataArray.count > 1)
-         {
-            var messungstring:String = MessungDataString(data:DiagrammDataArray)
-            
-            let prefix = datumprefix()
-            let intervall = IntervallPop.integerValue
-            //let startblock = write_sd_startblock.integerValue
-            
-            var kopfstring = prefix + "\n" + "startzeit\t\(MessungStartzeit)\tintervall\t\(intervall)\tstartblock\t\(startblock)\nKanäle: \t\(anzahlChannels)"
-            
-            messungstring = kopfstring + messungstring
-            
-            let dataname = prefix + "_messungdump.txt"
-            
-            writeData(name: dataname,data:messungstring)
-         }
-      }
+       }
       
-      var senderfolg = teensy.start_write_USB()
-      if (senderfolg > 0)
-      {
-         NSSound(named: "Glass")?.play()
-      }
      // let startscrollpunkt = NSMakePoint(dataScroller.frame.size.width,0.0)
    }
    
@@ -3542,7 +3503,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          
-         var senderfolg = teensy.start_write_USB()
+         let senderfolg = teensy.start_write_USB()
          if (senderfolg > 0)
          {
             NSSound(named: "Glass")?.play()
