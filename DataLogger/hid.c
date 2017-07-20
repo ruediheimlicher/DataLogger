@@ -331,7 +331,7 @@ int rawhid_open(int max, int vid, int pid, int usage_page, int usage)
    
    kern_return_t           result;
    mach_port_t             masterPort;
-   CFMutableDictionaryRef  matchingDict = NULL;
+//   CFMutableDictionaryRef  matchingDict = NULL;
    CFRunLoopSourceRef      runLoopSource;
    
    
@@ -499,7 +499,7 @@ void output_callback(void *context, IOReturn ret, void *sender,
 
 	if (ret == kIOReturnSuccess)
    {
-		*(int *)context = len;
+		*(int *)context = (int)len;
 	} else {
 		// timeout if not success?
 		*(int *)context = 0;
