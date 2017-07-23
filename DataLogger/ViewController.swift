@@ -73,13 +73,13 @@ let SAVE_SD_STOP = 0x04 // Bit 2
 
 let SAVE_SD_BYTE          =     1 //
 
-let ABSCHNITT_BYTE         =     2
+//let ABSCHNITT_BYTE         =     2
 let BLOCKOFFSETLO_BYTE    =     3 // Block auf SD fuer Sicherung
 let BLOCKOFFSETHI_BYTE    =     4
 
 let BLOCK_ANZAHL_BYTE   = 9 // Anzahl zu lesende Blocks
 let DOWNLOADBLOCKNUMMER_BYTE   =   10 // aktuelle nummer des downloadblocks
-let PACKETCOUNT_BYTE = 8
+let PACKETCOUNT_BYTE = 2
 
 
 let DATACOUNT_LO    =   5 // Messung, laufende Nummer
@@ -215,6 +215,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var MessungStartzeitFeld: NSTextField!
    
    @IBOutlet  var USB_OK: NSTextField!
+   
+    @IBOutlet  var Test_Knopf: NSButton!
    
    @IBOutlet  var start_read_USB_Knopf: NSButton!
    @IBOutlet  var stop_read_USB_Knopf: NSButton!
@@ -1032,14 +1034,33 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       // ****************************************************************************
       case LOGGER_START: // Antwort auf LOGGER_START, Block geladen, Header des Blocks lesen
          
-         print("\n*** newLoggerDataAktion LOGGER_START: \(code) startblock: \(startblock)")
+         print("\n*** newLoggerDataAktion LOGGER_START code: \(code) startblock: \(startblock)")
          
          // ladefehler
-         let readerr: UInt8 = teensy.last_read_byteArray[1] // eventueller fehler ist im Byte 1
+         let readerr: UInt8 = teensy.read_byteArray[1] // eventueller fehler ist im Byte 1
          if (readerr == 0) // alles OK
          {
             //print("newLoggerDataAktion LOGGER_START: OK")
-            print("newLoggerDataAktion LOGGER_START  readerr: \(readerr)*\nraw data:\n\(teensy.last_read_byteArray)\n")
+            print("newLoggerDataAktion LOGGER_START  \nraw data:\n\(teensy.read_byteArray)\n")
+            
+            print("LOGGER_START CODE read_byteArray")
+            
+            for index in 0..<DATA_START_BYTE
+            {
+               print("\(teensy.read_byteArray[index])\t", terminator: "")
+            }
+            
+            print ("")
+            
+            print("LOGGER_START DATA read_byteArray")
+            
+            for index in DATA_START_BYTE..<BUFFER_SIZE
+            {
+               print("\(teensy.read_byteArray[index])\t", terminator: "")
+            }
+            
+            print ("")
+
             //print("Kontrolle LOGGER_START teensy.last_read_byteArrayheader:")
             
             //for  index in 0..<HEADER_SIZE
@@ -1060,7 +1081,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //MARK: LOGGER_CONT
       // ****************************************************************************
       case LOGGER_CONT:
-         print("newLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.last_read_byteArray[PACKETCOUNT_BYTE])")
+         //print("\nnewLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.last_read_byteArray[PACKETCOUNT_BYTE])")
          let packetcount: UInt8 = teensy.last_read_byteArray[PACKETCOUNT_BYTE] // Byte 8
          //print("\nnewLoggerDataAktion LOGGER_CONT: \(code)\n teensy.last_read_byteArray: \(teensy.last_read_byteArray)")
          // ladefehler
@@ -1076,75 +1097,143 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // gelesene Daten
          
-         if (teensy.last_read_byteArray.count > 1)
+         if (teensy.read_byteArray.count > 1)
          {
-            //print("\nnewLoggerDataAktion LOGGER_CONT: \(code)\n teensy.last_read_byteArray: \(teensy.last_read_byteArray)")
-            print("\nnewLoggerDataAktion LOGGER_CONT: \(code)\n teensy.read_byteArray: \(teensy.last_read_byteArray)")
+            print("\n\tnewLoggerDataAktion LOGGER_CONT: \(code) device: \(teensy.read_byteArray[DATA_START_BYTE + DEVICE]) Messung: \(teensy.read_byteArray[DATA_START_BYTE + 1]) packetcount: \(teensy.read_byteArray[2])\n raw Data \n\(teensy.read_byteArray)")
             
-            // http://stackoverflow.com/questions/25581324/swift-how-can-string-join-work-custom-types
-            var temparray = teensy.read_byteArray[DATA_START_BYTE...(BUFFER_SIZE-1)] // Teilarray mit Daten, DATA_START_BYTE: 16
-            let anz = temparray.count
-            
-            print("\nnewLoggerDataAktion LOGGER_CONT: \(code)\n temparray: \(temparray)")
-            
-            var index = 0
-            // hi und lo zusammenfuegen, neu speichern in newzeilenarray
-            var newzeilenarray:[UInt16]! = []
-            while (index < temparray.count / 2) // index in temparray ist gleich wie im originalarray
+            if (Test_Knopf.state == 1)
             {
                
-               let a:UInt16 = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2 * index])
-               let b:UInt16 = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2 * index + 1])
+               print("LOGGER_CONT TEST read_byteArray")
                
-               var tempwert:UInt16 = a | (b << 8)
-               // tempwert = a + b * 0xff
-               //print("*\(a) \(b) \(tempwert)")
-               newzeilenarray.append(tempwert)
-               index = index + 1
-               if ((index > 0) && (index%8 == 0)) // neue zeile im String nach 16 Daten (8 werte)
+               for index in 0..<BUFFER_SIZE
                {
-                  //   print ("\nindex: \(index) newzeilenarray: \n\(newzeilenarray)")
-                  let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
-                  print ("index: \(index)\t\(tempstring)")
-                  inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
-                  newzeilenarray.removeAll(keepingCapacity: true)
+                  print("\(teensy.read_byteArray[index])\t", terminator: "")
+               }
+               var temparray = teensy.read_byteArray[DATA_START_BYTE...(BUFFER_SIZE-1)] // Teilarray mit Daten, DATA_START_BYTE: 16
+               let anz = temparray.count
+
+               print ("")
+               var index = DATA_START_BYTE
+               var newzeilenarray:[UInt16]! = []
+               while (index < temparray.count) // index in temparray ist gleich wie im originalarray
+               {
+                  let tempwert:UInt16 = UInt16(temparray[index])
+                  newzeilenarray.append(tempwert)
+                  
+                  if ((index > 0) && (index%16 == 0)) // neue zeile im String nach 16 Daten (8 werte)
+                  {
+                     //   print ("\nindex: \(index) newzeilenarray: \n\(newzeilenarray)")
+                     let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
+                     print ("index: \(index)\t\(tempstring)")
+                     inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
+                     newzeilenarray.removeAll(keepingCapacity: true)
+                  }
+                  index = index + 1
+               }
+
+            }
+            
+            
+            else if ((teensy.read_byteArray[DATA_START_BYTE + 1] == 0) && Test_Knopf.state == 0)
+            {
+               print("mist")
+               //break;
+            }
+            else
+            {
+               print("ok")
+               
+               
+               
+               print("LOGGER_CONT CODE read_byteArray")
+               
+               for index in 0..<DATA_START_BYTE
+               {
+                  print("\(teensy.read_byteArray[index])\t", terminator: "")
                }
                
-               // hi und lo zusammenfuehren
-               //         index += 1
+               print ("")
+               
+               print("LOGGER_CONT DATA read_byteArray")
+               
+               for index in DATA_START_BYTE..<BUFFER_SIZE
+               {
+                  print("\(teensy.read_byteArray[index])\t", terminator: "")
+               }
+               
+               print ("")
+               
+               // http://stackoverflow.com/questions/25581324/swift-how-can-string-join-work-custom-types
+               var temparray = teensy.read_byteArray[DATA_START_BYTE...(BUFFER_SIZE-1)] // Teilarray mit Daten, DATA_START_BYTE: 16
+               let anz = temparray.count
+               
+               print("LOGGER_CONT temparray: \(temparray)")
+               
+               //if (teensy.read_byteArray[DATA_START_BYTE + 1] != 0)
+               //{
+               var index = 0
+               // hi und lo zusammenfuegen, neu speichern in newzeilenarray
+               var newzeilenarray:[UInt16]! = []
+               while (index < temparray.count / 2) // index in temparray ist gleich wie im originalarray
+               {
+                  
+                  let a:UInt16 = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2 * index])
+                  let b:UInt16 = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2 * index + 1])
+                  
+                  var tempwert:UInt16 = a | (b << 8)
+                  // tempwert = a + b * 0xff
+                  //print("*\(a) \(b) \(tempwert)")
+                  newzeilenarray.append(tempwert)
+                  index = index + 1
+                  if ((index > 0) && (index%8 == 0)) // neue zeile im String nach 16 Daten (8 werte)
+                  {
+                     //   print ("\nindex: \(index) newzeilenarray: \n\(newzeilenarray)")
+                     let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
+                     //print ("index: \(index)\t\(tempstring)")
+                     inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
+                     newzeilenarray.removeAll(keepingCapacity: true)
+                  }
+                  
+                  // hi und lo zusammenfuehren
+                  //         index += 1
+               }
+               //}
+               //          print ("\nnewzeilenarray: \n\(newzeilenarray)")
+               // http://useyourloaf.com/blog/swift-guide-to-map-filter-reduce/
+               
+               //            let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
+               
+               
+               //var tempstring = teensy.last_read_byteArray.map{Strng($0)}.joined(separator: ",")
+               
+               // http://stackoverflow.com/questions/36076014/uint8-array-to-strings-in-swift
+               //    let stringArray = teensy.last_read_byteArray.map( { "\($0)" })
+               //     print(stringArray)
+               // let tempstring = String(bytes: teensy.last_read_byteArray, encoding: String.Encoding.utf8)
+               
+               //           inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
+            
+            
+            //print("LOGGER_CONT teensy.last_read_byteArray packetcount: \(packetcount)\n\(teensy.last_read_byteArray)\nend\n")
+            
+            
+            // print("\(teensy.last_read_byteArray)")
+            loggerDataArray.append(teensy.read_byteArray);
             }
-            //          print ("\nnewzeilenarray: \n\(newzeilenarray)")
-            // http://useyourloaf.com/blog/swift-guide-to-map-filter-reduce/
             
-            //            let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
-            
-            
-            //var tempstring = teensy.last_read_byteArray.map{Strng($0)}.joined(separator: ",")
-            
-            // http://stackoverflow.com/questions/36076014/uint8-array-to-strings-in-swift
-            //    let stringArray = teensy.last_read_byteArray.map( { "\($0)" })
-            //     print(stringArray)
-            // let tempstring = String(bytes: teensy.last_read_byteArray, encoding: String.Encoding.utf8)
-            
-            //           inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
          }
-         
-         //print("LOGGER_CONT teensy.last_read_byteArray packetcount: \(packetcount)\n\(teensy.last_read_byteArray)\nend\n")
-         
-         
-         // print("\(teensy.last_read_byteArray)")
-         loggerDataArray.append(teensy.last_read_byteArray);
-         
          if (packetcount < 10) // 480 bytes pro block
          {
             // Anfrage fuer naechstes Paket schicken
             //packetcount =   packetcount + 1
-            cont_log_USB(paketcnt: (packetcount))
+            
+            self.cont_log_USB(paketcnt: (packetcount))
          }
          else
          {
             downloadblocknummer = downloadblocknummer + 1
-            print("LOGGER_CONT startblock: \(startblock) downloadblocknummer: \(downloadblocknummer)")
+            print("LOGGER_CONT FULL startblock: \(startblock) downloadblocknummer: \(downloadblocknummer)")
             if (downloadblocknummer < blockcount) // noch weitere Blocks laden
             {
                print("LOGGER_CONT next downloadblocknummer: \(downloadblocknummer)")
@@ -1153,7 +1242,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             else
             {
                // download beenden
-               print("LOGGER_CONT write")
+               print("LOGGER_CONT write file")
                
                teensy.read_OK = false
                teensy.write_byteArray[0] = UInt8(LOGGER_STOP)
@@ -1164,7 +1253,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                writeData(name: dataname,data:inputDataFeld.string!)
                
-               print("\n")
+               print("")
                var senderfolg = teensy.start_write_USB()
                print("LOGGER_CONT senderfolg: \(senderfolg)")
             }
@@ -1241,7 +1330,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // ****************************************************************************
       // ****************************************************************************
       case WRITE_MMC_TEST: break
-         //print("code ist WRITE_MMC_TEST")
+         print("code ist WRITE_MMC_TEST")
          
          // ****************************************************************************
          // MARK: USB_STOP
@@ -2641,7 +2730,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((intervallwert & 0xFF00)>>8)
       //    print("reportTaskIntervall teensy.write_byteArray[TAKT_LO_BYTE]: \(teensy.write_byteArray[TAKT_LO_BYTE])")
       // Abschnitt auf SD
-      teensy.write_byteArray[ABSCHNITT_BYTE] = 0
+//      teensy.write_byteArray[ABSCHNITT_BYTE] = 0
       
       // Zeitkompression setzen
       //let selectedKomp = ZeitkompressionPop.indexOfSelectedItem
@@ -2951,7 +3040,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  
 //          teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
          // Abschnitt auf SD
-         teensy.write_byteArray[ABSCHNITT_BYTE] = 0
+   //      teensy.write_byteArray[ABSCHNITT_BYTE] = 0
          
          //Angabe zum  Startblock aktualisieren
          startblock = UInt16(write_sd_startblock.integerValue)
@@ -3156,7 +3245,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[1] = 0
       
       // Abschnitt auf SD
-      teensy.write_byteArray[ABSCHNITT_BYTE] = 0
+ //     teensy.write_byteArray[ABSCHNITT_BYTE] = 0
 
       //Angabe zum  Startblock aktualisieren
       startblock = 1
@@ -3453,7 +3542,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
             
             // Abschnitt auf SD
-            teensy.write_byteArray[ABSCHNITT_BYTE] = 0
+ //           teensy.write_byteArray[ABSCHNITT_BYTE] = 0
             
             //Angabe zum  Startblock aktualisieren
             startblock = UInt16(write_sd_startblock.integerValue)

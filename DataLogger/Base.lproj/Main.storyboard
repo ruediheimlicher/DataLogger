@@ -1788,6 +1788,14 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SsL-mr-GJk">
+                                <rect key="frame" x="267" y="569" width="61" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Mt1-D1-Mdc">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -1805,6 +1813,7 @@
                         <outlet property="Stop_Logger" destination="MgZ-NW-Erx" id="422-Mc-8YL"/>
                         <outlet property="TaskListe" destination="Ygu-ma-myE" id="YJu-M3-4OZ"/>
                         <outlet property="TaskTab" destination="cmV-IO-Cl1" id="VYE-af-uxB"/>
+                        <outlet property="Test_Knopf" destination="SsL-mr-GJk" id="V4y-bE-M28"/>
                         <outlet property="USB_OK" destination="gt5-jv-VJI" id="gtD-nt-RC6"/>
                         <outlet property="Vertikalbalken" destination="J8e-1f-8RY" id="KoM-CU-1ko"/>
                         <outlet property="WL_Status" destination="dQW-9w-GLc" id="Wco-ge-lgn"/>
