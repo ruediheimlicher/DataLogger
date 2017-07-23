@@ -736,7 +736,7 @@
                                     <font key="font" metaFont="smallSystem"/>
                                 </buttonCell>
                             </button>
-                            <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cmV-IO-Cl1">
+                            <tabView identifier="task" fixedFrame="YES" initialItem="m0n-52-bSm" translatesAutoresizingMaskIntoConstraints="NO" id="cmV-IO-Cl1">
                                 <rect key="frame" x="31" y="18" width="1126" height="535"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -1423,7 +1423,7 @@
                                         </view>
                                         <accessibility identifier="download"/>
                                     </tabViewItem>
-                                    <tabViewItem label="Volt" identifier="" id="eca-Sc-9Dr">
+                                    <tabViewItem label="Volt" identifier="3" id="eca-Sc-9Dr">
                                         <view key="view" id="YB7-X5-7PQ">
                                             <rect key="frame" x="10" y="33" width="1106" height="489"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1433,7 +1433,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" ambiguous="YES" id="wDB-6M-jeo">
                                                         <rect key="frame" x="1" y="1" width="572" height="296"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MQl-xa-lLF" customClass="DataPlot" customModule="DataLogger" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="2697" height="281"/>
@@ -1442,7 +1442,7 @@
                                                         </subviews>
                                                     </clipView>
                                                     <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="dVN-8M-CQJ">
-                                                        <rect key="frame" x="1" y="1" width="0.0" height="15"/>
+                                                        <rect key="frame" x="1" y="297" width="572" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Ckc-Vl-ISL">
@@ -1458,6 +1458,10 @@
                                         </view>
                                     </tabViewItem>
                                 </tabViewItems>
+                                <accessibility identifier="task"/>
+                                <connections>
+                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="Cxm-YH-kAF"/>
+                                </connections>
                             </tabView>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WvT-OC-gXM">
                                 <rect key="frame" x="270" y="657" width="27" height="16"/>

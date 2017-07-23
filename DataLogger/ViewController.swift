@@ -112,7 +112,7 @@ let CHECK_WL = 0xBA
 
 let TEENSYVREF:Float = 249.0 // Korrektur von Vref des Teensy: nomineller Wert ist 256 2.56V
 
-class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDelegate,NSMenuDelegate,NSTextViewDelegate
+class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDelegate,NSMenuDelegate,NSTextViewDelegate,NSTabViewDelegate
 {
    
    // Variablen
@@ -1198,6 +1198,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   // hi und lo zusammenfuehren
                   //         index += 1
                }
+               
                //}
                //          print ("\nnewzeilenarray: \n\(newzeilenarray)")
                // http://useyourloaf.com/blog/swift-guide-to-map-filter-reduce/
@@ -1223,7 +1224,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             
          }
-         if (packetcount < 10) // 480 bytes pro block
+         if (packetcount < 20) // 480 bytes pro block
          {
             // Anfrage fuer naechstes Paket schicken
             //packetcount =   packetcount + 1
@@ -1254,7 +1255,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                writeData(name: dataname,data:inputDataFeld.string!)
                
                print("")
-               var senderfolg = teensy.start_write_USB()
+               let senderfolg = teensy.start_write_USB()
                print("LOGGER_CONT senderfolg: \(senderfolg)")
             }
             
@@ -1348,6 +1349,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("\t\(teensy.read_byteArray)")
          blockcounter.intValue = 0
          
+         
          // ****************************************************************************
          // MARK: MESSUNG_STOP
          // ****************************************************************************
@@ -1436,7 +1438,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //print("counter:\t\(counter)")
          if (messungcounter.intValue != counter)
          {
-            print("\nneue Messung")
+            print("\nneue Messung Nr: \(counter)")
             devicestatus = 0
             // String beginnen
             inputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue + "\t"
@@ -1457,7 +1459,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let blockposition = (UInt32(teensy.read_byteArray[BLOCKOFFSETLO_BYTE]) & 0x00FF) | ((UInt32(teensy.read_byteArray[BLOCKOFFSETHI_BYTE])  & 0x00FF)<<8)
          
          blockcounter.intValue = Int32(blockposition)
-         
+         //read_sd_startblock.intValue = Int32(blockposition)
          //print("ADC0LO: \(teensy.read_byteArray[ADC0LO]) ADC0HI: \(teensy.read_byteArray[ADC0HI])");
          
          
@@ -1821,7 +1823,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          //        analog1float = floorf(fabs(analog1float)*2.f) / 2.f
-         
          // http://www.globalnerdy.com/2016/01/26/better-to-be-roughly-right-than-precisely-wrong-rounding-numbers-with-swift/
          
          
@@ -1887,6 +1888,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // MARK: Datenzeile
          
+         
+         //  analog1float = floorf(fabs(analog1float)*2.f) / 2.f
+         // http://www.globalnerdy.com/2016/01/26/better-to-be-roughly-right-than-precisely-wrong-rounding-numbers-with-swift/
+
          //   print ("datazeile \(data0zeile)\n")
          // datenzeile fuer Diagramm
          
@@ -2742,6 +2747,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       //Angabe zum  Startblock lesen. default ist 0
       startblock = UInt16(write_sd_startblock.integerValue)
+     // read_sd_startblock.intValue = Int32(startblock)
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
       teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
       
@@ -3022,7 +3028,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          teensy.write_byteArray[TAKT_LO_BYTE] = UInt8(integerwahl! & 0x00FF)
          teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((integerwahl! & 0xFF00)>>8)
          
-         
+
          MessungStartzeitFeld.integerValue = tagsekunde()
          MessungStartzeit = tagsekunde()
          
@@ -3044,9 +3050,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          //Angabe zum  Startblock aktualisieren
          startblock = UInt16(write_sd_startblock.integerValue)
-         
+         read_sd_startblock.intValue = Int32(startblock)
          teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
-         teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
+ //        teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
          
          //print("block lo: \(teensy.write_byteArray[BLOCKOFFSETLO_BYTE]) hi: \(teensy.write_byteArray[BLOCKOFFSETHI_BYTE])")
          
@@ -3546,6 +3552,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             //Angabe zum  Startblock aktualisieren
             startblock = UInt16(write_sd_startblock.integerValue)
+     //       read_sd_startblock.intValue = Int32(startblock)
             
             teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
             teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
@@ -3855,6 +3862,21 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    }
   */
   
+   func tabView(_ tabView: NSTabView, shouldSelect tabViewItem: NSTabViewItem?) -> Bool
+   {
+      let item = tabView.indexOfTabViewItem(tabViewItem!)
+
+      //let abc:String = String(describing: tabViewItem?.identifier)
+     let i = Int(item)
+      let e = tabViewItem?.identifier as? Int
+     //print(Array(abc.characters))
+      //print("shouldSelect: ident: \(String(describing: tabViewItem?.identifier))")
+      print("abc: \(item)")
+      
+      
+      return true
+   }
+
    
    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any?
    {
@@ -4148,6 +4170,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    }
    
 }
+
 
 extension NSTextView {
    func appendText(line: String) {
