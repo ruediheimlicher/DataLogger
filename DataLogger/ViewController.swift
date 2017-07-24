@@ -956,7 +956,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //print(" analog0: \(analog0LO) \(analog0HI) teensy0: \(teensy0) ")
          //print("")
          let teensy0float = Float(teensy0)
-         print(" teensy0: \(teensy0) ")
+ //        print(" teensy0: \(teensy0) ")
          Vertikalbalken.setLevel(Int32(teensy0float*0xFF/1023))
 
          //MARK: CHECK_WL
@@ -1042,7 +1042,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          {
             //print("newLoggerDataAktion LOGGER_START: OK")
             print("newLoggerDataAktion LOGGER_START  \nraw data:\n\(teensy.read_byteArray)\n")
-            
+            /*
             print("LOGGER_START CODE read_byteArray")
             
             for index in 0..<DATA_START_BYTE
@@ -1051,7 +1051,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             
             print ("")
-            
+            */
             print("LOGGER_START DATA read_byteArray")
             
             for index in DATA_START_BYTE..<BUFFER_SIZE
@@ -1142,10 +1142,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             else
             {
-               print("ok")
+               //print("ok")
                
                
-               
+               /*
                print("LOGGER_CONT CODE read_byteArray")
                
                for index in 0..<DATA_START_BYTE
@@ -1154,7 +1154,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                }
                
                print ("")
-               
+               */
                print("LOGGER_CONT DATA read_byteArray")
                
                for index in DATA_START_BYTE..<BUFFER_SIZE
@@ -1501,7 +1501,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
          case 1:
             //print ("")
-  
+  /*
             print("task 1 CODE read_byteArray\tcount: \(counter)\t", terminator: "")
             
             for index in 0..<DATA_START_BYTE
@@ -1510,7 +1510,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             
             print ("")
-
+*/
             print("task 1 DATA read_byteArray\tcount: \(counter)\t", terminator: "")
             
             for index in DATA_START_BYTE..<BUFFER_SIZE
@@ -1625,7 +1625,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             //print ("switch devicenummer: \(devicenummer)")
             
-            
+/*            
             print("task 2 CODE read_byteArray\tcount: \(counter)\t", terminator: "")
             
             for index in 0..<DATA_START_BYTE
@@ -1634,7 +1634,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             
             print ("")
-            
+ */           
             print("task 2 DATA read_byteArray\tcount: \(counter)\t", terminator: "")
             
             for index in DATA_START_BYTE..<BUFFER_SIZE
