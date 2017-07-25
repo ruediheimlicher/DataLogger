@@ -27,6 +27,7 @@ let DEVICE = 0
 let CHANNEL = 2
 
 let BATT   = 2
+let BATT_MIN = 2.8
 
 
 let   ANALOG0 = 3	// ADC 0 lo
@@ -126,7 +127,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    var blockcount:UInt16 = 0 // Byte 3, 4: counter beim Lesen von mehreren Bloecken
    
    var downloadblocknummer:UInt16 = 0 // Byte 3, 4: counter beim Lesen von mehreren Bloecken
-   
+
+   var downloaddatanummer:UInt32 = 0 // Byte 3, 4: counter beim Lesen von mehreren Bloecken
+
    
    var packetcount :UInt8 = 0 // byte 5: counter fuer pakete beim Lesen eines Blocks 10 * 48 + 32
    
@@ -240,6 +243,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var write_sd_anzahl: NSTextField!
    @IBOutlet  var read_sd_startblock: NSTextField!
    @IBOutlet  var read_sd_anzahl: NSTextField!
+   @IBOutlet  var read_sd_progress: NSTextField!
    
    @IBOutlet  var messungcounter: NSTextField!
    @IBOutlet  var blockcounter: NSTextField!
@@ -827,6 +831,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       inputDataFeld.enclosingScrollView?.autohidesScrollers = false
 //    inputDataFeld.maxSize = NSMakeSize(CGFloat.greatestFiniteMagnitude,CGFloat.greatestFiniteMagnitude)
       
+      
 //      inputDataFeld.textContainer?.containerSize = NSMakeSize(CGFloat.greatestFiniteMagnitude, CGFloat.greatestFiniteMagnitude)
       
 //      inputDataFeld.textContainer!.widthTracksTextView    =   true
@@ -846,6 +851,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
   //    inputDataFeld.textContainer?.containerSize = NSMakeSize(CGFloat.greatestFiniteMagnitude, CGFloat.greatestFiniteMagnitude)
  //     var paragraph:NSMutableParagraphStyle = NSMutableParagraphStyle.default() as! NSMutableParagraphStyle
  //     paragraph.lineBreakMode = NSLineBreakMode(rawValue: 2)! 
+      
+      downloadDataFeld.delegate = self
+      downloadDataFeld.enclosingScrollView?.documentView?.frame.size.width = 20000 // muss
+      downloadDataFeld.enclosingScrollView?.hasHorizontalScroller = true
+      downloadDataFeld.enclosingScrollView?.hasVerticalScroller = true
+      downloadDataFeld.enclosingScrollView?.autohidesScrollers = false
+      downloadDataFeld.isHorizontallyResizable = false
+      //downloadDataFeld.textContainer?.containerSize =  NSMakeSize((downloadDataFeld.enclosingScrollView?.contentSize.width)!, CGFloat.greatestFiniteMagnitude)
+      downloadDataFeld.textContainer?.containerSize =  CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+      downloadDataFeld.textContainer?.widthTracksTextView = true
+      
       
       // https://stackoverflow.com/questions/24002369/how-to-call-objective-c-code-from-swift
       let feld:NSRect = Vertikalbalken.frame
@@ -1081,8 +1097,26 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //MARK: LOGGER_CONT
       // ****************************************************************************
       case LOGGER_CONT:
-         //print("\nnewLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.last_read_byteArray[PACKETCOUNT_BYTE])")
+         print("\nnewLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.last_read_byteArray[PACKETCOUNT_BYTE])")
          let packetcount: UInt8 = teensy.last_read_byteArray[PACKETCOUNT_BYTE] // Byte 8
+          downloaddatanummer += 1
+         // header lesen byte 0 ist device und status
+         let status: UInt8 = teensy.last_read_byteArray[DATA_START_BYTE]
+         print("status: \(status)")
+         if (status & (1<<7) > 0)
+         {
+            print("last data \(downloaddatanummer)")
+         }
+         
+        
+         read_sd_progress.intValue = Int32(downloaddatanummer)
+         
+         if ((messungcounter.intValue > 0) && (UInt32(messungcounter.intValue) < downloaddatanummer))
+         {
+            print("fertig geladen bei \(downloaddatanummer)")
+            
+         }
+         
          //print("\nnewLoggerDataAktion LOGGER_CONT: \(code)\n teensy.last_read_byteArray: \(teensy.last_read_byteArray)")
          // ladefehler
          let readerr: UInt8 = teensy.read_byteArray[1] // eventueller fehler ist im Byte 1
@@ -1099,21 +1133,24 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          if (teensy.read_byteArray.count > 1)
          {
-            print("\n\tnewLoggerDataAktion LOGGER_CONT: \(code) device: \(teensy.read_byteArray[DATA_START_BYTE + DEVICE]) Messung: \(teensy.read_byteArray[DATA_START_BYTE + 1]) packetcount: \(teensy.read_byteArray[2])\n raw Data \n\(teensy.read_byteArray)")
+            
+            let messung = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2]) | UInt16(teensy.read_byteArray[DATA_START_BYTE + 3]) << 8
+ //           print("newLoggerDataAktion LOGGER_CONT: \(code) device: \(teensy.read_byteArray[DATA_START_BYTE + DEVICE]) Messung: \(messung) packetcount: \(teensy.read_byteArray[2])\n\traw Data\(teensy.read_byteArray)")
             
             if (Test_Knopf.state == 1)
             {
                
-               print("LOGGER_CONT TEST read_byteArray")
+//               print("LOGGER_CONT TEST read_byteArray")
                
                for index in 0..<BUFFER_SIZE
                {
-                  print("\(teensy.read_byteArray[index])\t", terminator: "")
+//                  print("\(teensy.read_byteArray[index])\t", terminator: "")
                }
+               
                var temparray = teensy.read_byteArray[DATA_START_BYTE...(BUFFER_SIZE-1)] // Teilarray mit Daten, DATA_START_BYTE: 16
                let anz = temparray.count
 
-               print ("")
+//               print ("")
                var index = DATA_START_BYTE
                var newzeilenarray:[UInt16]! = []
                while (index < temparray.count) // index in temparray ist gleich wie im originalarray
@@ -1121,7 +1158,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   let tempwert:UInt16 = UInt16(temparray[index])
                   newzeilenarray.append(tempwert)
                   
-                  if ((index > 0) && (index%16 == 0)) // neue zeile im String nach 16 Daten (8 werte)
+                  if ((index > 0) && (index%24 == 0)) // neue zeile im String nach 16 Daten (8 werte)
                   {
                      //   print ("\nindex: \(index) newzeilenarray: \n\(newzeilenarray)")
                      let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
@@ -1155,6 +1192,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                print ("")
                */
+               /*
                print("LOGGER_CONT DATA read_byteArray")
                
                for index in DATA_START_BYTE..<BUFFER_SIZE
@@ -1163,18 +1201,19 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                }
                
                print ("")
-               
+               */
                // http://stackoverflow.com/questions/25581324/swift-how-can-string-join-work-custom-types
                var temparray = teensy.read_byteArray[DATA_START_BYTE...(BUFFER_SIZE-1)] // Teilarray mit Daten, DATA_START_BYTE: 16
                let anz = temparray.count
                
-               print("LOGGER_CONT temparray: \(temparray)")
+//               print("LOGGER_CONT temparray: \(temparray)")
                
                //if (teensy.read_byteArray[DATA_START_BYTE + 1] != 0)
                //{
                var index = 0
                // hi und lo zusammenfuegen, neu speichern in newzeilenarray
                var newzeilenarray:[UInt16]! = []
+               /*
                while (index < temparray.count / 2) // index in temparray ist gleich wie im originalarray
                {
                   
@@ -1198,28 +1237,38 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   // hi und lo zusammenfuehren
                   //         index += 1
                }
+               */
+               let tempwert = temparray[DATA_START_BYTE + 1]
+               while (index < temparray.count) // index in temparray ist gleich wie im originalarray
+               {
+                  let tempwert = temparray[DATA_START_BYTE + index]
+                  index = index + 1
+                  newzeilenarray.append(UInt16(tempwert))
+
+               } // while
+//               print ("newzeilenarray full: \n\(newzeilenarray)")
                
-               //}
-               //          print ("\nnewzeilenarray: \n\(newzeilenarray)")
-               // http://useyourloaf.com/blog/swift-guide-to-map-filter-reduce/
+               let paragraphStyle = NSMutableParagraphStyle()
+              // print("tabstops A: \(paragraphStyle.tabStops)")
                
-               //            let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
+               let tabInterval:CGFloat = 28.0
+               paragraphStyle.tabStops.removeAll()
                
+               for cnt in 0..<24 
+               {    // Add 24 tab stops, at desired intervals...
+                  paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: [:]))
+               }               
+               //print("tabstops: \(paragraphStyle.tabStops)")
+
+               var tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t") + "\n" // String erzeugen
                
-               //var tempstring = teensy.last_read_byteArray.map{Strng($0)}.joined(separator: ",")
+               let attrdatatext = NSMutableAttributedString(string: tempstring)
+               let datatextRange = NSMakeRange(0, tempstring.characters.count)
+               attrdatatext.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: datatextRange)
+               downloadDataFeld.textStorage?.append(attrdatatext)
                
-               // http://stackoverflow.com/questions/36076014/uint8-array-to-strings-in-swift
-               //    let stringArray = teensy.last_read_byteArray.map( { "\($0)" })
-               //     print(stringArray)
-               // let tempstring = String(bytes: teensy.last_read_byteArray, encoding: String.Encoding.utf8)
-               
-               //           inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
-            
-            
-            //print("LOGGER_CONT teensy.last_read_byteArray packetcount: \(packetcount)\n\(teensy.last_read_byteArray)\nend\n")
-            
-            
-            // print("\(teensy.last_read_byteArray)")
+               //let loremtext = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+            // print("\(teensy.read_byteArray)")
             loggerDataArray.append(teensy.read_byteArray);
             }
             
@@ -1252,9 +1301,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                let prefix = datumprefix()
                let dataname = prefix + "_loggerdump.txt"
                
-               writeData(name: dataname,data:inputDataFeld.string!)
-               
-               print("")
+               writeData(name: dataname,data:downloadDataFeld.string!)
+              
+               print("\(dataname)\n")
+               print(downloadDataFeld.string!)
                let senderfolg = teensy.start_write_USB()
                print("LOGGER_CONT senderfolg: \(senderfolg)")
             }
@@ -1318,6 +1368,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let prefix = datumprefix()
          let dataname = prefix + "_loggerdump.txt"
          
+         
          writeData(name: dataname,data:inputDataFeld.string!)
          
          print("\n")
@@ -1359,6 +1410,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("teensy.read_byteArray")
          print("\n\(teensy.read_byteArray)")
          //blockcounter.intValue = 0
+         let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO])
+         let counterHI = Int32(teensy.read_byteArray[DATACOUNT_HI])
+         let counter = (counterLO ) | ((counterHI )<<8)
+         messungcounter.intValue = counter
+         
+         let blockposition = (Int32(teensy.read_byteArray[BLOCKOFFSETLO_BYTE]) & 0x00FF) | ((Int32(teensy.read_byteArray[BLOCKOFFSETHI_BYTE])  & 0x00FF)<<8)
+         blockcounter.intValue = blockposition
+         read_sd_anzahl.intValue = blockposition
          
          // USB read beenden
          /*
@@ -1434,11 +1493,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //print("wl_callback_status:\t\(wl_callback_status)")
          wl_callback_status_Feld.intValue = Int32(wl_callback_status)
          
+         let blockposition = (Int32(teensy.read_byteArray[BLOCKOFFSETLO_BYTE]) & 0x00FF) | ((Int32(teensy.read_byteArray[BLOCKOFFSETHI_BYTE])  & 0x00FF)<<8)
+         blockcounter.intValue = blockposition
+         
          let counter = (counterLO ) | ((counterHI )<<8)
          //print("counter:\t\(counter)")
          if (messungcounter.intValue != counter)
          {
-            print("\nneue Messung Nr: \(counter)")
+            print("\nneue Messung Nr: \(counter) \t Block: \(blockposition)")
             devicestatus = 0
             // String beginnen
             inputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue + "\t"
@@ -1448,6 +1510,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          messungcounter.intValue = counter
          
+         
  //        var tempinputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue + "\t" 
          
          
@@ -1456,9 +1519,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let teensybatterie = batterieLO  | (batterieHI>>8)
          teensybatt.stringValue = NSString(format:"%.1f", teensybatterie) as String
          
-         let blockposition = (UInt32(teensy.read_byteArray[BLOCKOFFSETLO_BYTE]) & 0x00FF) | ((UInt32(teensy.read_byteArray[BLOCKOFFSETHI_BYTE])  & 0x00FF)<<8)
          
          blockcounter.intValue = Int32(blockposition)
+         
          //read_sd_startblock.intValue = Int32(blockposition)
          //print("ADC0LO: \(teensy.read_byteArray[ADC0LO]) ADC0HI: \(teensy.read_byteArray[ADC0HI])");
          
@@ -1486,7 +1549,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let DIAGRAMMDATA_OFFSET:Int = 4
          
          let messungzeitfloat = Float(tagsekunde())
-         
+         let messungzeit = tagsekunde()
+        
          let task = Int(devicenummer)
          
          // wl_callback_status , devicenummer
@@ -1725,6 +1789,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                let batteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
                batteriefloat = Float(batteriespannung)
+               if (batteriefloat < Float(BATT_MIN))
+               {
+                  print("low batt: ")
+               }
                // print ("")
             }
          default:
@@ -1880,11 +1948,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          let diff = tempzeit - MessungStartzeit
+         let diffstring = String(format:"%.0", diff)
          
          //print("MessungStartzeit: \(MessungStartzeit) tempzeitfloat: \(tempzeitfloat)  diff: \(diff)")
          
          // https://stackoverflow.com/questions/24074479/how-to-create-a-string-with-format
-         let data0zeile:[Float] = [Float(tempzeit),Float(analog0float),Float(analog1float),Float(analog2float)]
+         let data0zeile:[Float] = [Float(diff),Float(analog0float),Float(analog1float),Float(analog2float)]
          
          // MARK: Datenzeile
          
@@ -1900,7 +1969,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var NullpunktOffset:Int = 0
          var stellen:Int = 1
          var tempwerte = [Float] ( repeating: 0.00, count: 9 )     // eine Zeile mit messung-zeit und 8 floats
-         tempwerte[0] = Float(tempzeit) // Abszisse
+         tempwerte[0] = Float(diff) // Abszisse
          
          var werteArray = [[Float]](repeating: [0.0,0.0,1.0,1.0], count: 9 ) // Data mit wert, deviceID, sortenfaktor anzeigefaktor
          
@@ -2022,15 +2091,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                } // for kanal
                //inputDataFeld.string = inputDataFeld.string! + String(messungnummer) +    tempinputDataFeldstring + "\t"
                
-              // inputDataFeld.string = inputDataFeld.string! +  tempinputDataFeldstring + "\t"
-                //print("device: \(device) tempinputDataFeldstring: \(tempinputDataFeldstring)")
-               
-              // inputDataFeld.string = inputDataFeld.string! +  tempinputDataFeldstring + "\t"
-
-               //print("device: \(device) deviceDatastring: \(deviceDatastring)")
-               //inputDataFeld.string = inputDataFeld.string! +  deviceDatastring + "\t"
-               //print("device: \(device) inputDataFeld.string: \(inputDataFeld.string)")
-            } // if on
+             } // if on
             
             }// for device
          
@@ -2039,8 +2100,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
  //           var paragraph:NSMutableParagraphStyle = NSMutableParagraphStyle.init() //as! NSMutableParagraphStyle
  //           paragraph.lineBreakMode = NSLineBreakMode(rawValue: 3)! 
-            
-            
+
+         
             let text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
      //       let teststring = tempinputDataFeldstring + text + "\n"
             
@@ -2057,7 +2118,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //https://stackoverflow.com/questions/40478728/appending-text-to-nstextview-in-swift-3
             
             inputDataFeld.textStorage?.append(NSAttributedString(string:(tempinputDataFeldstring + "\n")))
-        
+            
+            //downloadDataFeld.textStorage?.append(NSAttributedString(string:(tempinputDataFeldstring + "\n")))
+            
+            
             //var inputstring:NSAttributedString = NSAttributedString.init(string: "dfghjkl", attributes: paragraph)
         //    inputDataFeld.string = inputDataFeld.string! +  tempinputDataFeldstring + " sdfghjklkjhgfds" + " sdfghjklkjhgfds" + " dfghjklkjhgfds" + "\n"
             //inputDataFeld.string = inputDataFeld.string! + "\n"
@@ -2265,6 +2329,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       print("report_start_download_logger_USB");
       Stop_Logger.isEnabled = true
       zeit_Feld.stringValue = zeitstring()
+      
+      read_sd_progress.intValue = 0
+      
       // tagmin_Feld.integerValue = tagminute
       tagsec_Feld.integerValue = tagsekunde()
       cont_read_check.state = 1
@@ -2286,18 +2353,21 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       {
          print("Fehler in report_start_download_logger_USB")
       }
-      
+ //     Start_Logger.isEnabled = false
+      Stop_Logger.isEnabled = true
       teensy.write_byteArray[0] = UInt8(LOGGER_START)
       startblock = UInt16(read_sd_startblock.integerValue)
       
       // index erster Block
       
-      // old
-      //      teensy.write_byteArray[1] = UInt8(startblock & 0x00FF)
-      //      teensy.write_byteArray[2] = UInt8((startblock & 0xFF00)>>8)
-      
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // byte 3
       teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
+
+      
+      teensy.write_byteArray[DATACOUNT_LO] = UInt8(messungcounter.intValue & 0x00FF) // byte 3
+      teensy.write_byteArray[DATACOUNT_HI] = UInt8((messungcounter.intValue & 0xFF00)>>8)
+
+      
       
       blockcount = UInt16(read_sd_anzahl.integerValue) // Anzahl zu lesende blocks, angegeben im TextField read_sd_anzahl
       teensy.write_byteArray[BLOCK_ANZAHL_BYTE] = UInt8(blockcount & 0x00FF) // byte 9
@@ -2313,9 +2383,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       cont_write_check.state = 1
       //print("\nreport start download: teensy.last_read_byteArray: \(teensy.last_read_byteArray)")
       
-      var senderfolg = teensy.start_write_USB()
-      //inputDataFeld.string = inputDataFeld.string! + "\nBlock: " + String(startblock) + "\n"
-      inputDataFeld.string = "Block: " + String(startblock) + "\n"
+      let senderfolg = teensy.start_write_USB()
+      if (senderfolg > 0)
+      {
+         //inputDataFeld.string = inputDataFeld.string! + "\nBlock: " + String(startblock) + "\n"
+         //inputDataFeld.string = "Block: " + String(startblock) + "\n"
+         downloadDataFeld.string = "Block: " + String(startblock) + "\n"
+      }
+      else
+      {
+         downloadDataFeld.string = "Block: " + String(startblock) + "Start error" + "\n"
+      }
       
    }
    
@@ -2371,7 +2449,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       var senderfolg = teensy.cont_write_USB()
       cont_read_check.state = 1
-      
       
    }
    
@@ -2581,6 +2658,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          Set_Settings?.isEnabled = true;
          cont_read_check?.isEnabled = true;
          cont_write_check?.isEnabled = true;
+         
+         Start_Logger.isEnabled = true
          NSSound(named: "Glass")?.play()
          swiftArray[0]["on"] = "1" // teensy ist da
          check_WL()
@@ -3070,6 +3149,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
  
          inputDataFeld.string = "Messung tagsekunde: \(zeit)\n"
+         
+         downloadDataFeld.string = "Messung tagsekunde: \(zeit)\n"
  /*        
          let paragraphStyle = NSMutableParagraphStyle()
          paragraphStyle.tabStops = [NSTextTab(textAlignment: NSTextAlignment.left, location: 100, options: [:])]
