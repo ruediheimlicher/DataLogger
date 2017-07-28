@@ -15,6 +15,21 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
    var main: NSWindowController!
 
+   func showErrorInKeyWindow(message: String) 
+   {
+      
+      if let window = NSApp.keyWindow {
+         
+         let alert = NSAlert()
+         alert.messageText = "Error"
+         alert.informativeText = message
+         alert.addButton(withTitle: "Dismiss")
+         alert.beginSheetModal(for: window, completionHandler: nil)
+         
+      }
+      
+   }
+
 
    func applicationDidFinishLaunching(_ aNotification: Notification)
    {

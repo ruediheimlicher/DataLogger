@@ -97,8 +97,6 @@ let DATA_START_BYTE   = 8    // erstes byte fuer Data auf USB
 
 let HEADER_SIZE = 16
 
-let HEADER_OFFSET  =    4     // Erstes Byte im Block nach BLOCK_SIZE: Daten, die bei LOGGER_NEXT uebergeben werden
-
 let LOGGER_START     =     0xA0
 let LOGGER_CONT      =     0xA1
 let LOGGER_NEXT      =     0xA2 // next block
@@ -199,8 +197,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    var lastscrollcounter:Int = 0
    
    
-   var prefs = Preferences()
-   
    // Diagramm
    @IBOutlet  var datagraph: DataPlot!
    @IBOutlet  var dataScroller: NSScrollView!
@@ -217,6 +213,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var Start_Messung: NSButton!
    
    @IBOutlet  var manufactorer: NSTextField!
+   @IBOutlet  var Counter: NSTextField!
    
    @IBOutlet  var Start: NSButton!
    
@@ -552,31 +549,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       //  }
    }
    
-   func dialogOKCancel(question: String, text: String) -> Int 
-   {
-      // https://stackoverflow.com/questions/29433487/create-an-nsalert-with-swift
-      let alert = NSAlert()
-      alert.messageText = question
-      alert.informativeText = text
-      alert.alertStyle = NSAlertStyle.warning
-      alert.addButton(withTitle: "OK")
-      alert.addButton(withTitle: "Cancel")
-      return alert.runModal()// == NSAlertFirstButtonReturn
-      
-   }
-
-   func dialogAlertMult(message: String, information: String, buttonOK: String, buttonCancel: String) -> Int
-   {
-      let alert = NSAlert()
-      alert.messageText = message
-      alert.informativeText = information
-      alert.addButton(withTitle: buttonOK)
-      alert.addButton(withTitle: buttonCancel)
-      alert.alertStyle = NSAlertStyle.warning
-      var antwort = 0
-      let fenster = NSApplication.shared().windows.first
-        return alert.runModal()
-   }
    
    //MARK: - viewDidLoad
    override func viewDidLoad()
@@ -588,13 +560,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       // http://dev.iachieved.it/iachievedit/notifications-and-userinfo-with-swift-3-0/
       
- //     var antwort = dialogOKCancel(question: "fertig?",text:"was auch immer")
-      
- //     print("antwort: \(antwort)")
-      
-//      antwort = dialogAlertMult(message: "wirklich?", information: "das ist heikel", buttonOK: "sicher", buttonCancel: "Mist")
-//      print("antwort: \(antwort)")
-        
       let nc = NotificationCenter.default //
       
       nc.addObserver(forName:Notification.Name(rawValue:"NSWindowWillCloseNotification"),// Name im Aufruf in usb.swift
@@ -906,11 +871,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       self.view.addSubview(Vertikalbalken)
      // Vertikalbalken.autoresizingMask |= NSViewMinYMargin
       print("setAutoresizesSubviews: \(Vertikalbalken.autoresizingMask)")
-      
-      
-      
-      setupPrefs()
-      
    }//viewDidLoad
    
    
@@ -1383,7 +1343,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                usb_read_cont = false
                cont_read_check.state = 0;
                let prefix = datumprefix()
-               let dataname = "Logger/" + prefix + "_loggerdump.txt"
+               let dataname = prefix + "_loggerdump.txt"
                
                writeData(name: dataname,data:downloadDataFeld.string!)
               
@@ -1412,34 +1372,19 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          print("Header: ")
          // blockcounter
-         var header_add = 0
-         let tempblockcounter = UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add + 1])<<8)
+         let tempblockcounter = UInt16(teensy.read_byteArray[DATA_START_BYTE + 16]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + 17])<<8)
          print("blockcounter: \(tempblockcounter)")
-         header_add += 2
-         // blockdatacounter
-         let tempdatablockcounter = UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add + 1])<<8)
          
-         lastpacket = UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add + 1])<<8)
+         // blockdatacounter
+         let tempdatablockcounter = UInt16(teensy.read_byteArray[DATA_START_BYTE + 18]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + 19])<<8)
+         lastpacket = UInt16(teensy.read_byteArray[DATA_START_BYTE + 18]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + 19])<<8)
          
          print("tempdatablockcounter: \(tempdatablockcounter)")
          
-         header_add += 2
          // messungcountercounter
-         let tempmessungcounter = UInt16(teensy.read_byteArray[DATA_START_BYTE  + HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add + 1])<<8)
+         let tempmessungcounter = UInt16(teensy.read_byteArray[DATA_START_BYTE + 20]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + 21])<<8)
          print("tempmessungcounter: \(tempmessungcounter)")
-
-         header_add += 2
-         // wl_callback_status: aktivierte devices
-         let download_wl_callback_status = UInt16(teensy.read_byteArray[DATA_START_BYTE  + HEADER_OFFSET + header_add])
-         print("download_wl_callback_status: \(download_wl_callback_status)")
          
-         // 
-         
-         header_add += 2
-         // intervall
-         let download_intervall = UInt16(teensy.read_byteArray[DATA_START_BYTE +  HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE  + HEADER_OFFSET + header_add + 1])<<8)
-         
-         print("download_intervall: \(download_intervall)")
          
          if (packetcount < 20) // 480 bytes pro block
          {
@@ -1465,7 +1410,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                usb_read_cont = false
                cont_read_check.state = 0;
                let prefix = datumprefix()
-               let dataname = "Logger/" + prefix + "_loggerdump.txt"
+               let dataname = prefix + "_loggerdump.txt"
                
                writeData(name: dataname,data:downloadDataFeld.string!)
                
@@ -1489,7 +1434,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          cont_read_check.state = 0;
          
          let prefix = datumprefix()
-         let dataname = "Logger/" + prefix + "_loggerdump.txt"
+         let dataname = prefix + "_loggerdump.txt"
          
          
          writeData(name: dataname,data:inputDataFeld.string!)
@@ -1573,7 +1518,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          let wl_callback_status = UInt8(teensy.read_byteArray[2])
-         
          let devicecount = (teensy.read_byteArray[3])
          
          // status der  device checken
@@ -1585,8 +1529,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          {
             var zeile = devicelinie
             let device = devicelinie["device"]!
-            let analog = devicelinie["A"]! // Tastenstatus Kanaele           
-            print ("deviceindex: \(deviceindex) analog: \(analog)")
+            let analog = devicelinie["A"]! // Tastenstatus Kanaele            print ("deviceindex: \(deviceindex) analog: \(analog)")
             let devicecode = UInt8(deviceindex)
             let oldstatus = Int(swiftArray[deviceindex]["on"]!) // bisheriger status, nur update wenn changed
             if (wl_callback_status & (1<<devicecode) > 0)
@@ -1631,6 +1574,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             inputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue + "\t"
             
          }
+         Counter.intValue = counter
          
          messungcounter.intValue = counter
          
@@ -2760,7 +2704,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBAction func check_USB(_ sender: NSButton)
    {
-
       let erfolg = UInt8(teensy.USBOpen())
       usbstatus = erfolg
       print("USBOpen erfolg: \(erfolg) usbstatus: \(usbstatus)")
@@ -3099,7 +3042,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       //print("vor: \(swiftArray[zeile]["A"]!)")
       let wert = swiftArray[zeile]["A"]!
       var selectcode = UInt8(wert)!
-      print("reportAnalogTasten: anz: \(anz)  segment: \(segment)  segtag: \(segtag) zeile: \(zeile)")
+      //print("reportAnalogTasten: anz: \(anz)  segment: \(segment)  segtag: \(segtag) zeile: \(zeile)")
       let status =  sender.isSelected(forSegment:segment)
       
       let seg = UInt8(segment)
@@ -3107,8 +3050,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  
       if (sender.isSelected(forSegment:segment))
       {
-               
-      }
+               }
       else
       {
          //swiftArray[zeile]["A"] = "0"
@@ -3147,27 +3089,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBAction func report_start_messung(_ sender: NSButton)
    {
-      
-      // Sichern auf SD?
-      
-      var save_SD = save_SD_check?.state
-      
-       if (save_SD == 0)
-       {
-       var SD_antwort = dialogAlertMult(message: "Sicherung auf MMC", information: "Messungen auf MMC schreiben", buttonOK: "Sicher", buttonCancel: "Nein")
-       print("antwort: \(SD_antwort)")
-       if (SD_antwort == 1000) // JA
-       {
-         save_SD = 1
-         save_SD_check?.state = 1
-       }
-       
-       }
-       
-       
-       //       teensy.write_byteArray[1] = 0
-       
-
       //print("start_messung sender: \(sender.state)") // gibt neuen State an
       var lineindex = 0
       for line in taskArray
@@ -3262,6 +3183,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // code setzen
          teensy.write_byteArray[0] = UInt8(MESSUNG_START)
          
+         // Sichern auf SD?
+         let save_SD = save_SD_check?.state
+  //       teensy.write_byteArray[1] = 0
+         
          if (save_SD == 1)
          {
             teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
@@ -3313,6 +3238,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
          delayWithSeconds(1)
          {            
+            self.Counter.intValue = 0
             
             self.datagraph.initGraphArray()
             self.datagraph.setStartsekunde(startsekunde:self.tagsekunde())
@@ -3373,7 +3299,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       messungstring = kopfstring + messungstring
       
-      let dataname = "Messungen/" + prefix + "_messungdump.txt"
+      let dataname = prefix + "_messungdump.txt"
       
       writeData(name: dataname,data:messungstring)
       
@@ -3437,8 +3363,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          messungstring = kopfstring + messungstring
          
-         //let dataname = prefix + "_messungdump.txt"
-           let dataname = "Messungen/" + prefix + "_messungdump.txt"
+         let dataname = prefix + "_messungdump.txt"
+         
          writeData(name: dataname,data:messungstring)
       }
       
@@ -3487,6 +3413,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       delayWithSeconds(1)
       {
+         self.Counter.intValue = 0
          
          
          self.usb_read_cont = true // cont_Read einschalten
@@ -3818,6 +3745,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             delayWithSeconds(1)
             {            
 /*
+               self.Counter.intValue = 0
                
                self.datagraph.initGraphArray()
                self.datagraph.setStartsekunde(startsekunde:self.tagsekunde())
@@ -4614,29 +4542,3 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          
       }
    }}
-
-
-extension DataViewController 
-{
-   
-   // MARK: - Preferences
-   // https://www.raywenderlich.com/151748/macos-development-beginners-part-3
-   func setupPrefs() 
-   {
-      //updateDisplay(for: prefs.selectedTime)
-      
-      let notificationName = Notification.Name(rawValue: "PrefsChanged")
-      NotificationCenter.default.addObserver(forName: notificationName,
-                                             object: nil, queue: nil) {
-                                                (notification) in
-                                                self.updateFromPrefs()
-      }
-   }
-   
-   func updateFromPrefs() 
-   {
-   //   self.eggTimer.duration = self.prefs.selectedTime
-    //  self.resetButtonClicked(self)
-   }
-   
-}

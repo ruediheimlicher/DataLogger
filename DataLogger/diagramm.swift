@@ -582,7 +582,7 @@ class DataPlot: NSView
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
       var neuerPunkt:CGPoint = feld.origin
       
-      neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0][0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	//	Zeit, x-Wert, erster Wert im WerteArray
+      neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0][0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	 / CGFloat(Vorgaben.Intervall) //	Zeit, x-Wert, erster Wert im WerteArray
       
       
       var tempKanalDatenDic = [String:CGFloat]() //=  [CGFloat](repeating:0.0,count:8)
@@ -591,7 +591,7 @@ class DataPlot: NSView
       var time:Float = (werteArray[0][0]) // - (Vorgaben.Startsekunde)
       let start:Float = Float(Vorgaben.Startsekunde)
       time = time - start
-      
+      let q = Vorgaben.Intervall
       if (time > 0)
       {
          let quot = Float(neuerPunkt.x) / time / Float(Vorgaben.Intervall)
@@ -601,6 +601,7 @@ class DataPlot: NSView
       tempKanalDatenDic["time"] = CGFloat(werteArray[0][0] - Float(Vorgaben.Startsekunde))
       
       tempKanalDatenDic["x"] = neuerPunkt.x
+
       
       for i in 0..<(werteArray.count-1) // erster Wert ist Abszisse
       {
