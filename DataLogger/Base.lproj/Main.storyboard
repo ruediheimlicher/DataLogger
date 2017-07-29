@@ -1139,7 +1139,7 @@
                                                                             </tableCellView>
                                                                         </prototypeCellViews>
                                                                     </tableColumn>
-                                                                    <tableColumn identifier="A" width="110" minWidth="10" maxWidth="3.4028234663852886e+38" id="a4G-4e-pqE">
+                                                                    <tableColumn identifier="A" width="183" minWidth="10" maxWidth="3.4028234663852886e+38" id="a4G-4e-pqE">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Analog">
                                                                             <font key="font" metaFont="smallSystem"/>
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1152,19 +1152,19 @@
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                         <prototypeCellViews>
                                                                             <tableCellView id="2Kb-Yd-4Ac">
-                                                                                <rect key="frame" x="298" y="1" width="110" height="17"/>
+                                                                                <rect key="frame" x="298" y="1" width="183" height="17"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Omh-JB-125">
-                                                                                        <rect key="frame" x="8" y="1" width="84" height="17"/>
+                                                                                        <rect key="frame" x="6" y="1" width="156" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <segmentedCell key="cell" controlSize="mini" borderStyle="border" alignment="left" style="separated" trackingMode="selectAny" id="iwu-N9-rdY">
                                                                                             <font key="font" metaFont="miniSystem"/>
                                                                                             <segments>
-                                                                                                <segment label="A0" width="20" tag="1500"/>
-                                                                                                <segment label="A1" width="20" selected="YES" tag="1501"/>
-                                                                                                <segment label="A2" width="19" tag="1502"/>
-                                                                                                <segment label="A3" width="20" tag="1503"/>
+                                                                                                <segment label="A0" width="38" tag="1500"/>
+                                                                                                <segment label="A1" width="38" selected="YES" tag="1501"/>
+                                                                                                <segment label="A2" width="37" tag="1502"/>
+                                                                                                <segment label="A3" width="38" tag="1503"/>
                                                                                             </segments>
                                                                                         </segmentedCell>
                                                                                         <connections>
@@ -1189,7 +1189,7 @@
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                         <prototypeCellViews>
                                                                             <tableCellView id="VRU-SP-M1K">
-                                                                                <rect key="frame" x="411" y="1" width="64" height="17"/>
+                                                                                <rect key="frame" x="484" y="1" width="64" height="17"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0B2-gm-6lk">
@@ -1222,7 +1222,7 @@
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                         <prototypeCellViews>
                                                                             <tableCellView id="ttP-kt-lJx">
-                                                                                <rect key="frame" x="478" y="1" width="64" height="17"/>
+                                                                                <rect key="frame" x="551" y="1" width="64" height="17"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hpx-LV-OBa">
@@ -1787,7 +1787,7 @@
                             <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fuN-0r-42P">
                                 <rect key="frame" x="173" y="712" width="240" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" id="VPD-56-mu6">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" id="VPD-56-mu6">
                                     <font key="font" metaFont="system" size="8"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

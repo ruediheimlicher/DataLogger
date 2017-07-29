@@ -54,8 +54,6 @@ let SERVOAHI = 11
 
 let SERVO_OUT = 0xD0
 
-let MMCLO = 16
-let MMCHI = 17
 
 
 // Task
@@ -89,6 +87,12 @@ let DATACOUNT_HI    =   6
 let TAKT_LO_BYTE    =   14
 let TAKT_HI_BYTE    =   15
 
+let KANAL_BYTE   =    16 // Begine liste der aktivierte Kanaele der devices
+
+let KANAL_0_BYTE   =    16 // aktivierte Kanaele device 0
+let KANAL_1_BYTE    =   17 // aktivierte Kanaele device 1
+let KANAL_2_BYTE   =    18 // aktivierte Kanaele device 2
+let KANAL_3_BYTE    =   19 // aktivierte Kanaele device 3
 
 let STARTMINUTELO_BYTE = 5
 let STARTMINUTEHI_BYTE = 6
@@ -578,6 +582,19 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
         return alert.runModal()
    }
    
+   override func viewDidAppear() 
+   {
+      self.view.window?.delegate = self
+   }
+  
+   func windowShouldClose(_ sender: Any) 
+   {
+      
+      //print("windowShouldClose")
+      
+      //NSApplication.shared().terminate(self)
+   }
+   
    //MARK: - viewDidLoad
    override func viewDidLoad()
    {
@@ -634,7 +651,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       var tempDic = [String:String]()
       
       tempDic["on"] = String(1)
-//      tempDic["device"] = "abcd"//devicearray[0]
+//      tempDic["device"] = "abcd" //devicearray[0]
  //     tempDic["deviceID"] = "0"
       tempDic["description"] = "Home"
       tempDic["A0"] = String(0)
@@ -669,7 +686,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["description"] = "Temperaturen messen"
       tempDic["A0"] = String(0)
       tempDic["A1"] = String(1)
-      tempDic["A"] = String(15)
+      tempDic["A"] = String(7)
+      tempDic["analogAtitel"] = "ADC 2\tADC 3\tADC 4\t--"
       tempDic["bereich"] = "0-80°\t0-160°\t-20-140°"
       tempDic["bereichwahl"] = "1"
       tempDic["analog"] = "6"
@@ -689,6 +707,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["A0"] = "1"
       tempDic["A1"] = "1"
       tempDic["A"] = "15"
+      tempDic["analogAtitel"] = "ADC 0\tADC 1\tADC 2\tADC 3"
+
       tempDic["bereich"] = "0-8V\t0-16V"
       tempDic["bereichwahl"] = "1"
       tempDic["temperatur"] = "20.1°"
@@ -704,7 +724,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       // https://useyourloaf.com/blog/warning-converting-optional-to-string/
       var optionalValue: Int? = 42
-      print("Value is \(optionalValue ?? 0)")  // Warning
+      //print("Value is \(optionalValue ?? 0)")  // Warning
       
       
       var lineindex=0
@@ -905,7 +925,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       Vertikalbalken = rVertikalanzeige(frame:feld)
       self.view.addSubview(Vertikalbalken)
      // Vertikalbalken.autoresizingMask |= NSViewMinYMargin
-      print("setAutoresizesSubviews: \(Vertikalbalken.autoresizingMask)")
+      //print("setAutoresizesSubviews: \(Vertikalbalken.autoresizingMask)")
       
       
       
@@ -1580,6 +1600,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var deviceindex:Int = 0
          
          var changestatus = false
+         
          
          for devicelinie in swiftArray
          {
@@ -2434,15 +2455,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
        }
       
-      // mmc
-      /*
-      let mmcLO:Int32 = Int32(teensy.last_read_byteArray[MMCLO])
-      let mmcHI:Int32 = Int32(teensy.last_read_byteArray[MMCHI])
-      let mmcData  = mmcLO | (mmcHI << 8)
-      mmcLOFeld.intValue = mmcLO
-      mmcHIFeld.intValue = mmcHI
-      mmcDataFeld.intValue = mmcData
-      */
       teensy.new_Data = false
    }
    
@@ -2707,10 +2719,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[0] = 0x00
    }
    
+   func NSWindowWillCloseNotification(notification:Notification) -> Void
+   {
+      print("*** NSWindowWillCloseNotification \(notification)")
+   }
    
    func USBfertigAktion(notification:Notification) -> Void
    {
-      NSLog("USBfertigAktion \(notification)")
+      //print("USBfertigAktion \(notification)")
       //& http://stackoverflow.com/questions/30027780/swift-accessing-appdelegate-window-from-viewcontroller
       //     let appDelegate = NSApplication.shared().delegate as? AppDelegate
       //https://stackoverflow.com/questions/31467531/nswindow-returns-nil-nsapplication
@@ -2718,7 +2734,64 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       // https://stackoverflow.com/questions/43426391/how-do-you-reference-the-views-window-in-swift-3-x-using-storyboards-cocoa
 
-      
+      if (NSApplication.shared().mainWindow != nil)
+      {
+         //print("hauptfenster da")
+         let hauptfenster:NSWindow = ((NSApplication.shared().mainWindow))!
+         if (notification.object != nil)
+         {
+            //print("objektfenster da")
+            let objektfenster :NSWindow = (notification.object as! NSWindow)
+            if (hauptfenster == objektfenster)
+            {
+               //print("objektfenster ist hauptfenster")
+               if (teensy.teensy_present() == true)
+               {
+                  teensy.write_byteArray[0] = UInt8(USB_STOP)
+                  
+                  //         teensy.write_byteArray[1] = UInt8(data0.intValue)
+                  
+                  let senderfolg = teensy.start_write_USB()
+                  //print("USBfertigAktion teensy senderfolg: \(senderfolg)")
+                  if (senderfolg > 0)
+                  {
+                     print("USBfertigAktion teensy schliessen OK")
+                     //stop_messung()
+                     stop_read_USB(self)
+                     stop_write_USB(self)
+                     
+                  }
+                  else
+                  {
+                     print("USBfertigAktion teensy schliessen nicht OK")
+                     //stop_messung()
+                     //stop_read_USB(self)
+                     //stop_write_USB(self)
+                     
+                     //return
+                  }
+                  
+               }
+               else 
+               {
+                  print("kein teensy")
+               }
+               
+               //print("beenden A")
+               NSApplication.shared().terminate(self)
+               //return
+               
+               
+            }
+            else 
+            {
+               //print("beenden B")
+               return
+               //NSApplication.shared().terminate(self)
+               //return
+            }
+         }
+      }
   //    let hauptfenster:NSWindow = ((NSApplication.shared().mainWindow))!
       
    //   let objektfenster :NSWindow = (notification.object as! NSWindow)
@@ -2729,7 +2802,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          //teensycode &= ~(1<<7)
          //teensy.write_byteArray[15] = teensycode
-         
+      /*   
          teensy.write_byteArray[0] = UInt8(USB_STOP)
          
          //         teensy.write_byteArray[1] = UInt8(data0.intValue)
@@ -2737,7 +2810,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let senderfolg = teensy.start_write_USB()
          if (senderfolg > 0)
          {
-            print("USBfertigAktion teensy schliessen OK")
+            print("*USBfertigAktion teensy schliessen OK")
             //stop_messung()
             stop_read_USB(self)
             stop_write_USB(self)
@@ -2745,16 +2818,18 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          else
          {
-            print("USBfertigAktion teensy schliessen nicht OK")
+            print("*USBfertigAktion teensy schliessen nicht OK")
             //stop_messung()
             //stop_read_USB(self)
             //stop_write_USB(self)
             
             //return
          }
+      print("*beenden")
+
          NSApplication.shared().terminate(self)
          return
-         
+        */ 
       
     }
    
@@ -3114,6 +3189,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //swiftArray[zeile]["A"] = "0"
       }
        swiftArray[zeile]["A"] = String(describing: selectcode)
+      
       //print("nach: \(swiftArray[zeile]["A"]!)")
    }
    
@@ -3255,6 +3331,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          teensy.write_byteArray[TAKT_LO_BYTE] = UInt8(integerwahl! & 0x00FF)
          teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((integerwahl! & 0xFF00)>>8)
          
+         for  kan in 0..<swiftArray.count
+         {
+            let kanalindex = KANAL_BYTE
+            let kanalstatus:UInt8 = UInt8(swiftArray[kan]["A"]!)!
+            
+            teensy.write_byteArray[KANAL_BYTE + kan] = kanalstatus //kanalauswahl
+         }
 
          MessungStartzeitFeld.integerValue = tagsekunde()
          MessungStartzeit = tagsekunde()
@@ -3286,6 +3369,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let startminute = tagminute()
          teensy.write_byteArray[STARTMINUTELO_BYTE] = UInt8(startminute & 0x00FF)
          teensy.write_byteArray[STARTMINUTEHI_BYTE] = UInt8((startminute & 0xFF00)>>8)
+         
+         // 
+         
+         
          //        print("\nreport start messungT: teensy.last_read_byteArray: \(teensy.last_read_byteArray)")
          print("\nreport start messung: teensy.write_byteArray: \(teensy.write_byteArray)")
          
@@ -4444,7 +4531,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          let element = result.subviews[0]
 //         print("check element on: \(element)")
          let knopf = element as! NSButton
-         knopf.toolTip = "Knopf"
+         knopf.toolTip = "aktiv"
          knopf.tag = 1000 + row
          let status = Int(knopf.state)
          let sollstatus = (swiftArray[row][(tableColumn?.identifier)!]! )
@@ -4511,7 +4598,9 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          //         print("check element A0: \(element)")
          let knopf = element as! NSSegmentedControl
          
-         knopf.toolTip = "Kanal waehlen"
+         //knopf.toolTip = "Kanal waehlen"
+         let titelarray = swiftArray[row]["analogAtitel"]?.components(separatedBy: "\t")
+         //titelarray = titelarray?[0]
          knopf.tag = 1500 + row
          let anz = Int(knopf.segmentCount)
          // https://stackoverflow.com/questions/38369544/how-to-convert-anyobject-type-to-int-in-swift
@@ -4520,6 +4609,10 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          
          for pos in 0..<anz
          {
+            if ((titelarray) != nil)
+            {
+            knopf.setLabel((titelarray?[pos])!, forSegment: pos)
+            }
             let temp = UInt8(pos)
             if ((selectcode! & (1<<temp)) > 0)
             {
@@ -4549,6 +4642,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          //         print("check element A0: \(element)")
          let knopf = element as! NSPopUpButton
          let knopftag = knopf.tag
+         knopf.toolTip = "Bereich waehlen"
          //print("knopftag: \(knopftag)")
          //let result:NSPopUpButton = tableView.make(withIdentifier: "bereich", owner: self) as! NSPopUpButton
          let titlestring = swiftArray[row][(tableColumn?.identifier)!]

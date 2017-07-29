@@ -47,6 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
    {
       // Insert code here to tear down your application
       print("AppDelegate applicationWillTerminate")
+      // NSApplication.shared().terminate(self)
    }
 
 
