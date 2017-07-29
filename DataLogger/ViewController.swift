@@ -655,6 +655,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  //     tempDic["deviceID"] = "0"
       tempDic["description"] = "Home"
       tempDic["A0"] = String(0)
+      tempDic["analogAtitel"] = "ADC 2\tADC 3\tADC 4\tADC"
       tempDic["A1"] = String(1)
       tempDic["A"] = String(0) // Kanaele Analog
       tempDic["bereich"] = "0-80°\t0-160°\t-30-130°"
