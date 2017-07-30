@@ -552,6 +552,40 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       return datastring
    }
+
+   func IntDataString(data:[[UInt8]])-> String
+   {
+      var datastring:String = ""
+      var datastringarray:[String] = []
+      //      print("setMessungData: \(data)")
+      var datacounter = 1
+      for index in 0..<data.count
+      {
+         
+         var tempzeilenarray:[UInt8] = data[index]
+         if (tempzeilenarray.count > 0)
+         {
+            //print("tempzeilenarray: \(tempzeilenarray)")
+            
+            let nummer = tempzeilenarray[0]
+            let nummerstring = String(format:"%3.0f", nummer)
+            //print("nummerstring: \(nummerstring)")
+            //tempzeilenarray.remove(at: 0)
+            let tempzeilenstring = tempzeilenarray.map{String($0)}.joined(separator: "\t")
+            datastringarray.append(tempzeilenstring)
+            datastring = datastring +  "\n" + String(datacounter) + "\t" + tempzeilenstring
+            datacounter += 1
+         }
+      }
+      let prefix = datumprefix()
+      //let dataname = prefix + "_messungdump.txt"
+      
+      //   writeData(name: dataname,data:datastring)
+      
+      return datastring
+   }
+
+   
    
 
    @IBAction func myPopUpButtonWasSelected(sender:NSButton)
@@ -1548,7 +1582,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          writeData(name: dataname,data:inputDataFeld.string!)
          
          print("\n")
-         var senderfolg = teensy.start_write_USB()
+  //       var senderfolg = teensy.start_write_USB()
          
          
          print("\nnewLoggerDataAktion LOGGER_Stop loggerDataArray:")
@@ -1595,6 +1629,33 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          blockcounter.intValue = blockposition
          read_sd_anzahl.intValue = blockposition
          
+         for line in messungDataArray
+         {
+            print("\(line)")
+         }
+
+         if (DiagrammDataArray.count > 1)
+         {
+            var messungstring:String = MessungDataString(data:DiagrammDataArray)
+            
+            let prefix = datumprefix()
+            let intervall = IntervallPop.integerValue
+            //let startblock = write_sd_startblock.integerValue
+            
+            var kopfstring = prefix + "\n" + "startzeit\t\(MessungStartzeit)\tintervall\t\(intervall)\tstartblock\t\(startblock)\nKanäle: \t\(anzahlChannels)"
+            
+            messungstring = kopfstring + messungstring
+            
+            var datastring:String = IntDataString(data:messungDataArray)
+            
+            messungstring = messungstring + "\n" + "Data raw"  + "\n" + datastring
+            
+            //let dataname = prefix + "_messungdump.txt"
+            let dataname = "Messungen/" + prefix + "_messungdump.txt"
+            writeData(name: dataname,data:messungstring)
+         }
+         
+
          // USB read beenden
          /*
          teensy.read_OK = false
@@ -1682,7 +1743,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print("\nneue Messung Nr: \(counter) \t Block: \(blockposition)")
             devicestatus = 0
             // String beginnen
-            inputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue + "\t"
+            inputDataFeldstring = messungcounter.stringValue  + "\t" + String(tagsekunde()-MessungStartzeit) + "\t" 
             
          }
          
@@ -2165,6 +2226,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var stellen:Int = 1
          var tempwerte = [Float] ( repeating: 0.00, count: 9 )     // eine Zeile mit messung-zeit und 8 floats
          tempwerte[0] = Float(diff) // Abszisse
+         
+         
          
          var werteArray = [[Float]](repeating: [0.0,0.0,1.0,1.0], count: 9 ) // Data mit wert, deviceID, sortenfaktor anzeigefaktor
          
@@ -3531,12 +3594,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  */  
    func stop_messung()
    {
-      print("stop_messung") // gibt neuen State an
-      for line in messungDataArray
-      {
-         print("\(line)")
-      }
-         teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
+          teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
          teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
          
          teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
@@ -3554,7 +3612,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let prefix = datumprefix()
          let intervall = IntervallPop.integerValue
          //let startblock = write_sd_startblock.integerValue
-         
+ 
+      /*
       if (DiagrammDataArray.count > 1)
       {
          var messungstring:String = MessungDataString(data:DiagrammDataArray)
@@ -3567,11 +3626,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          messungstring = kopfstring + messungstring
          
+        
+          
+         var datastring:String = IntDataString(data:messungDataArray)
+         
+          messungstring = messungstring + "\n" + "Data raw"  + "\n" + datastring
+         
          //let dataname = prefix + "_messungdump.txt"
            let dataname = "Messungen/" + prefix + "_messungdump.txt"
          writeData(name: dataname,data:messungstring)
       }
-      
+      */
       
       var senderfolg = teensy.start_write_USB()
       if (senderfolg > 0)
@@ -3579,7 +3644,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          NSSound(named: "Glass")?.play()
          
       }
-      
+      print("stop_messung") // gibt neuen State an
+ 
    }
    
    func check_WL()
