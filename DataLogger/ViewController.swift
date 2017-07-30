@@ -530,13 +530,19 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       for index in 0..<data.count
       {
-         let tempzeilenarray:[Float] = data[index]
+         
+         var tempzeilenarray:[Float] = data[index]
          if (tempzeilenarray.count > 0)
          {
+            //print("tempzeilenarray: \(tempzeilenarray)")
             
+            let nummer = tempzeilenarray[0]
+            let nummerstring = String(format:"%3.0f", nummer)
+            //print("nummerstring: \(nummerstring)")
+            tempzeilenarray.remove(at: 0)
             let tempzeilenstring = tempzeilenarray.map{String($0)}.joined(separator: "\t")
             datastringarray.append(tempzeilenstring)
-            datastring = datastring +  "\n" + tempzeilenstring
+            datastring = datastring +  "\n" + nummerstring + "\t" + tempzeilenstring
          }
       }
       let prefix = datumprefix()
@@ -1214,13 +1220,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var last = false
          // header lesen byte 0 ist device und status
          let status: UInt8 = teensy.read_byteArray[DATA_START_BYTE]
-         print("status: \(status)")
+         //print("status: \(status)")
          if (status & (1<<7) > 0)
          {
             print("last data \(downloaddatanummer)")
          }
          
-         print("lastpacket : \(lastpacket)")
+         //print("lastpacket : \(lastpacket)")
         
          read_sd_progress.intValue = Int32(downloaddatanummer)
          
@@ -1281,7 +1287,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   {
                      //   print ("\nindex: \(index) newzeilenarray: \n\(newzeilenarray)")
                      let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
-                     print ("index: \(index)\t\(tempstring)")
+                     //print ("index: \(index)\t\(tempstring)")
                      inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
                      newzeilenarray.removeAll(keepingCapacity: true)
                   }
@@ -1301,7 +1307,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                //print("ok")
                
                
-               
+               /*
                print("LOGGER_CONT CODE read_byteArray")
                
                for index in 0..<DATA_START_BYTE
@@ -1320,10 +1326,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                }
                
                print ("")
-               
+               */
                let tempmessungcounter = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2]) | UInt16(teensy.read_byteArray[DATA_START_BYTE + 3])<<8
                
-               print("tempmessungcounter: \(tempmessungcounter)")
+               //print("tempmessungcounter: \(tempmessungcounter)")
                
                // http://stackoverflow.com/questions/25581324/swift-how-can-string-join-work-custom-types
                var temparray = teensy.read_byteArray[DATA_START_BYTE...(BUFFER_SIZE-1)] // Teilarray mit Daten, DATA_START_BYTE: 16
@@ -1386,6 +1392,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             // Block full
             downloadblocknummer = downloadblocknummer + 1
             print("LOGGER_CONT FULL startblock: \(startblock) blockcount: \(blockcount) downloadblocknummer: \(downloadblocknummer)")
+           /*
             print("teensy.read_byteArray")
             var  index:UInt8 = 0;
             for index in 0..<BUFFER_SIZE
@@ -1394,7 +1401,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             
             print ("")
-
+             */
             if (downloadblocknummer < blockcount) // noch weitere Blocks laden
             {
                print("LOGGER_CONT next downloadblocknummer: \(downloadblocknummer)")
@@ -1429,6 +1436,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
       case LOGGER_NEXT:
          print("\nLOGGER_NEXT packetcount: \(packetcount)") // analog LOGGER_START, Antwort vom Logger auf LOGGER_NEXT: next block ist geladen
+         
+         /*
          print("teensy.read_byteArray")
          var  index:UInt8 = 0;
          
@@ -1449,8 +1458,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          
          print ("")
-         
-         print("Header: ")
+         */
+         //print("Header: ")
          // blockcounter
          var header_add = 0
          let tempblockdatacounter = UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add + 1])<<8)
@@ -1690,10 +1699,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          blockcounter.intValue = Int32(blockposition)
-         
-         //read_sd_startblock.intValue = Int32(blockposition)
-         //print("ADC0LO: \(teensy.read_byteArray[ADC0LO]) ADC0HI: \(teensy.read_byteArray[ADC0HI])");
-         
          
          
          // Device nummer lesen
@@ -2172,6 +2177,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let anzdevice = swiftArray.count      // Anzahl
          
          var tempinputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue  
+         //print ("tempinputDataFeldstring \(tempinputDataFeldstring)\n")
+         
          
          for device in 0..<anzdevice
          {
@@ -2289,7 +2296,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          if (devicestatus == wl_callback_status)
          {
-            
+            DiagrammDataArray.append(tempwerte)
+
  //           var paragraph:NSMutableParagraphStyle = NSMutableParagraphStyle.init() //as! NSMutableParagraphStyle
  //           paragraph.lineBreakMode = NSLineBreakMode(rawValue: 3)! 
 
@@ -2297,29 +2305,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
      //       let teststring = tempinputDataFeldstring + text + "\n"
             
-         //   let attributedText = NSMutableAttributedString(string: teststring, attributes: [
-         //      NSFontAttributeName: NSFont.systemFont(ofSize: 20.0),
-        //       NSForegroundColorAttributeName: CGColor.black
-         //      ])
-            
-       //     let c = teststring.characters.count
-      //      let textRange = NSMakeRange(0, teststring.characters.count)
-     //       attributedText.addAttribute(NSParagraphStyleAttributeName, value: paragraph, range: textRange)
-           // inputDataFeld.attributedText = attributedText
-            
+             
             //https://stackoverflow.com/questions/40478728/appending-text-to-nstextview-in-swift-3
             
             inputDataFeld.textStorage?.append(NSAttributedString(string:(tempinputDataFeldstring + "\n")))
             
-            //downloadDataFeld.textStorage?.append(NSAttributedString(string:(tempinputDataFeldstring + "\n")))
-            
-            
-            //var inputstring:NSAttributedString = NSAttributedString.init(string: "dfghjkl", attributes: paragraph)
-        //    inputDataFeld.string = inputDataFeld.string! +  tempinputDataFeldstring + " sdfghjklkjhgfds" + " sdfghjklkjhgfds" + " dfghjklkjhgfds" + "\n"
-            //inputDataFeld.string = inputDataFeld.string! + "\n"
-            //devicestatus = 0
-            DiagrammDataArray.append(tempwerte)
-         }
+                      }
 //         print("end for device.  devicestatus: \(devicestatus) wl_callback_status: \(wl_callback_status) devicestatus: \(devicestatus)")
          
          
@@ -3386,8 +3377,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             teensy.write_byteArray[KANAL_BYTE + kan] = kanalstatus //kanalauswahl
          }
 
-         MessungStartzeitFeld.integerValue = tagsekunde()
-         MessungStartzeit = tagsekunde()
          
          // code setzen
          teensy.write_byteArray[0] = UInt8(MESSUNG_START)
@@ -3424,8 +3413,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("\nreport start messung: teensy.write_byteArray: \(teensy.write_byteArray)")
          
          DiagrammDataArray.removeAll()
+         messungcounter.intValue = 0;
          
- 
          inputDataFeld.string = "Messung tagsekunde: \(zeit)\n"
          
          downloadDataFeld.string = "Messung tagsekunde: \(zeit)\n"
@@ -3463,6 +3452,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             {
                print("Fehler in report_start_messung")
             }
+            self.MessungStartzeitFeld.integerValue = self.tagsekunde()
+            self.MessungStartzeit = self.tagsekunde()
+
          }
          var senderfolg = teensy.start_write_USB()
          if (senderfolg > 0)
@@ -3479,7 +3471,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
      // let startscrollpunkt = NSMakePoint(dataScroller.frame.size.width,0.0)
    }
-   
+
+   /*
    @IBAction func report_stop_messung(_ sender: NSButton)
    {
       print("report_stop_messung") // gibt neuen State an
@@ -3535,7 +3528,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       }
       
    }
-   
+ */  
    func stop_messung()
    {
       print("stop_messung") // gibt neuen State an
@@ -3556,7 +3549,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          print("DiagrammDataArray count: \(DiagrammDataArray.count)")
          
-         var messungstring:String = MessungDataString(data:DiagrammDataArray)
+        // var messungstring:String = MessungDataString(data:DiagrammDataArray)
          
          let prefix = datumprefix()
          let intervall = IntervallPop.integerValue
