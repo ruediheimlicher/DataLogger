@@ -64,7 +64,7 @@ let TEENSY_DATA    =    0xFC // Daten des teensy lesen
 
 let MESSUNG_START   =   0xC0 // Start der Messreihe
 let MESSUNG_STOP   =   0xC1 // Start der Messreihe
-
+let KANAL_WAHL     =    0xC2 // Kanalwahl
 let READ_START   =   0xCA // Start read
 
 let SAVE_SD_RUN = 0x02 // Bit 1
@@ -1666,9 +1666,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          
-         // ****************************************************************************
-         // MARK: MESSUNG_DATA
       // ****************************************************************************
+      // MARK: MESSUNG_DATA
+      // ****************************************************************************
+      
       case MESSUNG_DATA: // wird gesetzt, wenn vom Teensy im Timertakt Daten gesendet werden
          //print("code ist MESSUNG_DATA")
          //        print("teensy.read_byteArray")
@@ -1812,14 +1813,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print ("")
 */
             print("task 1 DATA read_byteArray\tcount: \(counter)\t", terminator: "")
-            
+/*            
             for index in DATA_START_BYTE..<BUFFER_SIZE
             {
                print("\(teensy.read_byteArray[index])\t", terminator: "")
             }
             
             print ("")
-            
+*/            
     //        var temparray = teensy.read_byteArray[DATA_START_BYTE...(BUFFER_SIZE-1)] // Teilarray mit Daten, DATA_START_BYTE: 16
             var temparray:[UInt8] = []
             for pos in DATA_START_BYTE..<BUFFER_SIZE
@@ -1830,6 +1831,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
             if (wl_callback_status & (1<<UInt8(task)) > 0) // device ist aktiv
             {
+               print("device 1 aktiv")
                devicestatus |= (1<<UInt8(task))
                let device = swiftArray[task]
                
@@ -1931,6 +1933,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
          case 2:
             // MARK: MESSUNG_DATA Device 2
+             print("device 2 aktiv")
             //print ("")
             
             //print ("switch devicenummer: \(devicenummer)")
@@ -2031,18 +2034,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                //            adcfloatarray[3]  = analog3float
                messungfloatarray[task][DIAGRAMMDATA_OFFSET + 3] = analog3float
                
-               //print("task 2 analog3float: \(analog3float) )");
-               
-               //print(")task 2 analog0float: \(analog0float) analog1float: \(analog1float) analog2float: \(analog2float) analog3float: \(analog3float)")
-               
-               /*
-                analog2float = analog2float * 2.56 / 1023
-                print("analog2float B: \(analog2float) )");
-                analog2float *= 20 // Anzeigewert anpassen
-                
-                print("analog2float C: \(analog2float) )");
-                */
-               
                let batteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
                batteriefloat = Float(batteriespannung)
                if (batteriefloat < Float(BATT_MIN))
@@ -2060,127 +2051,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          TaskListe.reloadData()
          
-         var tl = 0
-         /*
-          for taskline in messungfloatarray
-          {
-          print("\ntask: \(tl):\t" ,terminator:"")
-          for line in taskline
-          {
-          print("\t\(line) |" , terminator:"")
-          }
-          tl += 1
-          }
-          print("\n")
-          */
-         //        let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0 + DATA_START_BYTE])
-         //        let analog0hi:Int32 =  Int32(teensy.read_byteArray[ANALOG0+1 + DATA_START_BYTE])
-         
-         
-         //     let analog0 = analog0lo | (analog0hi<<8)
-         
-         
-         
-         // print ("ADC0LO: \(ADC0LO) ADC0HI: \(ADC0HI)  adc0: \(adc0)");
-         
-         //print ("analog0: \(analog0)");
-         //         ADC0LO_Feld.intValue = analog0lo
-         //         ADC0HI_Feld.intValue = analog0hi
-         
-         
-         // Temperatur
-         
-         
-         //var  analog0float:Float = Float(analog0) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-         //print ("analog0float: \(analog0float)");
-         
-         // let a0lo = String(format:"%2X", teensy.read_byteArray[ADC0LO + DATA_START_BYTE])
-         //  let a0hi = String(format:"%2X", teensy.read_byteArray[ADC0HI + DATA_START_BYTE])
-         
-         
-         //print("adc0lo: \(a0lo)) adc0hi: \(a0hi) adc0: \(adc0) adc0float: \(adc0float)");
-         
-         
-         //adc0float = floorf(adc0float * Float(2.0)) / 2.0
-         
-         // analog0float = floorf(fabs(analog0float)*2.f) / 2.f
-         
-         //print ("analog0float 2: \(analog0float)");
-         //var adc0anzeige = Float(roundit(Double(adc0float), toNearest: 0.5))
-         
-         
-         //        adc0float /= 10.0
-         
-         // adcfloatarray[0]  = analog0float
-         
-         
-         
-         //adcfloatarray[0] = adc0anzeige
-         
-         //print("ADC1LO: \(teensy.read_byteArray[ADC1LO]) ADC1HI: \(teensy.read_byteArray[ADC1HI])");
-         
-         
-         //        ADC1LO_Feld.intValue = Int32(teensy.read_byteArray[ANALOG1 + DATA_START_BYTE])
-         //        ADC1HI_Feld.intValue = Int32(teensy.read_byteArray[ANALOG1+1 + DATA_START_BYTE])
-         
-         
-         
-         
-         // print("counter: \(counter) adc2: \(adc2)");
-         
-         // print ("ADC02LO: \(ADC02LO) ADC02HI: \(ADC02HI)  adc2: \(adc2)");
-         
-         // print ("adc0: \(adc0)");
-         
-         // var  analog1float:Float = Float(analog1) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
-         //print ("adc1float: \(adc1float)");
-         
-         /*
-          wert bei 20°: 190
-          Diff zu 190 anzeigen, Offset 30
-          */
-         //        adc1float = (adc1float)/4.0
-         
-         // PT10000
-         //adc1float -= 100
-         //        var adc1anzeige = Float(roundit(Double(analog1float), toNearest: 0.5))
-         
-         
+          
          //        analog1float = floorf(fabs(analog1float)*2.f) / 2.f
          // http://www.globalnerdy.com/2016/01/26/better-to-be-roughly-right-than-precisely-wrong-rounding-numbers-with-swift/
          
-         
-         //print("adc1: \t\(adc1) \t adc1float: \t\(adc1float) \t adc1anzeige: \t\(adc1anzeige) ");
-         
-         //        adcfloatarray[1] =  analog1float
-         //       print("adc1float: \(analog1float) )");
-         
-         //
-         //analog1float = analog1anzeige
-         
-         
-         
-         /*
-          let analog2lo:Int32 =  Int32(teensy.read_byteArray[ANALOG2 + DATA_START_BYTE])
-          let analog2hi:Int32 =  Int32(teensy.read_byteArray[ANALOG2+1 + DATA_START_BYTE])
-          let analog2 = analog2lo | (analog2hi<<8)
-          analog2float = Float(analog2)
-          
-          analog2float = analog2float * 2.56 / 1023
-          
-          analog2float *= 20 // Anzeigewert anpassen
-          
-          let tempbatteriespannung = Int32(teensy.read_byteArray[BATT + DATA_START_BYTE])
-          analog2float = Float(tempbatteriespannung)
-          
-          print("analog2float: \(analog2float) )");
-          
-          adcfloatarray[2] =  analog2float
-          
-          //
-          //print("adc1float: \(adc1float) )");
-          */
-         
+            
          let NR_LO = Int32(teensy.read_byteArray[DATACOUNT_LO + DATA_START_BYTE])
          let NR_HI = Int32(teensy.read_byteArray[DATACOUNT_HI + DATA_START_BYTE])
          
@@ -2200,16 +2075,16 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //   let ADC1HI:Int32 =  Int32(teensy.read_byteArray[ADCHI+2])
          //    let adc1 = ADC1LO | (ADC1HI<<8)
          let tempzeit = tagsekunde()
-         let tempzeitfloat = Float(tempzeit)
+       //  let tempzeitfloat = Float(tempzeit)
          
          
          let diff = tempzeit - MessungStartzeit
-         let diffstring = String(format:"%.0", diff)
+       //  let diffstring = String(format:"%.0", diff)
          
          //print("MessungStartzeit: \(MessungStartzeit) tempzeitfloat: \(tempzeitfloat)  diff: \(diff)")
          
          // https://stackoverflow.com/questions/24074479/how-to-create-a-string-with-format
-         let data0zeile:[Float] = [Float(diff),Float(analog0float),Float(analog1float),Float(analog2float)]
+     //    let data0zeile:[Float] = [Float(diff),Float(analog0float),Float(analog1float),Float(analog2float)]
          
          // MARK: Datenzeile
          
@@ -2297,6 +2172,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                         case 1: // KTY
                            wert_norm = wert // KTY_FAKTOR
                         case 2: // PT100
+                           wert_norm = wert
+                        case 3: // aux
                            wert_norm = wert
                            
                         default: break
@@ -2523,25 +2400,25 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       } // switch code
       //return;
       
-      var data = NSData(bytes: teensy.last_read_byteArray, length: 64)
+    //  var data = NSData(bytes: teensy.last_read_byteArray, length: 64)
       //print("data: \(data)")
       
       
-      let b1: Int32 = Int32(teensy.last_read_byteArray[1])
-      let b2: Int32 = Int32(teensy.last_read_byteArray[2])
+ //     let b1: Int32 = Int32(teensy.last_read_byteArray[1])
+ //     let b2: Int32 = Int32(teensy.last_read_byteArray[2])
       
       //print("b1: \(b1)\tb2: \(b2)\n");
       
       
-      let rotA:Int32 = (b1 | (b2<<8))
+ //     let rotA:Int32 = (b1 | (b2<<8))
       
    //   spannungsanzeige.intValue = Int32(rotA )
       
       // DS18S20
       
-      let DSLOW:Int16 = Int16(teensy.last_read_byteArray[DSLO])
-      let DSHIGH:Int16 = Int16(teensy.last_read_byteArray[DSHI])
-      
+ //     let DSLOW:Int16 = Int16(teensy.last_read_byteArray[DSLO])
+  //    let DSHIGH:Int16 = Int16(teensy.last_read_byteArray[DSHI])
+/*      
       if (DSLOW > 0)
       {
          let temperatur = DSLOW | (DSHIGH<<8)
@@ -2555,7 +2432,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          _ = NumberFormatter()
          
        }
-      
+ */     
       teensy.new_Data = false
    }
    
@@ -3292,6 +3169,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
        swiftArray[zeile]["A"] = String(describing: selectcode)
       
       //print("nach: \(swiftArray[zeile]["A"]!)")
+      
    }
    
    func countChannels() ->Int
