@@ -2114,7 +2114,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
           //print ("devicecount \(devicecount)\n")
          let anzdevice = swiftArray.count      // Anzahl
          
-         var tempinputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue  
+ //        var tempinputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue  
+         var tempinputDataFeldstring = messungcounter.stringValue + "\t"  + String(tagsekunde()-MessungStartzeit)
+         
+         
          //print ("tempinputDataFeldstring \(tempinputDataFeldstring)\n")
          
          
@@ -2826,7 +2829,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          USB_OK.textColor = NSColor.green
          USB_OK.stringValue = "OK";
          manufactorer.stringValue = "Manufactorer: " + teensy.manufactorer()!
-         
+         delayWithSeconds(1)
+         {
+            self.check_WL()
+         }
+
          Teensy_Status?.isEnabled = true;
          start_read_USB_Knopf?.isEnabled = true;
          stop_read_USB_Knopf?.isEnabled = true;
@@ -2841,7 +2848,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          Start_Logger.isEnabled = true
          NSSound(named: "Glass")?.play()
          swiftArray[0]["on"] = "1" // teensy ist da
-         check_WL()
          
       }
       else
