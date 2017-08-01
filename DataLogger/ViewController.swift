@@ -189,7 +189,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    var devicefloatarray:[[Float]] = Array(repeating:Array(repeating:0.0,count:10),count:6)
 
-   var messungfloatarray:[[Float]] = Array(repeating:Array(repeating:0.0,count:16),count:6)
+   var messungfloatarray:[[Float]] = Array(repeating:Array(repeating:0.0,count:24),count:6)
 
    var bereicharray:[[String]] = [[]]
    
@@ -2829,11 +2829,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          USB_OK.textColor = NSColor.green
          USB_OK.stringValue = "OK";
          manufactorer.stringValue = "Manufactorer: " + teensy.manufactorer()!
-         delayWithSeconds(1)
-         {
-            self.check_WL()
-         }
-
          Teensy_Status?.isEnabled = true;
          start_read_USB_Knopf?.isEnabled = true;
          stop_read_USB_Knopf?.isEnabled = true;
@@ -2846,9 +2841,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          cont_write_check?.isEnabled = true;
          
          Start_Logger.isEnabled = true
-         NSSound(named: "Glass")?.play()
-         swiftArray[0]["on"] = "1" // teensy ist da
          
+         swiftArray[0]["on"] = "1" // teensy ist da
+         delayWithSeconds(2)
+         {
+            self.check_WL()
+         }
+         NSSound(named: "Frog")?.play()
       }
       else
          
@@ -2862,8 +2861,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          start_write_USB_Knopf?.isEnabled = false;
          stop_write_USB_Knopf?.isEnabled = false;
          cont_read_check?.isEnabled = false;
-         cont_write_check?.isEnabled = false;
-         
+         cont_write_check?.isEnabled = false;         
          Start_Messung?.isEnabled = false;
          Set_Settings?.isEnabled = false;
 
@@ -2893,7 +2891,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       manufactorer.stringValue = ""
       USB_OK.stringValue = "??"
    }
-   
    
    //MARK: - Device Action
     
@@ -2953,8 +2950,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       }
       ordinateArray[selectedDevice].update()
    }
-   
-   
+      
    /*
    fileprivate func configureDeviceCollectionView() {
       // 1
@@ -2970,8 +2966,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       deviceCollectionView.layer?.backgroundColor = NSColor.black.cgColor
    }
    */
-   
-   
+      
    //MARK: - Konfig Messung
    @IBAction func reportSetSettings(_ sender: NSButton)
    {
@@ -2999,7 +2994,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((intervallwert & 0xFF00)>>8)
       //    print("reportTaskIntervall teensy.write_byteArray[TAKT_LO_BYTE]: \(teensy.write_byteArray[TAKT_LO_BYTE])")
       // Abschnitt auf SD
-//      teensy.write_byteArray[ABSCHNITT_BYTE] = 0
       
       // Zeitkompression setzen
       //let selectedKomp = ZeitkompressionPop.indexOfSelectedItem
@@ -3007,15 +3001,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       let kompvorgabe = ["zeitkompression":Float(kompressionwertwert)]
       datagraph.setVorgaben(vorgaben:kompvorgabe)
-      
-      
+            
       //Angabe zum  Startblock lesen. default ist 0
       startblock = UInt16(write_sd_startblock.integerValue)
-     // read_sd_startblock.intValue = Int32(startblock)
+      
+      // read_sd_startblock.intValue = Int32(startblock)
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
       teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
-      
-      
+            
       let senderfolg = teensy.start_write_USB()
       if (senderfolg > 0)
       {
@@ -3585,7 +3578,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       var senderfolg = teensy.start_write_USB()
       if (senderfolg > 0)
       {
-         NSSound(named: "Glass")?.play()
+         NSSound(named: "Tink")?.play()
       }
 
    }
