@@ -19,7 +19,7 @@ class DataPlot: NSView
    var DatenDicArray:[[String:CGFloat]]! = [[:]]
    var DatenArray:[[CGFloat]]! = [[]]
    var GraphArray = [CGMutablePath]( repeating: CGMutablePath(), count: 8 )
-   var KanalArray = [1,0,0,0,0,0,0,0]
+   var KanalArray = [1,0,0,0,0,0,0,0,0,0,0,0]
    var FaktorArray:[CGFloat]! = [CGFloat](repeating:0.5,count:8)
    var DatafarbeArray:[NSColor]! = [NSColor](repeating:NSColor.gray,count:8) // Strichfarbe im Diagramm
    
@@ -135,19 +135,45 @@ class DataPlot: NSView
    }
    
    
-   open func diagrammDataArrayFromLoggerData(loggerdata:String) ->[[Float]]
+   open func diagrammDataArrayFromLoggerData(loggerdata:String) ->[[UInt16]]
    {
-      var LoggerDataArray:[[Float]]! = [[]]
+      //var LoggerDataArray:[[Float]]! = [[]]
+      var LoggerDataArray = [[UInt16]]()
       Swift.print("diagrammDataArrayFromLoggerData\n")
-      let loggerdataArray = loggerdata.components(separatedBy: "\n")
+      var loggerdataArray = loggerdata.components(separatedBy: "\n")
+      if (loggerdataArray[0] == "")
+      {
+         loggerdataArray.remove(at: 0)
+      }
+
       Swift.print(loggerdataArray)
-      var index = 0
+      var zeilenindex = 0
+      let headerlines = 2
       var startsekunde:Float = 0.0
       for datazeile in loggerdataArray
       {
-         var tempDatenArray:[Float] = [Float](repeating:0.0,count:9)
+         var tempIntDatenArray = [[UInt16]]()
+
          let zeilenarray = datazeile.components(separatedBy: "\t")
-         
+         let anzkolonnen = zeilenarray.count
+         var tempIntZeilenArray:[UInt16] = [UInt16]()
+         //Swift.print(zeilenarray)
+         if ((anzkolonnen > 1) && (zeilenindex >= headerlines))
+         {
+            for kolonnenindex in 0..<anzkolonnen 
+            {
+               let tempIntwert = zeilenarray[kolonnenindex]
+               
+               if let tempInt = UInt16(tempIntwert)
+               {
+                  tempIntZeilenArray.append(tempInt)
+               }
+            }
+            LoggerDataArray.append(tempIntZeilenArray)
+            
+         }
+         zeilenindex += 1
+   /*      
          if (zeilenarray.count == 8) // loggerdump
          {
             tempDatenArray[0] = Float(index)
@@ -198,15 +224,11 @@ class DataPlot: NSView
             Swift.print(tempDatenArray)
             index = index + 1
          }
-         
+         */
       }
-      
+      //Swift.print("LoggerDataArray:\n\(LoggerDataArray)")
       //Swift.print("result:\n\(LoggerDataDicArray)")
-      if (LoggerDataArray[0] == [])
-      {
-         LoggerDataArray.remove(at: 0)
-      }
-      return LoggerDataArray
+       return LoggerDataArray
    }
    
    open func setZeitkompression(kompression:Float)
@@ -333,7 +355,7 @@ class DataPlot: NSView
       KanalArray = kanalArray
    }
    
-   
+ 
    open func setWerteArray(werteArray:[Float])
    {
       //     Swift.print("")
@@ -351,7 +373,8 @@ class DataPlot: NSView
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
       var neuerPunkt:CGPoint = feld.origin
-      
+      Swift.print("setWerteArray A startsekunde: \(Vorgaben.Startsekunde)")
+
       neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	//	Zeit, x-Wert, erster Wert im WerteArray
       
       
@@ -449,6 +472,7 @@ class DataPlot: NSView
       //self.displayIfNeeded()
    }
    
+   
    open func setWerteArray(werteArray:[Float],  anzeigefaktor:Float, nullpunktoffset:Int)
    {
       //     Swift.print("")
@@ -466,7 +490,6 @@ class DataPlot: NSView
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
       var neuerPunkt:CGPoint = feld.origin
-      
       neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	//	Zeit, x-Wert, erster Wert im WerteArray
       
       
@@ -565,7 +588,7 @@ class DataPlot: NSView
    // MARK: *** setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
-      //     Swift.print("")
+      Swift.print("diagramm werteArray: \(werteArray)")
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
       var deviceID:CGFloat  = 0
@@ -581,7 +604,8 @@ class DataPlot: NSView
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
       var neuerPunkt:CGPoint = feld.origin
-      
+ //     Swift.print("setWerteArray startsekunde: \(Vorgaben.Startsekunde)")
+ 
       neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0][0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	 / CGFloat(Vorgaben.Intervall) //	Zeit, x-Wert, erster Wert im WerteArray
       
       
@@ -600,7 +624,7 @@ class DataPlot: NSView
       
       tempKanalDatenDic["time"] = CGFloat(werteArray[0][0] - Float(Vorgaben.Startsekunde))
       
-      tempKanalDatenDic["x"] = neuerPunkt.x
+      tempKanalDatenDic["x"] = neuerPunkt.x 
 
       
       for i in 0..<(werteArray.count-1) // erster Wert ist Abszisse
@@ -689,9 +713,12 @@ class DataPlot: NSView
          
          
       } // for i
-      //Swift.print("tempKanalDatenDic: \t\(tempKanalDatenDic)\n")
+      
+     // Swift.print("diagramm tempKanalDatenDic: \n\(tempKanalDatenDic)\n")
       DatenDicArray.append(tempKanalDatenDic)
-      // Swift.print("DatenDicArray: \n\(DatenDicArray)\n")
+      
+      //Swift.print("time: \(DatenDicArray[0]["time"] ) \trawx: \(DatenDicArray[0]["rawx"]) \tnp0: \(DatenDicArray[0]["np0"])  \tnp1: \(DatenDicArray[0]["np1"])")
+      //Swift.print("DatenDicArray: \n\(DatenDicArray)\n")
       needsDisplay = true
       //self.setNeedsDisplay(self.bounds)
       //self.displayIfNeeded()
@@ -1162,6 +1189,7 @@ extension DataPlot
          {
             //Swift.print("GraphArray von \(i) ist nicht Empty")
          }
+         
          let tempanzeigefaktor = lastdata?["af\(i)"]
          let tempsortenfaktor = Int((lastdata?["sf\(i)"])!)
          let tempdeviceID = Int((lastdata?["dev\(i)"])!)
