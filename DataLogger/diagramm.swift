@@ -146,7 +146,7 @@ class DataPlot: NSView
          loggerdataArray.remove(at: 0)
       }
 
-      Swift.print(loggerdataArray)
+      //Swift.print(loggerdataArray)
       var zeilenindex = 0
       let headerlines = 2
       var startsekunde:Float = 0.0
@@ -173,58 +173,6 @@ class DataPlot: NSView
             
          }
          zeilenindex += 1
-   /*      
-         if (zeilenarray.count == 8) // loggerdump
-         {
-            tempDatenArray[0] = Float(index)
-            var kol = 1 // kolonne 0 ist ordinate
-            for kolonnenwert in zeilenarray
-            {
-               let kolonnenfloat = (kolonnenwert as NSString).floatValue
-               tempDatenArray[kol] = Float(kolonnenfloat)
-               kol = kol + 1
-            }
-            LoggerDataArray.append(tempDatenArray)
-            
-            Swift.print(tempDatenArray)
-            index = index + 1
-         }
-         
-         if (zeilenarray.count == 9) // messungdump
-         {
-            Swift.print("zeilenarray: \(zeilenarray)\n")
-            if (index == 0)
-            {
-               startsekunde = (zeilenarray[0] as NSString).floatValue
-               Swift.print("startsekunde: \(startsekunde)\n")
-            }
-            
-            tempDatenArray[0] = (zeilenarray[0] as NSString).floatValue// - startsekunde
-            
-            // startsekunde wegzaehlen
-            tempDatenArray[0] = tempDatenArray[0] - startsekunde
-            //var kol = 1 // kolonne 0 ist ordinate, Startsekunde wegzaehlen
-            //for kolonnenwert in zeilenarray
-            for kol in 1..<9
-            {
-               let kolonnenfloat = (zeilenarray[kol] as NSString).floatValue
-               if ((kolonnenfloat == 0.0) && (kol == 3))
-               {
-                  let wert = Float(index).truncatingRemainder(dividingBy:100)
-                  tempDatenArray[kol] = Float(index).truncatingRemainder(dividingBy:100)
-                  
-               }
-               else
-               {
-                  tempDatenArray[kol] = Float(kolonnenfloat)
-               }
-            }
-            LoggerDataArray.append(tempDatenArray)
-            
-            Swift.print(tempDatenArray)
-            index = index + 1
-         }
-         */
       }
       //Swift.print("LoggerDataArray:\n\(LoggerDataArray)")
       //Swift.print("result:\n\(LoggerDataDicArray)")
@@ -588,14 +536,14 @@ class DataPlot: NSView
    // MARK: *** setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
-      Swift.print("diagramm werteArray: \(werteArray)")
+      Swift.print("diagramm  werteArray:\n \(werteArray)")
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
       var deviceID:CGFloat  = 0
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
       var FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
-      FaktorX = 1.0
+      FaktorX = 8.0
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
@@ -636,11 +584,11 @@ class DataPlot: NSView
             neuerPunkt.y = feld.origin.y
             //            Swift.print("i: \(i) werteArray 0: \(werteArray[0]) neuerPunkt.x nach: \(neuerPunkt.x)")
             
-            let InputZahl = CGFloat(werteArray[i+1][0])	// Input vom teensy, 0-255
+            let InputZahl = CGFloat(werteArray[i+1][0])	// Input vom teensy, 0-255. Wert an 0 ist abszisse
             
             deviceID = CGFloat(werteArray[i+1][1]) // ID des device
             tempKanalDatenDic["dev\(i)"] = deviceID // deviceID mitgeben
- 
+            Swift.print("i: \(i) dev: \(deviceID)")
             
             SortenFaktor = CGFloat(werteArray[i+1][2])
             tempKanalDatenDic["sf\(i)"] = SortenFaktor // Sortenfaktor mitgeben

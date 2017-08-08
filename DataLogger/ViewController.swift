@@ -149,7 +149,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    var packetcount :UInt8 = 0 // byte 5: counter fuer pakete beim Lesen eines Blocks 10 * 48 + 32
    var lastpacket :UInt16 = 0 // byte 5: counter fuer pakete beim Lesen eines Blocks 10 * 48 + 32
 
-   var messungDataArray:[[UInt8]] = [[]]
+   var messungDataArray:[[UInt8]] = [[0]]
   
    var loggerDataArray:[[UInt8]] = [[]]
    var DiagrammDataArray:[[Float]] = [[]]
@@ -565,7 +565,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //print("nummerstring: \(nummerstring)")
             tempzeilenarray.remove(at: 0)
             let tempzeilenstring = tempzeilenarray.map{String($0)}.joined(separator: "\t")
-            datastringarray.append(tempzeilenstring)
+   //         datastringarray.append(tempzeilenstring)
             datastring = datastring +  "\n" + nummerstring + "\t" + tempzeilenstring
          }
       }
@@ -592,16 +592,16 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //print("tempzeilenarray: \(tempzeilenarray)")
             
             let nummer = tempzeilenarray[0]
-            let nummerstring = String(format:"%3.0f", nummer)
+        //    let nummerstring = String(format:"%3.0f", nummer)
             //print("nummerstring: \(nummerstring)")
             //tempzeilenarray.remove(at: 0)
             let tempzeilenstring = tempzeilenarray.map{String($0)}.joined(separator: "\t")
-            datastringarray.append(tempzeilenstring)
+        //    datastringarray.append(tempzeilenstring)
             datastring = datastring +  "\n" + String(datacounter) + "\t" + tempzeilenstring
             datacounter += 1
          }
       }
-      let prefix = datumprefix()
+      //let prefix = datumprefix()
       //let dataname = prefix + "_messungdump.txt"
       
       //   writeData(name: dataname,data:datastring)
@@ -2359,7 +2359,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      
                      deviceDatastring = deviceDatastring  + "\t" +  String(format:"%.\(stellen)f", wert_norm)
                      diagrammkanalindex += 1
-                     print("kanal: \(kanal) wert: \(wert) wert_norm: \(wert_norm)")
+                     //print("kanal: \(kanal) wert: \(wert) wert_norm: \(wert_norm)")
 
                   } // if (analog & (1<<kanalint) > 0)
                  
@@ -2377,7 +2377,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print("\(zeile)")
          }
          print("")
-         
+/*         
          print("Umkehrung")
          // Umkehrung
          var teensyU16array = [UInt16]()
@@ -2405,7 +2405,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          print("")
          print("end Umkehrung\n")
-         
+*/         
          if (devicestatus == wl_callback_status)
          {
             DiagrammDataArray.append(tempwerte)
@@ -4245,7 +4245,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var analogfloat = Float(Int32(data[LOGGERDATA_OFFSET + 2 * delta]) | (Int32(data[LOGGERDATA_OFFSET + 2 * delta + 1]))<<8)
          
          //print ("analog0lo: \(analog0lo) analog0hi: \(analog0hi)  analog0: \(analog0)");
-         print ("kanal \(delta)  analogfloat: \(analogfloat) \tkanalstatus: ((kanalstatus & (1<<UInt(delta)) > 0))");
+         //print ("kanal \(delta)  analogfloat: \(analogfloat) \tkanalstatus: ((kanalstatus & (1<<UInt(delta)) > 0))");
          messungfloatzeile.append(analogfloat)
          if (kanalstatus & (1<<UInt(delta)) > 0)
          {
@@ -4263,6 +4263,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    open func werteArrayFromIntArray(data:[UInt16]) -> [[Float]]
    {
       print("\nwerteArrayFromIntArray data: \(data)")
+      /*
+       0       1     2           3           4        5     6     7
+       device	code	messung LO	messung HI	kanal			
+       */
       let DIAGRAMMDATA_OFFSET = 4
       let LOGGERDATA_OFFSET = 8
       
@@ -4299,7 +4303,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       var tempinputDataFeldstring = String(messungcounter) + "\t"
       
-      var downloadfloatzeile = messungfloatzeileFromIntArray(data:data) // floats aus uint8-data
+      var downloadfloatzeile = messungfloatzeileFromIntArray(data:data) // floats aus uint8-data. Daten sind von LOGGERDATA_OFFSET an
       
       print("werteArrayFromIntArray downloadfloatzeile:\n* \(downloadfloatzeile)*")
 
@@ -4368,7 +4372,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             break
          }// switch device
          
-         print("kanal: \(kanal) wert: \(wert) wert_norm: \(wert_norm)")
+  //       print("kanal: \(kanal) wert: \(wert) wert_norm: \(wert_norm)")
          
          tempwerte[diagrammkanalindex] = wert_norm
          werteArray[diagrammkanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
@@ -4572,12 +4576,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    // MARK: reportOpenData
    @IBAction func reportOpenData(sender: AnyObject)
    {
+      print("reportOpenData start")
       // https://eclecticlight.co/2016/12/23/more-fun-scripting-with-swift-and-xcode-alerts-and-file-save/
       //and so on to build the text to be written out to the file
       let FS = NSOpenPanel()
       FS.canCreateDirectories = true
       FS.allowedFileTypes = ["txt"]
-      FS.title = "Messung sichern"
+      FS.title = "Loggerdaten lesen"
       FS.nameFieldLabel = "Messung:"
       FS.nameFieldStringValue = datumprefix() + "_data"
       let messungPfad = "~/Documents/LoggerdataDir" as NSString
@@ -4602,7 +4607,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                let loggerDataArray:[[UInt16]] = datagraph.diagrammDataArrayFromLoggerData(loggerdata: datastring)
                
-               print("reportOpenData loggerdataArray\n")
+               print("\nreportOpenData loggerdataArray")
                for zeile in loggerDataArray
                {
                   print("\(zeile)")
