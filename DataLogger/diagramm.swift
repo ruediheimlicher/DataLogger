@@ -536,7 +536,7 @@ class DataPlot: NSView
    // MARK: *** setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
-      Swift.print("diagramm  werteArray:\n \(werteArray)")
+      //Swift.print("\ndiagramm  werteArray:\n \(werteArray)")
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
       var deviceID:CGFloat  = 0
@@ -588,7 +588,7 @@ class DataPlot: NSView
             
             deviceID = CGFloat(werteArray[i+1][1]) // ID des device
             tempKanalDatenDic["dev\(i)"] = deviceID // deviceID mitgeben
-            Swift.print("i: \(i) dev: \(deviceID)")
+            //Swift.print("i: \(i) dev: \(deviceID)")
             
             SortenFaktor = CGFloat(werteArray[i+1][2])
             tempKanalDatenDic["sf\(i)"] = SortenFaktor // Sortenfaktor mitgeben
@@ -637,7 +637,8 @@ class DataPlot: NSView
             DatenArray.append(tempDatenArray) // verwendet fuer Scrolling
             
             //NSBezierPath* neuerGraph = NSBezierPath.bezierPath
-            let neuerGraph = CGMutablePath()
+            //let neuerGraph = CGMutablePath()
+            
             if (GraphArray[i].isEmpty) // letzter Punkt ist leer, Anfang eines neuen Linienabschnitts
             {
                //Swift.print("GraphArray  von \(i) ist noch Empty")
@@ -667,6 +668,8 @@ class DataPlot: NSView
       
       //Swift.print("time: \(DatenDicArray[0]["time"] ) \trawx: \(DatenDicArray[0]["rawx"]) \tnp0: \(DatenDicArray[0]["np0"])  \tnp1: \(DatenDicArray[0]["np1"])")
       //Swift.print("DatenDicArray: \n\(DatenDicArray)\n")
+      
+      
       needsDisplay = true
       //self.setNeedsDisplay(self.bounds)
       //self.displayIfNeeded()
@@ -1026,7 +1029,7 @@ extension DataPlot
       {
          return
       }
-      
+      //Swift.print("GraphArray: \n\(GraphArray)")
       
       var path = CGMutablePath()
       
