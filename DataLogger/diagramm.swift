@@ -18,14 +18,14 @@ class DataPlot: NSView
    var Device:String = "home"
    var DatenDicArray:[[String:CGFloat]]! = [[:]]
    var DatenArray:[[CGFloat]]! = [[]]
-   var GraphArray = [CGMutablePath]( repeating: CGMutablePath(), count: 8 )
-   var KanalArray = [1,0,0,0,0,0,0,0,0,0,0,0]
-   var FaktorArray:[CGFloat]! = [CGFloat](repeating:0.5,count:8)
-   var DatafarbeArray:[NSColor]! = [NSColor](repeating:NSColor.gray,count:8) // Strichfarbe im Diagramm
+   var GraphArray = [CGMutablePath]( repeating: CGMutablePath(), count: 16 )
+   var KanalArray = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+   var FaktorArray:[CGFloat]! = [CGFloat](repeating:0.5,count:16)
+   var DatafarbeArray:[NSColor]! = [NSColor](repeating:NSColor.gray,count:16) // Strichfarbe im Diagramm
    
-   var linienfarbeArray:[[NSColor]] = [[NSColor]](repeating: [NSColor](repeating:NSColor.gray,count:8) ,count: 8 )
+   var linienfarbeArray:[[NSColor]] = [[NSColor]](repeating: [NSColor](repeating:NSColor.gray,count:8) ,count: 16 )
    
-   
+   var wertesammlungarray = [[[Float]]]()
    
    
    var diagrammfeld:CGRect = CGRect.zero
@@ -533,17 +533,21 @@ class DataPlot: NSView
       //self.displayIfNeeded()
    }
    
+   
+   
    // MARK: *** setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
+      
       //Swift.print("\ndiagramm  werteArray:\n \(werteArray)")
+      wertesammlungarray.append(werteArray)
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
       var deviceID:CGFloat  = 0
       let feld = DiagrammRect(rect: self.bounds)
       //let FaktorX:CGFloat = (self.frame.size.width-15.0)/Vorgaben.MaxX		// Umrechnungsfaktor auf Diagrammbreite
       var FaktorX:CGFloat = feld.size.width/Vorgaben.MaxX / CGFloat(Vorgaben.Intervall)
-      FaktorX = 8.0
+      FaktorX = 1.0
       //            //let FaktorY:CGFloat = (self.frame.size.height-(Geom.randoben + Geom.randunten))/Vorgaben.MaxY		// Umrechnungsfaktor auf Diagrammhoehe
       
       let FaktorY:CGFloat = feld.size.height / Vorgaben.MaxY
@@ -552,8 +556,8 @@ class DataPlot: NSView
       
       //Swift.print("frame height: \(self.frame.size.height) FaktorY: \(FaktorY) ")
       var neuerPunkt:CGPoint = feld.origin
- //     Swift.print("setWerteArray startsekunde: \(Vorgaben.Startsekunde)")
- 
+      //     Swift.print("setWerteArray startsekunde: \(Vorgaben.Startsekunde)")
+      
       neuerPunkt.x = neuerPunkt.x + (CGFloat(werteArray[0][0]) - CGFloat(Vorgaben.Startsekunde))*Vorgaben.ZeitKompression * FaktorX	 / CGFloat(Vorgaben.Intervall) //	Zeit, x-Wert, erster Wert im WerteArray
       
       
@@ -573,97 +577,106 @@ class DataPlot: NSView
       tempKanalDatenDic["time"] = CGFloat(werteArray[0][0] - Float(Vorgaben.Startsekunde))
       
       tempKanalDatenDic["x"] = neuerPunkt.x 
-
+      
+      
       
       for i in 0..<(werteArray.count-1) // erster Wert ist Abszisse
       {
-         if (KanalArray[i] < 8)
+         if (i < werteArray.count)
          {
+            //   Swift.print("i: \(i) werteArray: \(werteArray)")
             // werteArray[diagrammkanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
-            
-            neuerPunkt.y = feld.origin.y
-            //            Swift.print("i: \(i) werteArray 0: \(werteArray[0]) neuerPunkt.x nach: \(neuerPunkt.x)")
-            
-            let InputZahl = CGFloat(werteArray[i+1][0])	// Input vom teensy, 0-255. Wert an 0 ist abszisse
-            
-            deviceID = CGFloat(werteArray[i+1][1]) // ID des device
-            tempKanalDatenDic["dev\(i)"] = deviceID // deviceID mitgeben
-            //Swift.print("i: \(i) dev: \(deviceID)")
-            
-            SortenFaktor = CGFloat(werteArray[i+1][2])
-            tempKanalDatenDic["sf\(i)"] = SortenFaktor // Sortenfaktor mitgeben
-            
             AnzeigeFaktor = CGFloat(werteArray[i+1][3])
-            tempKanalDatenDic["af\(i)"] = AnzeigeFaktor // Anzeigefaktor mitgeben
             
-            tempKanalDatenDic["rawy\(i)"] = InputZahl // Input vom teensy, 0-255, rawy1, rawy2, ...
-            
-            
-            let graphZahl = CGFloat(InputZahl - Vorgaben.MinY) * FaktorY 							// Red auf reale Diagrammhoehe
-            //          Swift.print("i: \(i) InputZahl: \(InputZahl) graphZahl: \(graphZahl)")
-            
-            let rawWert = graphZahl //* SortenFaktor
-            
-            tempKanalDatenDic[String(i)] = InputZahl / SortenFaktor// input mit key i. Gibt numerische Anzeige im Diagramm
-            let DiagrammWert = rawWert * AnzeigeFaktor
-            
-            let AnzeigeWert = DiagrammWert / SortenFaktor // Wert, der im Diagramm am Ende Angeschrieben wird
-            tempKanalDatenDic["aw\(i)"] = AnzeigeWert
-            
-            
-            //Swift.print("setWerteArray: Kanal: \(i) InputZahl:  \(InputZahl) graphZahl:  \(graphZahl) rawWert:  \(rawWert) DiagrammWert:  \(DiagrammWert)");
-            FaktorArray[i] = 1/FaktorY //(Vorgaben.MaxY - Vorgaben.MinY)/(self.frame.size.height-(Geom.randoben + Geom.randunten))
-            neuerPunkt.y = neuerPunkt.y + DiagrammWert;
-            
-            tempKanalDatenDic["np\(i)"] = neuerPunkt.y // ordinate mit key np1, np2 ...
-            
-            //neuerPunkt.y=InputZahl;
-            //NSLog(@"setWerteArray: Kanal: %d MinY: %2.2F FaktorY: %2.2f",i,MinY, FaktorY);
-            
-            //NSLog(@"setWerteArray: Kanal: %d InputZahl: %2.2F FaktorY: %2.2f graphZahl: %2.2F rawWert: %2.2F DiagrammWert: %2.2F ",i,InputZahl,FaktorY, graphZahl,rawWert,DiagrammWert);
-            
-            //      NSString* tempWertString=[NSString stringWithFormat:@"%2.1f",InputZahl/2.0]
-            //NSLog(@"neuerPunkt.y: %2.2f tempWertString: %@",neuerPunkt.y,tempWertString);
-            let tempWertString = String(format: "%@%2.2f", "tempwertstring: ", InputZahl / SortenFaktor)
-            
-            
-            
-            // NSArray* tempDatenArray=[NSArray arrayWithObjects:[NSNumber numberWithFloat:neuerPunkt.x],[NSNumber numberWithFloat:neuerPunkt.y],tempWertString,nil]
-            let tempDatenArray:[CGFloat] = [neuerPunkt.x, neuerPunkt.y, InputZahl, rawWert]
-            
-            
-            //NSDictionary* tempWerteDic=[NSDictionary dictionaryWithObjects:tempDatenArray forKeys:[NSArray arrayWithObjects:@"x",@"y",@"wert",nil]]
-            
-            DatenArray.append(tempDatenArray) // verwendet fuer Scrolling
-            
-            //NSBezierPath* neuerGraph = NSBezierPath.bezierPath
-            //let neuerGraph = CGMutablePath()
-            
-            if (GraphArray[i].isEmpty) // letzter Punkt ist leer, Anfang eines neuen Linienabschnitts
+            if (Int(AnzeigeFaktor) > 0)
             {
-               //Swift.print("GraphArray  von \(i) ist noch Empty")
-               //neuerPunkt.x = Vorgaben.DiagrammEcke.x
+               neuerPunkt.y = feld.origin.y
+               //            Swift.print("i: \(i) werteArray 0: \(werteArray[0]) neuerPunkt.x nach: \(neuerPunkt.x)")
                
-               GraphArray[i].move(to: neuerPunkt)
-            }
-            else
-            {
-               //Swift.print("GraphArray von \(i) ist nicht mehr Empty")
-               //[neuerGraph moveToPoint:[[GraphArray objectAtIndex:i]currentPoint]]//last Point
-               //[neuerGraph lineToPoint:neuerPunkt]
-               let currentpoint:CGPoint = GraphArray[i].currentPoint
-               GraphArray[i].move(to:currentpoint)
+               let InputZahl = CGFloat(werteArray[i+1][0])	// Input vom teensy, 0-255. Wert an 0 ist abszisse
                
-               GraphArray[i].addLine(to:neuerPunkt)
+               deviceID = CGFloat(werteArray[i+1][1]) // ID des device
+               tempKanalDatenDic["dev\(i)"] = deviceID // deviceID mitgeben
+               //  Swift.print("i: \(i) dev: \(deviceID)")
                
-            }
+               SortenFaktor = CGFloat(werteArray[i+1][2])
+               tempKanalDatenDic["sf\(i)"] = SortenFaktor // Sortenfaktor mitgeben
+               
+               
+               
+               tempKanalDatenDic["af\(i)"] = AnzeigeFaktor // Anzeigefaktor mitgeben
+               
+               tempKanalDatenDic["rawy\(i)"] = InputZahl // Input vom teensy, 0-255, rawy1, rawy2, ...
+               
+               
+               let graphZahl = CGFloat(InputZahl - Vorgaben.MinY) * FaktorY 							// Red auf reale Diagrammhoehe
+               //          Swift.print("i: \(i) InputZahl: \(InputZahl) graphZahl: \(graphZahl)")
+               
+               let rawWert = graphZahl //* SortenFaktor
+               
+               tempKanalDatenDic[String(i)] = InputZahl / SortenFaktor// input mit key i. Gibt numerische Anzeige im Diagramm
+               let DiagrammWert = rawWert * AnzeigeFaktor
+               
+               let AnzeigeWert = DiagrammWert / SortenFaktor // Wert, der im Diagramm am Ende angeschrieben wird
+               tempKanalDatenDic["aw\(i)"] = AnzeigeWert
+               
+               
+               //Swift.print("setWerteArray: Kanal: \(i) InputZahl:  \(InputZahl) graphZahl:  \(graphZahl) rawWert:  \(rawWert) DiagrammWert:  \(DiagrammWert)");
+               FaktorArray[i] = 1/FaktorY //(Vorgaben.MaxY - Vorgaben.MinY)/(self.frame.size.height-(Geom.randoben + Geom.randunten))
+               neuerPunkt.y = neuerPunkt.y + DiagrammWert;
+               
+               tempKanalDatenDic["np\(i)"] = neuerPunkt.y // ordinate mit key np1, np2 ...
+               //Swift.print("i: \t\(i)\t device: \t \(deviceID) \tneuerPunkt.x: \t\(neuerPunkt.x)  \tneuerPunkt.y: \t\(neuerPunkt.y)")
+               //neuerPunkt.y=InputZahl;
+               //NSLog(@"setWerteArray: Kanal: %d MinY: %2.2F FaktorY: %2.2f",i,MinY, FaktorY);
+               
+               //NSLog(@"setWerteArray: Kanal: %d InputZahl: %2.2F FaktorY: %2.2f graphZahl: %2.2F rawWert: %2.2F DiagrammWert: %2.2F ",i,InputZahl,FaktorY, graphZahl,rawWert,DiagrammWert);
+               
+               //      NSString* tempWertString=[NSString stringWithFormat:@"%2.1f",InputZahl/2.0]
+               //NSLog(@"neuerPunkt.y: %2.2f tempWertString: %@",neuerPunkt.y,tempWertString);
+               let tempWertString = String(format: "%@%2.2f", "tempwertstring: ", InputZahl / SortenFaktor)
+               
+               
+               
+               // NSArray* tempDatenArray=[NSArray arrayWithObjects:[NSNumber numberWithFloat:neuerPunkt.x],[NSNumber numberWithFloat:neuerPunkt.y],tempWertString,nil]
+               //  let tempDatenArray:[CGFloat] = [deviceID,CGFloat(i),neuerPunkt.x, neuerPunkt.y, InputZahl, rawWert]
+               let tempDatenArray:[CGFloat] = [deviceID,CGFloat(i),neuerPunkt.x, neuerPunkt.y]
+               
+               
+               //NSDictionary* tempWerteDic=[NSDictionary dictionaryWithObjects:tempDatenArray forKeys:[NSArray arrayWithObjects:@"x",@"y",@"wert",nil]]
+               
+               DatenArray.append(tempDatenArray) // verwendet fuer Scrolling
+               
+               //NSBezierPath* neuerGraph = NSBezierPath.bezierPath
+               //let neuerGraph = CGMutablePath()
+               
+               if (GraphArray[i].isEmpty) // letzter Punkt ist leer, Anfang eines neuen Linienabschnitts
+               {
+                  //Swift.print("GraphArray  von \(i) ist noch Empty")
+                  //neuerPunkt.x = Vorgaben.DiagrammEcke.x
+                  
+                  GraphArray[i].move(to: neuerPunkt)
+               }
+               else
+               {
+                  //Swift.print("GraphArray \(i) ")
+                  //[neuerGraph moveToPoint:[[GraphArray objectAtIndex:i]currentPoint]]//last Point
+                  //[neuerGraph lineToPoint:neuerPunkt]
+                  let currentpoint:CGPoint = GraphArray[i].currentPoint
+                  
+                  GraphArray[i].move(to:currentpoint)
+                  
+                  GraphArray[i].addLine(to:neuerPunkt)
+                  //Swift.print("GraphArray  deviceID: \t \(deviceID)\t i: \t \(i) \t cp.x: \t\(currentpoint.x)\t \t cp.y: \t\(currentpoint.y)\t np.x: \t\(neuerPunkt.x)\t np.y: \t\(neuerPunkt.y)")
+               }
+            } // if Anzeigefaktor
          }// if Kanal
          
          
          
       } // for i
       
-     // Swift.print("diagramm tempKanalDatenDic: \n\(tempKanalDatenDic)\n")
+      // Swift.print("diagramm tempKanalDatenDic: \n\(tempKanalDatenDic)\n")
       DatenDicArray.append(tempKanalDatenDic)
       
       //Swift.print("time: \(DatenDicArray[0]["time"] ) \trawx: \(DatenDicArray[0]["rawx"]) \tnp0: \(DatenDicArray[0]["np0"])  \tnp1: \(DatenDicArray[0]["np1"])")
@@ -675,7 +688,16 @@ class DataPlot: NSView
       //self.displayIfNeeded()
    }
    
-   
+   open func printwertesammlung()
+   {
+      Swift.print("\nwertesammlung:")
+      for zeile in wertesammlungarray
+      {
+         Swift.print("\(zeile)")
+      }
+      //Swift.print("\nwertesammlung end")
+      
+   }
    
    override func draw(_ dirtyRect: NSRect)
    {
@@ -730,7 +752,7 @@ extension DataPlot
    
    func setDisplayRect()
    {
-      Swift.print("setDisplayRect")
+      //Swift.print("setDisplayRect")
       //      self.setNeedsDisplay(self.bounds)
       
       
@@ -1098,7 +1120,7 @@ extension DataPlot
        context?.setStrokeColor(ordinatefarbe)
        //context?.setFillColor(CGColor.init(red:0x00,green: 0xFF, blue: 0xFF,alpha:1.0))
        context?.drawPath(using: .stroke)
-      */
+       */
       
       let lastdata = DatenDicArray.last
       if (lastdata?.count == 0)
@@ -1142,66 +1164,75 @@ extension DataPlot
          }
          
          let tempanzeigefaktor = lastdata?["af\(i)"]
-         let tempsortenfaktor = Int((lastdata?["sf\(i)"])!)
-         let tempdeviceID = Int((lastdata?["dev\(i)"])!)
-         var stellenzahl = 1
-         if (tempsortenfaktor >= 10) // division durch 10, mehr Stellen angeben
+         
+         if (tempanzeigefaktor != nil)
          {
-            stellenzahl = 2
+            let tempdeviceID = Int((lastdata?["dev\(i)"])!)
+            var stellenzahl = 1
+
+            let tempsortenfaktor = (lastdata?["sf\(i)"])
+            if (tempsortenfaktor != nil)
+            {
+               
+            if (Float(tempsortenfaktor!) >= 10.0) // division durch 10, mehr Stellen angeben
+            {
+               stellenzahl = 2
+            }
          }
-         //Swift.print("GraphArray not Empty")
+            //Swift.print("GraphArray not Empty")
+            
+            //GraphArray[0].addLine(to: NSMakePoint(diagrammrect.origin.x + diagrammrect.size.width, diagrammrect.origin.y + diagrammrect.size.height))
+            //GraphArray[0].closeSubpath()
+            let tempgreen = CGFloat((0xA0 + (i * 20) & 0xFF))
+            let linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
+            
+            context?.setLineWidth(1.5)
+            //    context?.setFillColor(fillColor)
+            //context?.setStrokeColor(DatafarbeArray[i].cgColor)
+            context?.setStrokeColor(linienfarbeArray[tempdeviceID][i].cgColor)
+            
+            // 4
+            context?.addPath(GraphArray[i])
+            //context?.beginPath()
+            context?.drawPath(using: .stroke)
+            
+            if let wert = lastdata?[String(i)]
+            {
+               
+               
+               //        Swift.print("diagramm lastdatax: \(lastdatax!)")
+               
+               //         Swift.print("i: \(i) qlastx: \(qlastx) qlasty: \(qlasty) wert: \(wert)\n")
+               
+               //https://www.hackingwithswift.com/example-code/core-graphics/how-to-draw-a-text-string-using-core-graphics
+               let p = GraphArray[i].currentPoint
+               //Swift.print("diagramm p x: \(p.x)")
+               
+               //         Swift.print("qlastx: \(qlastx)  DatenDicArray: \n\(DatenDicArray)")
+               //         let a = DatenDicArray.filter{$0["x"] == qlasty}
+               //         Swift.print("a: \(a)")
+               //let lasty = DatenArray.last?[i+1]
+               
+               //let labelfarbe = CGColor.init(red:1.0,green: 1.0, blue: 0.0,alpha:1.0)
+               let labelfarbe = NSColor.init(red:0.5,green: 0.8, blue: 0.5,alpha:1.0)
+               
+               var labelformat = "%2.\(String(stellenzahl))f"
+               let tempWertString = String(format: labelformat,  wert)
+               //         Swift.print("i: \(i) p.y: \(p.y) wert: \(wert) tempWertString: \(tempWertString) DatenArray.last: \(DatenArray.last)")
+               let paragraphStyle = NSMutableParagraphStyle()
+               paragraphStyle.alignment = .left
+               
+               let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle ,NSForegroundColorAttributeName: DatafarbeArray[i]]
+               tempWertString.draw(with: CGRect(x: p.x + 4, y: p.y-6, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            } // if wert = lastdata
+           } // if Anzeigefaktor != nil 
+         } // for i in GraphArray.count
          
-         //GraphArray[0].addLine(to: NSMakePoint(diagrammrect.origin.x + diagrammrect.size.width, diagrammrect.origin.y + diagrammrect.size.height))
-         //GraphArray[0].closeSubpath()
-         let tempgreen = CGFloat((0xA0 + (i * 20) & 0xFF))
-         let linienfarbe = CGColor.init(red:0.0,green: 0.0, blue: 1.0,alpha:1.0)
          
-         context?.setLineWidth(1.5)
-         //    context?.setFillColor(fillColor)
-         //context?.setStrokeColor(DatafarbeArray[i].cgColor)
-         context?.setStrokeColor(linienfarbeArray[tempdeviceID][i].cgColor)
          
-         // 4
-         context?.addPath(GraphArray[i])
-         //context?.beginPath()
          context?.drawPath(using: .stroke)
-         
-         if let wert = lastdata?[String(i)]
-         {
-            
-            
-            //        Swift.print("diagramm lastdatax: \(lastdatax!)")
-            
-            //         Swift.print("i: \(i) qlastx: \(qlastx) qlasty: \(qlasty) wert: \(wert)\n")
-            
-            //https://www.hackingwithswift.com/example-code/core-graphics/how-to-draw-a-text-string-using-core-graphics
-            let p = GraphArray[i].currentPoint
-            //Swift.print("diagramm p x: \(p.x)")
-            
-            //         Swift.print("qlastx: \(qlastx)  DatenDicArray: \n\(DatenDicArray)")
-            //         let a = DatenDicArray.filter{$0["x"] == qlasty}
-            //         Swift.print("a: \(a)")
-            //let lasty = DatenArray.last?[i+1]
-            
-            //let labelfarbe = CGColor.init(red:1.0,green: 1.0, blue: 0.0,alpha:1.0)
-            let labelfarbe = NSColor.init(red:0.5,green: 0.8, blue: 0.5,alpha:1.0)
-            
-           var labelformat = "%2.\(String(stellenzahl))f"
-            let tempWertString = String(format: labelformat,  wert)
-            //         Swift.print("i: \(i) p.y: \(p.y) wert: \(wert) tempWertString: \(tempWertString) DatenArray.last: \(DatenArray.last)")
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = .left
-            
-            let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle ,NSForegroundColorAttributeName: DatafarbeArray[i]]
-            tempWertString.draw(with: CGRect(x: p.x + 4, y: p.y-6, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
-         } // if wert = lastdata
-         
-      } // for i in GraphArray.count
+         //Swift.print("GraphArray drawPath end")
       
-      
-      
-      context?.drawPath(using: .stroke)
-      //Swift.print("GraphArray drawPath end")
    }
    
    
