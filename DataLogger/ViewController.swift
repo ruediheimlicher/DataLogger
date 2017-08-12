@@ -72,8 +72,8 @@ let MESSUNG_STOP   =   0xC1 // Start der Messreihe
 let KANAL_WAHL     =    0xC2 // Kanalwahl
 let READ_START   =   0xCA // Start read
 
-let SAVE_SD_RUN:UInt8 = 0x02 // Bit 1
-let SAVE_SD_STOP = 0x04 // Bit 2
+let SAVE_SD_RUN_BIT:UInt8 = 1 // Bit 1
+let SAVE_SD_STOP_BIT:UInt8 = 2 // Bit 2
 
 let SAVE_SD_BYTE          =     1 // Uebergeben bei loggersettings
 
@@ -272,7 +272,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBOutlet  var write_sd_anzahl: NSTextField!
    @IBOutlet  var read_sd_startblock: NSTextField!
    @IBOutlet  var read_sd_anzahl: NSTextField!
-   @IBOutlet  var read_sd_progress: NSTextField!
+   @IBOutlet  var download_sd_progress: NSTextField!
+   @IBOutlet  var download_sd_block_progress: NSTextField!
    
    @IBOutlet  var messungcounter: NSTextField!
    @IBOutlet  var blockcounter: NSTextField!
@@ -628,6 +629,18 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       //  }
    }
    
+   func dialogOK(question: String, text: String) -> Int 
+   {
+      // https://stackoverflow.com/questions/29433487/create-an-nsalert-with-swift
+      let alert = NSAlert()
+      alert.messageText = question
+      alert.informativeText = text
+      alert.alertStyle = NSAlertStyle.warning
+      alert.addButton(withTitle: "OK")
+      return alert.runModal()// == NSAlertFirstButtonReturn
+      
+   }
+
    func dialogOKCancel(question: String, text: String) -> Int 
    {
       // https://stackoverflow.com/questions/29433487/create-an-nsalert-with-swift
@@ -638,7 +651,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       alert.addButton(withTitle: "OK")
       alert.addButton(withTitle: "Cancel")
       return alert.runModal()// == NSAlertFirstButtonReturn
-      
+   
    }
 
    func dialogAlertMult(message: String, information: String, buttonOK: String, buttonCancel: String) -> Int
@@ -1033,9 +1046,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let codestring = int2hex(UInt8(code))
  //     print("newLoggerDataAktion code: \(code) \(codestring)")
       
-    /*  
-      print("read_byteArray code: ")
-      for  index in 0..<16
+      /*
+      print("read_byteArray code: \(code)")
+      for  index in 0..<32
       {
          print("\(teensy.read_byteArray[index])", terminator: "\t")
       }
@@ -1211,6 +1224,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print("newLoggerDataAktion LOGGER_START  \nraw data:\n\(teensy.read_byteArray)\n")
             
             print("LOGGER_START CODE read_byteArray")
+            
+            download_sd_block_progress.intValue = Int32(blockcount)
+
             /*
             for index in 0..<DATA_START_BYTE
             {
@@ -1296,7 +1312,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //MARK: LOGGER_CONT
       // ****************************************************************************
       case LOGGER_CONT:
-         print("\nnewLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.read_byteArray[PACKETCOUNT_BYTE])")
+         print("newLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.read_byteArray[PACKETCOUNT_BYTE])")
          let packetcount: UInt16 = UInt16(teensy.read_byteArray[PACKETCOUNT_BYTE]) // Byte 8
           downloaddatanummer += 1
          
@@ -1311,7 +1327,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          //print("lastpacket : \(lastpacket)")
         
-         read_sd_progress.intValue = Int32(downloaddatanummer)
+         download_sd_progress.intValue = Int32(downloaddatanummer)
+         
          
          if ((messungcounter.intValue > 0) && (UInt32(messungcounter.intValue) < downloaddatanummer))
          {
@@ -1342,7 +1359,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          if (teensy.read_byteArray.count > 1)
          {
             
-            let messung = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2]) | UInt16(teensy.read_byteArray[DATA_START_BYTE + 3]) << 8
+       //     let messung = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2]) | UInt16(teensy.read_byteArray[DATA_START_BYTE + 3]) << 8
  //           print("newLoggerDataAktion LOGGER_CONT: \(code) device: \(teensy.read_byteArray[DATA_START_BYTE + DEVICE]) Messung: \(messung) packetcount: \(teensy.read_byteArray[2])\n\traw Data\(teensy.read_byteArray)")
             
             if (Test_Knopf.state == 1)
@@ -1471,7 +1488,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          
          
-         if ((packetcount < 20) && (last == false)) // 480 bytes pro block
+         if (((packetcount < 20) && (last == false) ) ) // 480 bytes pro block
          {
             // Anfrage fuer naechstes Paket schicken
             //packetcount =   packetcount + 1
@@ -1493,10 +1510,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             print ("")
              */
-            if (downloadblocknummer < blockcount) // noch weitere Blocks laden
+            print("downloadblocknummer: \(downloadblocknummer) blockcount: \(blockcount)")
+            if ((downloadblocknummer < blockcount )) //  || (read_sd_anzahl.intValue == 0)) // noch weitere Blocks laden
             {
                print("LOGGER_CONT next downloadblocknummer: \(downloadblocknummer)")
-               next_log_USB(downloadblocknummer: UInt16(downloadblocknummer))    
+               download_sd_block_progress.intValue = Int32(downloadblocknummer)
+               next_log_USB(downloadblocknummer: UInt16(downloadblocknummer)) 
+               
                
             }
             else
@@ -1528,6 +1548,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                print(downloadDataFeld.string!)
                let senderfolg = teensy.start_write_USB()
                print("LOGGER_CONT senderfolg: \(senderfolg)")
+               NSSound(named: "Submarine")?.play()
+               let antwort = dialogOK(question: "Daten von SD", text: "Download beendet.")
+               
             }
             
          }
@@ -1598,12 +1621,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          if (packetcount < 20) // 480 bytes pro block
          {
+            
              cont_log_USB(paketcnt: (packetcount))            
          }
          else
          {         
             blockcount -= 1
             print("LOGGER_NEXT blockcount: \(blockcount)")
+            
             if (blockcount > 0) // noch weitere Blocks laden
             {
                print("LOGGER_NEXT next_log")
@@ -2580,7 +2605,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       Stop_Logger.isEnabled = true
       zeit_Feld.stringValue = zeitstring()
       
-      read_sd_progress.intValue = 0
+      download_sd_progress.intValue = 0
       
       // tagmin_Feld.integerValue = tagminute
       tagsec_Feld.integerValue = tagsekunde()
@@ -2738,7 +2763,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       //print("write_byteArray 0: \(teensy.write_byteArray[0])")
       
       teensy.write_byteArray[0] = UInt8(SERVO_OUT)
-      //teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
+      //teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP_BIT)
+      
 
       teensy.write_byteArray[SERVOALO] = UInt8(tempPos & (0x00FF))
       teensy.write_byteArray[SERVOAHI] = UInt8((tempPos & (0xFF00))>>8)
@@ -3455,7 +3481,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          if (save_SD == 1)
          {
-            teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
+            //teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN_BIT)
+            teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
          }
  
          // Abschnitt auf SD
@@ -3464,6 +3491,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //Angabe zum  Startblock aktualisieren
          startblock = UInt16(write_sd_startblock.integerValue)
          read_sd_startblock.intValue = Int32(startblock)
+         read_sd_anzahl.intValue = 0
          teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
          teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
          
@@ -3554,7 +3582,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       print("stop_messung")
       teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
-      teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
+      teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP_BIT)
       
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
       teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
@@ -3606,26 +3634,28 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  */  
    func stop_messung()
    {
-          teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
-         teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
-         
-         teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
-         teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
-         
+      teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
+      //teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP_BIT)
+      teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
+      
+      
+      teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
+      teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
+      
       // in callback-Antwort MESSUNG_STOP verschoben
- //        teensy.read_OK = false
- //        usb_read_cont = false
- //        cont_read_check.state = 0;
-         
-         print("DiagrammDataArray count: \(DiagrammDataArray.count)")
-         
-        // var messungstring:String = MessungDataString(data:DiagrammDataArray)
-         
-         let prefix = datumprefix()
-         let intervall = IntervallPop.integerValue
-         //let startblock = write_sd_startblock.integerValue
- 
-       
+      //        teensy.read_OK = false
+      //        usb_read_cont = false
+      //        cont_read_check.state = 0;
+      
+      print("DiagrammDataArray count: \(DiagrammDataArray.count)")
+      
+      // var messungstring:String = MessungDataString(data:DiagrammDataArray)
+      
+      let prefix = datumprefix()
+      let intervall = IntervallPop.integerValue
+      //let startblock = write_sd_startblock.integerValue
+      
+      
       var senderfolg = teensy.start_write_USB()
       if (senderfolg > 0)
       {
@@ -3635,7 +3665,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       print("stop_messung") // gibt neuen State an
       //self.datagraph.printwertesammlung()
       
- 
+      
    }
    
    func check_WL()
@@ -3993,8 +4023,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             // Sichern auf SD
             if (save_SD_check?.state == 1)
             {
-            //teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
-            teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN)
+            //teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN_BIT)
+            teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
             
             }
             // Abschnitt auf SD
