@@ -43,6 +43,11 @@ let DIGI1 = 14	// Digi Eingang
 
 
 
+// bits von masterstatus
+
+let MESSUNG_TEENSY_OK     =   7 // Nur messungen auf teensy
+let MESSUNG_WL_OK         =   6 // messungen der wl-devices abrufen
+let MESSUNG_TAKT_OK       =   5  // messen im Intervall-Takt des timers
 
 
 
@@ -67,12 +72,13 @@ let MESSUNG_STOP   =   0xC1 // Start der Messreihe
 let KANAL_WAHL     =    0xC2 // Kanalwahl
 let READ_START   =   0xCA // Start read
 
-let SAVE_SD_RUN = 0x02 // Bit 1
+let SAVE_SD_RUN:UInt8 = 0x02 // Bit 1
 let SAVE_SD_STOP = 0x04 // Bit 2
 
-let SAVE_SD_BYTE          =     1 //
+let SAVE_SD_BYTE          =     1 // Uebergeben bei loggersettings
 
 let READ_ERR_BYTE = 1
+
 //let ABSCHNITT_BYTE         =     2
 let BLOCKOFFSETLO_BYTE    =     3 // Block auf SD fuer Sicherung
 let BLOCKOFFSETHI_BYTE    =     4
@@ -126,7 +132,8 @@ let TEENSYVREF:Float = 249.0 // Korrektur von Vref des Teensy: nomineller Wert i
 
 class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDelegate,NSMenuDelegate,NSTextViewDelegate,NSTabViewDelegate,NSTextDelegate
 {
-   
+   // Status
+   var         masterstatus:UInt8 = 0; // was ist zu tun in der loop? 
    // Variablen
    var usbstatus: __uint8_t = 0
    
@@ -1095,14 +1102,18 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          cont_read_check.state = 0;
          TaskListe.reloadData()
-         
+      
+         //MARK: TEENSY_DATA
       case TEENSY_DATA:
+         
+        // print("TEENSY_DATA: ")
+         //for index in 16...24
          /*
-         print("TEENSY_DATA: ")
-         for index in 16...24
+         for index in 8..<BUFFER_SIZE
          {
             print("\(teensy.read_byteArray[index])\t", terminator: "")
          }
+         print("")
  */
          let analog0LO = UInt16(teensy.read_byteArray[ANALOG0  + DATA_START_BYTE])
          let analog0HI = UInt16(teensy.read_byteArray [ANALOG0 + 1  + DATA_START_BYTE])
@@ -1113,6 +1124,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  //        print(" teensy0: \(teensy0) ")
          Vertikalbalken.setLevel(Int32(teensy0float*0xFF/1023))
 
+         
+         
          //MARK: CHECK_WL
       case CHECK_WL:
          //print("CHECK_WL:")
@@ -1856,7 +1869,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
  //        var tempinputDataFeldstring = String(tagsekunde()-MessungStartzeit) + "\t" + messungcounter.stringValue + "\t" 
-          let teensybatterie = Int32(teensy.read_byteArray[USB_BATT_BYTE])
+         let teensybatterie = Int32(teensy.read_byteArray[USB_BATT_BYTE])
          
          teensybatt.stringValue = NSString(format:"%.1f", teensybatterie) as String
          //print("teensybatterie: \(teensybatterie)")      
@@ -3445,7 +3458,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
          }
  
-//          teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
          // Abschnitt auf SD
    //      teensy.write_byteArray[ABSCHNITT_BYTE] = 0
          
@@ -3979,8 +3991,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             teensy.write_byteArray[0] = UInt8(READ_START)
             
             // Sichern auf SD
-            teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
+            if (save_SD_check?.state == 1)
+            {
+            //teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
+            teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN)
             
+            }
             // Abschnitt auf SD
  //           teensy.write_byteArray[ABSCHNITT_BYTE] = 0
             
