@@ -252,8 +252,8 @@ open class usb_teensy: NSObject
             datatruecounter += 1
             let codehex = read_byteArray[0]
 //          
-            if (codehex > 0)
-            {
+           // if (codehex > 0)
+           // {
                
             
             //let codehexstring = String(format:"%2X", codehex)
@@ -285,7 +285,7 @@ open class usb_teensy: NSObject
             
             //print("")
             //var st = NSString(format:"%2X", n) as String
-            } // end if codehex
+       //     } // end if codehex
          }
          else
          {

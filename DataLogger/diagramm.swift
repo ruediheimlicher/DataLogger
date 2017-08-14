@@ -539,8 +539,12 @@ class DataPlot: NSView
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
       
-      //Swift.print("\ndiagramm  werteArray:\n \(werteArray)")
-      wertesammlungarray.append(werteArray)
+ //     Swift.print("diagramm  werteArray:\t \(werteArray)")
+      for zeile in werteArray
+      {
+         
+      }
+      //wertesammlungarray.append(werteArray)
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
       var deviceID:CGFloat  = 0
@@ -610,7 +614,8 @@ class DataPlot: NSView
                
                
                let graphZahl = CGFloat(InputZahl - Vorgaben.MinY) * FaktorY 							// Red auf reale Diagrammhoehe
-               //          Swift.print("i: \(i) InputZahl: \(InputZahl) graphZahl: \(graphZahl)")
+               
+               //Swift.print("i: \t\(i) \tInputZahl: \t\(InputZahl) \tgraphZahl: \t\(graphZahl)")
                
                let rawWert = graphZahl //* SortenFaktor
                

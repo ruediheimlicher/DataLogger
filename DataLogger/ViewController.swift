@@ -24,7 +24,7 @@ let DSHI = 9
 
 let DEVICE = 0
 
-let CHANNEL = 2
+//let CHANNEL = 2
 
 
 let BATT_MIN = 2.8
@@ -71,6 +71,9 @@ let MESSUNG_START   =   0xC0 // Start der Messreihe
 let MESSUNG_STOP   =   0xC1 // Start der Messreihe
 let KANAL_WAHL     =    0xC2 // Kanalwahl
 let READ_START   =   0xCA // Start read
+
+let SAVE_SD_RUN = 0x02 // Bit 1
+let SAVE_SD_STOP = 0x04 // Bit 2
 
 let SAVE_SD_RUN_BIT:UInt8 = 1 // Bit 1
 let SAVE_SD_STOP_BIT:UInt8 = 2 // Bit 2
@@ -1044,7 +1047,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       // NSBeep()
       let code:Int = Int(teensy.read_byteArray[0])
       let codestring = int2hex(UInt8(code))
- //     print("newLoggerDataAktion code: \(code) \(codestring)")
+      
+     // print("newLoggerDataAktion code: \(code) \(codestring)")
       
       /*
       print("read_byteArray code: \(code)")
@@ -1053,7 +1057,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("\(teensy.read_byteArray[index])", terminator: "\t")
       }
       print("\n")
-*/
+       */
       /*
       print("last_read_byteArray code: ")
       for  index in 0..<16
@@ -1312,7 +1316,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //MARK: LOGGER_CONT
       // ****************************************************************************
       case LOGGER_CONT:
-         print("newLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.read_byteArray[PACKETCOUNT_BYTE])")
+         //print("newLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.read_byteArray[PACKETCOUNT_BYTE])")
+         //print("newLoggerDataAktion LOGGER_CONT  \nraw data:\n\(teensy.read_byteArray)\n")
+
          let packetcount: UInt16 = UInt16(teensy.read_byteArray[PACKETCOUNT_BYTE]) // Byte 8
           downloaddatanummer += 1
          
@@ -1332,13 +1338,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          if ((messungcounter.intValue > 0) && (UInt32(messungcounter.intValue) < downloaddatanummer))
          {
-            print("fertig geladen bei \(downloaddatanummer)")
+            //print("messungcounter < downloaddatanummer: fertig geladen bei \(downloaddatanummer)")
             
          }
          
          if ((lastpacket > 0) && (packetcount == lastpacket))
          {
-            print("fertig geladen bei packetcount: \(packetcount)")
+            print("lastpacketn fertig geladen bei packetcount: \(packetcount)")
             last = true
          }
          
@@ -1561,7 +1567,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
       case LOGGER_NEXT:
          print("\nLOGGER_NEXT packetcount: \(packetcount)") // analog LOGGER_START, Antwort vom Logger auf LOGGER_NEXT: next block ist geladen
-         
+         print("newLoggerDataAktion LOGGER_NEXT  \nraw data:\n\(teensy.read_byteArray)\n")
+
          /*
          print("teensy.read_byteArray")
          var  index:UInt8 = 0;
@@ -1609,7 +1616,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          header_add += 2
          // wl_callback_status: aktivierte devices
          let download_wl_callback_status = UInt16(teensy.read_byteArray[DATA_START_BYTE  + HEADER_OFFSET + header_add])
-         //print("download_wl_callback_status: \(download_wl_callback_status)")
+         print("download_wl_callback_status: \(download_wl_callback_status)")
          
          // 
          
@@ -1817,7 +1824,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var devicenummer = Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0x0F // Device, 1-4
          let datacode = (Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0xF0) >> 4   // Code fuer Datenbereich
          
-         var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
+ //        var channelnummer = Int32((teensy.read_byteArray[CHANNEL + DATA_START_BYTE]))
          
          //        print ("devicenummer: \(devicenummer)\tchannelnummer: \(channelnummer)")
          devicenummer &= 0x0F
@@ -2294,7 +2301,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      //print("device: \(String(describing: devicedata["device"]!)) analogtasten: \(String(describing: analog)) eingang messungfloatzeilenarray: \(messungfloatzeilenarray)")
                       */
                      let wert = messungfloatzeilenarray[Int(kanal) + DIAGRAMMDATA_OFFSET] // 4
-                     
+                     //print("kanal: \t\(kanal) \twert raw: \t\(wert)")
                      var wert_norm:Float = wert
                      
                      switch deviceID
@@ -2339,6 +2346,11 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                            wert_norm = wert / 0x1000 * 4.096 * 20
                            AnzeigeFaktor = 2.0 // Anzeige strecken
                            SortenFaktor = 10 // Anzeige in Diagramm durch Sortenfaktor teilen: Volt kommt mit Faktor 10
+                           if (kanal == 2)
+                           {
+                           //   print("\ndata kanal: \t\(kanal)\twert_norm:\t \(wert_norm)") 
+                           }
+
                         }
                         if (kanal == 1 || kanal == 3)// 16V, geteilt durch 4
                         {
@@ -2351,7 +2363,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                         
                         break
                      }// switch device
-                     
+                     //print("\t\twert_norm: \t\(wert_norm)")
                      tempwerte[diagrammkanalindex] = wert_norm
                      werteArray[diagrammkanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
                      
@@ -2550,7 +2562,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // ****************************************************************************
          
       default: 
-         print("code ist 0")
+         //print("code ist 0")
          break
       } // switch code
       
@@ -3478,10 +3490,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // code setzen
          teensy.write_byteArray[0] = UInt8(MESSUNG_START)
-         
+         teensy.write_byteArray[1] = 0
          if (save_SD == 1)
          {
-            //teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN_BIT)
+            //teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
             teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
          }
  
@@ -3567,8 +3579,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       else
       {
          
-         
-         //print("start_messung stop")
+         print("start_messung stop")
          stop_messung()
        }
       
@@ -3634,10 +3645,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
  */  
    func stop_messung()
    {
+      teensy.write_byteArray[1] = 0
+      print("stop_messung write_byteArray[1] vor: \(teensy.write_byteArray[1])")
       teensy.write_byteArray[0] = UInt8(MESSUNG_STOP)
-      //teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP_BIT)
-      teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
-      
+      //teensy.write_byteArray[1] = UInt8(SAVE_SD_STOP)
+      teensy.write_byteArray[1] |= (1<<SAVE_SD_STOP_BIT)
+      print("stop_messung write_byteArray[1] nach: \(teensy.write_byteArray[1])")
+ 
       
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
       teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
@@ -4023,8 +4037,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             // Sichern auf SD
             if (save_SD_check?.state == 1)
             {
-            //teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN_BIT)
-            teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
+            teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
+            //teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
             
             }
             // Abschnitt auf SD
@@ -4287,10 +4301,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       self.datagraph.wertesammlungarray.removeAll()
       
       self.datagraph.setStartsekunde(startsekunde:0)
-      self.datagraph.setMaxY(maxY: 150)
+      self.datagraph.setMaxY(maxY: 160)
       self.datagraph.setDisplayRect()
 
- //     print(loggerdataArray)
+      //print(loggerdataArray)
       
       var zeilenindex = 0
       let headerlines = 2
@@ -4309,7 +4323,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let zeilenarray = datazeile.components(separatedBy: "\t")
          let anzkolonnen = zeilenarray.count
          var tempIntZeilenArray:[UInt16] = [UInt16]()
-         //print(zeilenarray)
+         
          
          for kolonnenindex in 0..<anzkolonnen 
          {
@@ -4480,7 +4494,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                let wert = (intarray[delta + 2 * kanal] | ((intarray[delta + 1 + 2 * kanal])<<8))
                var wert_norm:Float = Float(wert)
-               //print("wert raw: \(wert)")
+               //print("kanal: \t\(kanal)\twert raw:\t\(wert)")
                
                switch deviceID
                {
@@ -4524,6 +4538,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      wert_norm = Float(wert) / 0x1000 * 4.096 * 20
                      AnzeigeFaktor = 2.0 // Anzeige strecken
                      SortenFaktor = 10 // Anzeige in Diagramm durch Sortenfaktor teilen: Volt kommt mit Faktor 10
+                     if (kanal == 2)
+                     {
+                    //   print("\nopen kanal: \t\(kanal)\twert_norm:\t \(wert_norm)") 
+                     }
                   }
                   if (kanal == 1 || kanal == 3)// 16V, geteilt durch 4
                   {
@@ -4536,7 +4554,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   
                   break
                }// switch device
-               //print("wert_norm: \(wert_norm)")
+               //print("\t\twert_norm:\t \(wert_norm)")
                tempwerte[diagrammkanalindex] = wert_norm
                //werteArray[diagrammkanalindex] = [wert_norm, Float(deviceID), SortenFaktor, AnzeigeFaktor]
                let id = Float(deviceID)
@@ -4569,7 +4587,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    open func werteArrayFromIntArray(data:[UInt16]) -> [[Float]]
    {
-      //print("\nwerteArrayFromIntArray data: \(data)")
+      print("\nwerteArrayFromIntArray data: \(data)")
       /*
        0       1     2           3           4        5     6     7
        device	code	messung LO	messung HI	kanal			
@@ -4913,7 +4931,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             do
             {
                let datastring = try String(contentsOf: result!, encoding: String.Encoding.utf8)
-               //print("datastring\n\(datastring)\n")
+               print("datastring\n\(datastring)\n")
                inputDataFeld.string = datastring
                //let loggerdataDicArray = datagraph.diagrammDataDicFromLoggerData(loggerdata: datastring)
                
@@ -4994,7 +5012,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       if (userInfo?["data"] != nil)
       {
          let downloadstring:String = userInfo?["data"] as! String
-         let loggerDataArray:[[UInt16]] = diagrammDataArrayFromLoggerData(loggerdata: downloadstring)
+      //   let loggerDataArray:[[UInt16]] = diagrammDataArrayFromLoggerData(loggerdata: downloadstring)
          
          
          // nicht verwendet, in werteArrayFromIntArray vorgenommen
