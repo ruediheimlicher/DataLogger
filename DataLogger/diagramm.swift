@@ -16,14 +16,14 @@ import Cocoa
 class DataPlot: NSView
 {
    var Device:String = "home"
-   var DatenDicArray:[[String:CGFloat]]! = [[:]]
+   var DatenDicArray:[[String:CGFloat]]! = [["":0.0]]
    var DatenArray:[[CGFloat]]! = [[]]
    var GraphArray = [CGMutablePath]( repeating: CGMutablePath(), count: 16 )
    var KanalArray = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
    var FaktorArray:[CGFloat]! = [CGFloat](repeating:0.5,count:16)
    var DatafarbeArray:[NSColor]! = [NSColor](repeating:NSColor.gray,count:16) // Strichfarbe im Diagramm
    
-   var linienfarbeArray:[[NSColor]] = [[NSColor]](repeating: [NSColor](repeating:NSColor.gray,count:8) ,count: 16 )
+   var linienfarbeArray:[[NSColor]] = [[NSColor]](repeating: [NSColor](repeating:NSColor.gray,count:16) ,count: 16 )
    
    var wertesammlungarray = [[[Float]]]()
    
@@ -538,12 +538,13 @@ class DataPlot: NSView
    // MARK: *** setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
-      
- //     Swift.print("diagramm  werteArray:\t \(werteArray)")
+      /*
+      Swift.print("diagramm  werteArray:\t \(werteArray)")
       for zeile in werteArray
       {
-         
+         Swift.print("*\(zeile)*\n");
       }
+       */
       //wertesammlungarray.append(werteArray)
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
@@ -752,6 +753,11 @@ extension DataPlot
          
       }
       
+   }
+   
+   func clear()
+   {
+      DatenDicArray.removeAll()
    }
    
    
@@ -1127,8 +1133,12 @@ extension DataPlot
        context?.drawPath(using: .stroke)
        */
       
+      if DatenDicArray.count < 3 
+      {
+         return
+      }
       let lastdata = DatenDicArray.last
-      if (lastdata?.count == 0)
+      if ((lastdata?.count == 0) )
       {
          return
       }
@@ -1160,12 +1170,12 @@ extension DataPlot
       {
          if (GraphArray[i].isEmpty)
          {
-            //Swift.print("GraphArray von \(i) ist Empty")
+            //Swift.print("drawDiagrammRect GraphArray von \(i) ist Empty")
             continue
          }
          else
          {
-            //Swift.print("GraphArray von \(i) ist nicht Empty")
+            //Swift.print("drawDiagrammRect GraphArray von \(i) ist nicht Empty")
          }
          
          let tempanzeigefaktor = lastdata?["af\(i)"]
@@ -1194,7 +1204,8 @@ extension DataPlot
             context?.setLineWidth(1.5)
             //    context?.setFillColor(fillColor)
             //context?.setStrokeColor(DatafarbeArray[i].cgColor)
-            context?.setStrokeColor(linienfarbeArray[tempdeviceID][i].cgColor)
+            
+            context?.setStrokeColor(linienfarbeArray[tempdeviceID][(i & 0x07)].cgColor) // linienfarbearray hat nur je 8 Farben
             
             // 4
             context?.addPath(GraphArray[i])

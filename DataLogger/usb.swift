@@ -170,7 +170,7 @@ open class usb_teensy: NSObject
       
       let result = rawhid_recv(0, &read_byteArray, Int32(BUFFER_SIZE), 50);
       
-      //print("\n*report_start_read_USB result: \(result) cont: \(cont)")
+      print("\n*report_start_read_USB result: \(result) cont: \(cont)")
       //print("usb.swift start_read_byteArray start: *\n\(read_byteArray)*")
       
       let nc = NotificationCenter.default
@@ -319,17 +319,10 @@ open class usb_teensy: NSObject
       // Test Array to generate some Test Data
       //  var testData = NSData(bytes: testArray,length: testArray.count)
      
-      /*
-      write_byteArray[0] = testArray[0]
-      write_byteArray[1] = testArray[1]
-      write_byteArray[2] = testArray[2]
-      write_byteArray[3] = usb_count
- */
       if (teensy_present() == false)
       {
          return 0
       }
-//      write_byteArray[4] = usb_count // byte ist besetzt
       if (usb_count < 0xFF)
       {
       usb_count += 1
