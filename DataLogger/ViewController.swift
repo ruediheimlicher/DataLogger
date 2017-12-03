@@ -1395,7 +1395,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //MARK: CHECK_WL
       case CHECK_WL:
          print("code ist CHECK_WL")
-         //print("WL-status: \(teensy.read_byteArray[2])")
+         print("WL-status: \(teensy.read_byteArray[2])")
          // status der  device checken
          
          let wl_callback_status = (teensy.read_byteArray[2])
@@ -1569,7 +1569,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //MARK: LOGGER_CONT
       // ****************************************************************************
       case LOGGER_CONT:
-         //print("newLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.read_byteArray[PACKETCOUNT_BYTE])")
+         print("newLoggerDataAktion LOGGER_CONT: \(code) packetcount: \(teensy.read_byteArray[PACKETCOUNT_BYTE])")
          //print("newLoggerDataAktion LOGGER_CONT  \nraw data:\n\(teensy.read_byteArray)\n")
 
          let packetcount: UInt16 = UInt16(teensy.read_byteArray[PACKETCOUNT_BYTE]) // Byte 8
@@ -3692,6 +3692,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       // Taktintervall in array einsetzen
       teensy.write_byteArray[TAKT_LO_BYTE] = UInt8(intervallwert & 0x00FF)
       teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((intervallwert & 0xFF00)>>8)
+      
       //    print("reportTaskIntervall teensy.write_byteArray[TAKT_LO_BYTE]: \(teensy.write_byteArray[TAKT_LO_BYTE])")
       // Abschnitt auf SD
       
@@ -4660,9 +4661,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   print("Fehler in report_start_messung")
                }
             }
-            
-         
-         
          
          let senderfolg = teensy.start_write_USB()
          if (senderfolg > 0)
@@ -5481,9 +5479,28 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       print("+++++++++++++++++++++++++++++++++\n");
       // https://eclecticlight.co/2016/12/23/more-fun-scripting-with-swift-and-xcode-alerts-and-file-save/
       //and so on to build the text to be written out to the file
+      
+      
+      let token = FileManager.default.ubiquityIdentityToken  
+      if (token == nil) {  
+         Swift.print("iCloud is not available for this app")          // That's the case  
+      }  
+      else {  
+         Swift.print("iCloud is available")  
+      }  
+      
       let FS = NSOpenPanel()
-      FS.canCreateDirectories = true
+      
+      // https://forums.developer.apple.com/thread/64588
+      FS.canDownloadUbiquitousContents = token != nil // Tried reverse as well  
+      FS.canResolveUbiquitousConflicts = false // Tried reverse as well  
+      FS.isAccessoryViewDisclosed = false // Tried reverse as well  
+      
+      
+      FS.canChooseFiles = true
+      FS.canChooseDirectories = false
       FS.allowedFileTypes = ["txt"]
+      FS.allowsMultipleSelection = false
       FS.title = "Loggerdaten lesen"
       FS.nameFieldLabel = "loggerdump:"
       FS.nameFieldStringValue = datumprefix() + "_data"

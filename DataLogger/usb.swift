@@ -251,15 +251,6 @@ open class usb_teensy: NSObject
             new_Data = true
             datatruecounter += 1
             let codehex = read_byteArray[0]
-//          
-           // if (codehex > 0)
-           // {
-               
-            
-            //let codehexstring = String(format:"%2X", codehex)
-            //print("+++\t\tnewData in usb.swift cont_Read code: \(read_byteArray[0]) \(codehexstring)")
- //           print("\(read_byteArray)")
-            
             
             // http://dev.iachieved.it/iachievedit/notifications-and-userinfo-with-swift-3-0/
              let nc = NotificationCenter.default
