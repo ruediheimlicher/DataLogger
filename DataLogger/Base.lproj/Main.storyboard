@@ -1148,7 +1148,7 @@
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Omh-JB-125">
-                                                                                        <rect key="frame" x="6" y="1" width="156" height="15"/>
+                                                                                        <rect key="frame" x="6" y="1" width="156" height="16"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <segmentedCell key="cell" controlSize="mini" borderStyle="border" alignment="left" style="separated" trackingMode="selectAny" id="iwu-N9-rdY">
                                                                                             <font key="font" metaFont="miniSystem"/>
@@ -1238,7 +1238,7 @@
                                                         </subviews>
                                                     </clipView>
                                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="ZHu-0q-jsK">
-                                                        <rect key="frame" x="1" y="-15" width="0.0" height="15"/>
+                                                        <rect key="frame" x="1" y="8" width="0.0" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="f4Z-Zu-ZoE">
@@ -1313,15 +1313,15 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OV1-hS-t9z">
-                                                    <rect key="frame" x="15" y="433" width="131" height="32"/>
+                                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AaK-ZV-zU8">
+                                                    <rect key="frame" x="22" y="436" width="128" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <buttonCell key="cell" type="push" title="Daten laden" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uuo-bR-UnD">
+                                                    <buttonCell key="cell" type="push" title="Daten laden" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aXr-YC-XEx">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
                                                     <connections>
-                                                        <action selector="reportOpenDataWithSender:" target="XfG-lQ-9wD" id="JDD-ta-F5f"/>
+                                                        <action selector="reportOpenDataWithSender:" target="XfG-lQ-9wD" id="Usg-04-NSt"/>
                                                     </connections>
                                                 </button>
                                             </subviews>

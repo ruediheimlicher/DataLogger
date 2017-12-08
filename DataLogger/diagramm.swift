@@ -538,13 +538,13 @@ class DataPlot: NSView
    // MARK: *** setWerteArray
    open func setWerteArray(werteArray:[[Float]], nullpunktoffset:Int)
    {
-      /*
-      Swift.print("diagramm  werteArray:\t \(werteArray)")
+      
+      //Swift.print("\ndiagramm  werteArray:\t \(werteArray)")
       for zeile in werteArray
       {
-         Swift.print("*\(zeile)*\n");
+        // Swift.print("*\(zeile)*");
       }
-       */
+       
       //wertesammlungarray.append(werteArray)
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
       var SortenFaktor:CGFloat = 1.0
