@@ -1568,8 +1568,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             datagraph.setIntervall(intervall: Int(download_intervall))
             
             
-            let eeprom_blockcount:UInt16 = UInt16(teensy.read_byteArray[26]) | UInt16((teensy.read_byteArray[27])<<8)
-            print("24: \(teensy.read_byteArray[26]) 25: \(teensy.read_byteArray[27])")
+            let eeprom_blockcount:UInt16 = UInt16(teensy.read_byteArray[24]) | UInt16((teensy.read_byteArray[25])<<8)
+            print("24: \(teensy.read_byteArray[24]) 25: \(teensy.read_byteArray[25])")
                print("newLoggerDataAktion LOGGER_START blockcount aus eeprom eeprom_blockcount: \(eeprom_blockcount)")
             blockcount = eeprom_blockcount
             read_sd_anzahl.integerValue = Int(blockcount)
@@ -1583,7 +1583,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //}
             //print("\n")
             packetcount = 0
-            
+            // next packet holen
             cont_log_USB(paketcnt: (packetcount))
             
          }
@@ -1849,7 +1849,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          print("\nLOGGER_NEXT packetcount: \(packetcount)") // analog LOGGER_START, Antwort vom Logger auf LOGGER_NEXT: next block ist geladen
          print("newLoggerDataAktion LOGGER_NEXT  \nraw data:\n\(teensy.read_byteArray)\n")
 
-         /*
+         
          print("teensy.read_byteArray")
          var  index:UInt8 = 0;
          
@@ -1870,7 +1870,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          
          print ("")
-         */
+         
          //print("Header: ")
          // blockcounter
          var header_add = 0
@@ -1879,7 +1879,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // lastpacket
          lastpacket = UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add + 1])<<8)
-         print("lastpacket: \(lastpacket)")
+         print("*********\t lastpacket: \(lastpacket)")
          
          header_add += 2
          // blockdatacounter
@@ -3244,7 +3244,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    }
    
    //MARK: cont log
-   func cont_log_USB(paketcnt: UInt8)
+   func cont_log_USB(paketcnt: UInt8) // next packet
    {
       
       //print("cont_log_USB packetcount: \(paketcnt)");
