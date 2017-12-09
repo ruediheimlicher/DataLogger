@@ -1879,7 +1879,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          // lastpacket
          lastpacket = UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add]) | (UInt16(teensy.read_byteArray[DATA_START_BYTE + HEADER_OFFSET + header_add + 1])<<8)
-         print("*********\t lastpacket: \(lastpacket)")
+         print("lastpacket: \(lastpacket)")
          
          header_add += 2
          // blockdatacounter
