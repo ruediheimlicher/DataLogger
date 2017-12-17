@@ -504,7 +504,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let date = Date()
       let calendar = Calendar.current
       let formatter = DateFormatter()
-      formatter.locale = Locale(identifier: "gsw-CH")
+      formatter.locale = Locale(identifier: "de_CH")
       
       let stunde = calendar.component(.hour, from: date)
       let minute = calendar.component(.minute, from: date)
@@ -517,7 +517,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let date = Date()
       let calendar = Calendar.current
       let formatter = DateFormatter()
-      formatter.locale = Locale(identifier: "gsw-CH")
+      formatter.locale = Locale(identifier: "de_CH")
       
       let stunde = calendar.component(.hour, from: date)
       let minute = calendar.component(.minute, from: date)
@@ -527,13 +527,16 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    func datumstring()->String
    {
+      //NSLog(@"%@",[NSLocale currentLocale])
+      print("datumstring \(NSLocale.current)")
+      
       let date = Date()
       let calendar = Calendar.current
       let jahr = calendar.component(.year, from: date)
       let tagdesmonats = calendar.component(.day, from: date)
       let monatdesjahres = calendar.component(.month, from: date)
       let formatter = DateFormatter()
-      formatter.locale = Locale(identifier: "gsw-CH")
+      formatter.locale = Locale(identifier: "de_CH")
       
       formatter.dateFormat = "dd.MM.yyyy"
       let datumString = formatter.string(from: date)
@@ -547,7 +550,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let date = Date()
       let calendar = Calendar.current
       let formatter = DateFormatter()
-      formatter.locale = Locale(identifier: "de-CH")
+      formatter.locale = Locale(identifier: "de_CH")
       
       let stunde = calendar.component(.hour, from: date)
       let minute = calendar.component(.minute, from: date)
@@ -563,7 +566,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let date = Date()
       let calendar = Calendar.current
       let formatter = DateFormatter()
-      formatter.locale = Locale(identifier: "de-CH")
+      formatter.locale = Locale(identifier: "en-CH")
       
       let jahr = calendar.component(.year, from: date)
       let tagdesmonats = calendar.component(.day, from: date)
@@ -795,7 +798,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let c8 = MemoryLayout<UInt8>.size
       //let datastring = NSString(bytes: chars, length: count, encoding: String.Encoding.ascii.rawValue)
       //print(datastring as Any)
-      
+      print("datumstring \(NSLocale.current)")
       let datastring2 = U8ArrayToIntString(arr:chars)
       print(datastring2)
       let datastring3 = U8ArrayToHexString(arr:chars)
