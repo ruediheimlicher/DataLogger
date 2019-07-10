@@ -540,10 +540,10 @@ class DataPlot: NSView
    {
       
       //Swift.print("\ndiagramm  werteArray:\t \(werteArray)")
-      for zeile in werteArray
-      {
+ //     for zeile in werteArray
+ //     {
         // Swift.print("*\(zeile)*");
-      }
+ //     }
        
       //wertesammlungarray.append(werteArray)
       var AnzeigeFaktor:CGFloat = 1.0 //= maxSortenwert/maxAnzeigewert;
@@ -708,7 +708,7 @@ class DataPlot: NSView
    override func draw(_ dirtyRect: NSRect)
    {
       super.draw(dirtyRect)
-      let context = NSGraphicsContext.current()?.cgContext
+      let context = NSGraphicsContext.current?.cgContext
       
       
       //    NSColor.white.setFill()
@@ -975,8 +975,8 @@ extension DataPlot
                let paragraphStyle = NSMutableParagraphStyle()
                paragraphStyle.alignment = .center
                
-               let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle ,NSForegroundColorAttributeName: labelfarbe]
-               tempWertString.draw(with: CGRect(x: posx-20, y: liniestart-16, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+               let attrs = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): NSFont(name: "HelveticaNeue", size: 10)!, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle ,convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): labelfarbe]
+               tempWertString.draw(with: CGRect(x: posx-20, y: liniestart-16, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: convertToOptionalNSAttributedStringKeyDictionary(attrs), context: nil)
                
             }
             else
@@ -1238,8 +1238,8 @@ extension DataPlot
                let paragraphStyle = NSMutableParagraphStyle()
                paragraphStyle.alignment = .left
                
-               let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle ,NSForegroundColorAttributeName: DatafarbeArray[i]]
-               tempWertString.draw(with: CGRect(x: p.x + 4, y: p.y-6, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+               let attrs = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): NSFont(name: "HelveticaNeue", size: 10)!, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle ,convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): DatafarbeArray[i]]
+               tempWertString.draw(with: CGRect(x: p.x + 4, y: p.y-6, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: convertToOptionalNSAttributedStringKeyDictionary(attrs), context: nil)
             } // if wert = lastdata
            } // if Anzeigefaktor != nil 
          } // for i in GraphArray.count
@@ -1351,7 +1351,7 @@ class datadiagramm: NSViewController, NSWindowDelegate
    
    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
    {
-      super.init(nibName: nibNameOrNil, bundle: nil)!
+      super.init(nibName: nibNameOrNil, bundle: nil)
       
    }
    override func viewDidLoad()
@@ -1364,3 +1364,14 @@ class datadiagramm: NSViewController, NSWindowDelegate
    
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}

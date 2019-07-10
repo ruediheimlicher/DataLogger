@@ -185,7 +185,7 @@ class Abszisse: NSView{
             default:
                break
             }
-            let zehnerpotenz = pow(10,AbszisseVorgaben.Exponent)
+           // let zehnerpotenz = pow(10,AbszisseVorgaben.Exponent)
             
             
             
@@ -200,9 +200,9 @@ class Abszisse: NSView{
             
        //     let textfarbe = NSColor.init?(colorSpace:colspace ,components:comp)
        //     let textfarbe = NSColor.init(red:1.0,green: 0.0, blue: 0.0,alpha:1.0)
-            let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 9)!, NSParagraphStyleAttributeName: paragraphStyle,NSForegroundColorAttributeName:textfarbe]
+            let attrs = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): NSFont(name: "HelveticaNeue-Thin", size: 9)!, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle,convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor):textfarbe]
             
-            tempWertString.draw(with: CGRect(x: p.x - 42 , y: p.y - 5, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            tempWertString.draw(with: CGRect(x: p.x - 42 , y: p.y - 5, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: convertToOptionalNSAttributedStringKeyDictionary(attrs), context: nil)
          }
          
          var subposy = posy // aktuelle Position
@@ -242,9 +242,9 @@ class Abszisse: NSView{
       //Swift.print("p: \(p) tempWertString: \(tempWertString)")
       let paragraphStyle = NSMutableParagraphStyle()
       paragraphStyle.alignment = .right
-      let attrs = [NSFontAttributeName: NSFont(name: "HelveticaNeue-Thin", size: 9)!, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName:textfarbe]
+      let attrs = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): NSFont(name: "HelveticaNeue-Thin", size: 9)!, convertFromNSAttributedStringKey(NSAttributedString.Key.paragraphStyle): paragraphStyle, convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor):textfarbe]
       
-      tempWertString.draw(with: CGRect(x: p.x - 42 , y: p.y - 5, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+      tempWertString.draw(with: CGRect(x: p.x - 42 , y: p.y - 5, width: 40, height: 14), options: .usesLineFragmentOrigin, attributes: convertToOptionalNSAttributedStringKeyDictionary(attrs), context: nil)
       
       
       return path
@@ -441,7 +441,7 @@ extension Abszisse
       /*
        Diagramm im Plotrect zeichnen
        */
-      var path = CGMutablePath()
+ //     var path = CGMutablePath()
       
       //path.addRect(rect)
       
@@ -450,12 +450,12 @@ extension Abszisse
       // ordinatefeld = DiagrammRect(rect: PlotRect())
       
       //let diagrammrect = DiagrammRect(rect: PlotRect())
-      
+      /*
       let x = rect.origin.x
       let y = rect.origin.y
       let a = rect.origin.x + rect.size.width
       let b = rect.origin.y + rect.size.height
-      /*
+      
        path.move(to: CGPoint(x:  ordinatefeld.origin.x, y: ordinatefeld.origin.y ))
        path.addLine(to: NSMakePoint(ordinatefeld.origin.x + ordinatefeld.size.width, ordinatefeld.origin.y )) // > rechts
        path.addLine(to: NSMakePoint(ordinatefeld.origin.x + ordinatefeld.size.width, ordinatefeld.origin.y + ordinatefeld.size.height)) // > oben
@@ -497,7 +497,7 @@ extension Abszisse
    override func draw(_ dirtyRect: NSRect)
    {
       super.draw(dirtyRect)
-      let context = NSGraphicsContext.current()?.cgContext
+      let context = NSGraphicsContext.current?.cgContext
       
       
       //    NSColor.white.setFill()
@@ -510,4 +510,15 @@ extension Abszisse
    
    
    
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

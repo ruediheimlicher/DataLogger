@@ -148,8 +148,14 @@ func U8ArrayToHexString(arr: [UInt8]) -> String
     }
    // letzten Tab entfernen
    // https://stackoverflow.com/questions/24122288/remove-last-character-from-string-swift-language
-   return returnString.substring(to: returnString.index(before: returnString.endIndex)) 
-   
+   let template = returnString
+   let indexStartOfText = template.index(template.startIndex, offsetBy: 0)
+   let indexEndOfText = template.index(template.endIndex, offsetBy: -1)
+
+
+   // template[indexStartOfText..<indexEndOfText]
+   return String(template[indexStartOfText..<indexEndOfText]) 
+   //   return returnString.substring(to: returnString.index(before: returnString.endIndex)) 
 }
 
 func U8ArrayToIntString(arr: [UInt8]) -> String 
@@ -164,7 +170,16 @@ func U8ArrayToIntString(arr: [UInt8]) -> String
    }
    // letzten Tab entfernen
    // https://stackoverflow.com/questions/24122288/remove-last-character-from-string-swift-language
-   return returnString.substring(to: returnString.index(before: returnString.endIndex)) 
+   
+   let template = returnString
+   let indexStartOfText = template.index(template.startIndex, offsetBy: 0)
+   let indexEndOfText = template.index(template.endIndex, offsetBy: -1)
+   
+   
+   // template[indexStartOfText..<indexEndOfText]
+   return String(template[indexStartOfText..<indexEndOfText]) 
+
+  //return returnString.substring(to: returnString.index(before: returnString.endIndex)) 
    
 }
 
@@ -730,9 +745,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let alert = NSAlert()
       alert.messageText = question
       alert.informativeText = text
-      alert.alertStyle = NSAlertStyle.warning
+      alert.alertStyle = NSAlert.Style.warning
       alert.addButton(withTitle: "OK")
-      return alert.runModal()// == NSAlertFirstButtonReturn
+      return alert.runModal().rawValue// == NSAlertFirstButtonReturn
       
    }
 
@@ -742,10 +757,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let alert = NSAlert()
       alert.messageText = question
       alert.informativeText = text
-      alert.alertStyle = NSAlertStyle.warning
+      alert.alertStyle = NSAlert.Style.warning
       alert.addButton(withTitle: "OK")
       alert.addButton(withTitle: "Cancel")
-      return alert.runModal()// == NSAlertFirstButtonReturn
+      return alert.runModal().rawValue// == NSAlertFirstButtonReturn
    
    }
 
@@ -756,10 +771,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       alert.informativeText = information
       alert.addButton(withTitle: buttonOK)
       alert.addButton(withTitle: buttonCancel)
-      alert.alertStyle = NSAlertStyle.warning
+      alert.alertStyle = NSAlert.Style.warning
       var antwort = 0
-      let fenster = NSApplication.shared().windows.first
-        return alert.runModal()
+      let fenster = NSApplication.shared.windows.first
+        return alert.runModal().rawValue
    }
    
    override func viewDidAppear() 
@@ -967,7 +982,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       //MARK: -   datagraph
       
       
-      var farbe = NSColor.init(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
+      let farbe = NSColor.init(red: (0.0), green: (0.0), blue: (0.0), alpha: 0.0)
       var linienfarbeArray_blue = [NSColor](repeating:farbe, count:8)
 
       linienfarbeArray_blue[0] = NSColor( red: (0.69), green: (0.69), blue: (0.98), alpha: (1.00))
@@ -1030,7 +1045,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       {
          var dataordinate:Abszisse = Abszisse.init(frame: ordinateframe)
          dataordinate.setAbszisseFeldHeight(h: self.datagraph.DiagrammFeldHeight())
-         dataordinate.identifier = "dataordinate\(nr)"
+         dataordinate.identifier = convertToOptionalNSUserInterfaceItemIdentifier("dataordinate\(nr)")
          dataordinate.setLinienfarbe(farbe: datagraph.linienfarbeArray[nr][7].cgColor)
          dataordinate.setMajorTeileY(majorteiley: Int(swiftArray[nr]["majorteiley"]!)!)
          dataordinate.setMinorTeileY(minorteiley: Int(swiftArray[nr]["minorteiley"]!)!)
@@ -1225,7 +1240,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   swiftArray[zeilenindex]["batterie"] = String(format:"%2.02fV", startdevicebatteriespannung/100)
                }
          }
-         cont_read_check.state = 0;
+         cont_read_check.state = convertToNSControlStateValue(0);
          TaskListe.reloadData()
       
          //MARK: TEENSY_DATA
@@ -1517,7 +1532,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          teensy.read_OK = false
          usb_read_cont = false
-         cont_read_check.state = 0;
+         cont_read_check.state = convertToNSControlStateValue(0);
          print("counter B: \(messungcounter.intValue) messungcounter wird 0")
          messungcounter.intValue = 0
          
@@ -1716,7 +1731,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
        //     let messung = UInt16(teensy.read_byteArray[DATA_START_BYTE + 2]) | UInt16(teensy.read_byteArray[DATA_START_BYTE + 3]) << 8
  //           print("newLoggerDataAktion LOGGER_CONT: \(code) device: \(teensy.read_byteArray[DATA_START_BYTE + DEVICE]) Messung: \(messung) packetcount: \(teensy.read_byteArray[2])\n\traw Data\(teensy.read_byteArray)")
             
-            if (Test_Knopf.state == 1)
+            if (Test_Knopf.state.rawValue == 1)
             {
                
 //               print("LOGGER_CONT TEST read_byteArray")
@@ -1743,7 +1758,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      //   print ("\nindex: \(index) newzeilenarray: \n\(newzeilenarray)")
                      let tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t")
                      //print ("index: \(index)\t\(tempstring)")
-                     inputDataFeld.string = inputDataFeld.string! + "\n" + tempstring
+                     inputDataFeld.string = inputDataFeld.string + "\n" + tempstring
                      newzeilenarray.removeAll(keepingCapacity: true)
                   }
                   index = index + 1
@@ -1820,15 +1835,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                for cnt in 0..<32 
                {    // Add 32 tab stops, at desired intervals...
-                  paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: [:]))
+                  paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: convertToNSTextTabOptionKeyDictionary([:])))
                }               
                //print("tabstops: \(paragraphStyle.tabStops)")
                
                var tempstring = newzeilenarray.map{String($0)}.joined(separator: "\t") + "\n" // String erzeugen
                
                let attrdatatext = NSMutableAttributedString(string: tempstring)
-               let datatextRange = NSMakeRange(0, tempstring.characters.count)
-               attrdatatext.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: datatextRange)
+               let datatextRange = NSMakeRange(0, tempstring.count)
+               attrdatatext.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: datatextRange)
                downloadDataFeld.textStorage?.append(attrdatatext)
                
                //let loremtext = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
@@ -1882,7 +1897,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                teensy.read_OK = false
                teensy.write_byteArray[0] = UInt8(LOGGER_STOP)
                usb_read_cont = false
-               cont_read_check.state = 0;
+               cont_read_check.state = convertToNSControlStateValue(0);
                let prefix = datumprefix()
                let dataname = "Logger/" + prefix + "_loggerdump.txt"
                
@@ -1892,7 +1907,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                   downloadstring = downloadstring + "\(tabpos)\t"
                }
                
-               downloadstring = downloadstring + "\n" + downloadDataFeld.string!
+               downloadstring = downloadstring + "\n" + downloadDataFeld.string
                
                
                writeData(name: dataname,data:downloadstring)
@@ -2009,7 +2024,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                teensy.read_OK = false
                teensy.write_byteArray[0] = UInt8(LOGGER_STOP) // Messungen im teensy stoppen
                 usb_read_cont = false
-               cont_read_check.state = 0;
+               cont_read_check.state = convertToNSControlStateValue(0);
                
                
                let prefix = datumprefix()
@@ -2020,7 +2035,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                {
                   downloadstring = downloadstring + "\(tabpos)\t"
                }               
-               downloadstring = downloadstring + "\n" + downloadDataFeld.string!
+               downloadstring = downloadstring + "\n" + downloadDataFeld.string
                writeData(name: dataname,data:downloadstring)
               // writeData(name: dataname,data:downloadDataFeld.string!)
                print("\nnewLoggerDataAktion LOGGER_CONT end loggerDataArray:\n\(loggerDataArray)")
@@ -2044,13 +2059,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
         
          
          usb_read_cont = false
-         cont_read_check.state = 0;
+         cont_read_check.state = convertToNSControlStateValue(0);
          
          let prefix = datumprefix()
          let dataname = "Logger/" + prefix + "_loggerdump.txt"
          
          
-         writeData(name: dataname,data:inputDataFeld.string!)
+         writeData(name: dataname,data:inputDataFeld.string)
          
          //print("\n")
   //       var senderfolg = teensy.start_write_USB()
@@ -2631,7 +2646,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                analog1float = Float(analog1) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
                //print ("task 1 analog1float: \(analog1float)");
                
-               analog1float = floorf(fabs(analog1float)*2.f) / 2.f
+               analog1float = floorf(abs(analog1float)*2.f) / 2.f
                //print ("analog1float floor: \(analog1float)");
                adcfloatarray[1]  = analog1float
                
@@ -3071,12 +3086,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             for cnt in 0..<32 
             {    // Add 32 tab stops, at desired intervals...
-               paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: [:]))
+               paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: convertToNSTextTabOptionKeyDictionary([:])))
             }               
 
             let attrdatatext = NSMutableAttributedString(string: tempstring)
             let datatextRange = NSMakeRange(0, tempstring.characters.count)
-            attrdatatext.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: datatextRange)
+            attrdatatext.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: datatextRange)
             inputDataFeld.textStorage?.append(attrdatatext)
          } // if devicestatus == wl_callback_status
          
@@ -3264,9 +3279,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       // tagmin_Feld.integerValue = tagminute
       tagsec_Feld.integerValue = tagsekunde()
-      cont_read_check.state = 1
+      cont_read_check.state = convertToNSControlStateValue(1)
       teensy.read_OK = true
-      usb_read_cont = (cont_read_check.state == 1)
+      usb_read_cont = (cont_read_check.state.rawValue == 1)
       if (!teensy.teensy_present())
       {
          let erfolg = UInt8(teensy.USBOpen())
@@ -3310,7 +3325,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[PACKETCOUNT_BYTE] = packetcount // beginn bei Paket 0
       
       // cont write aktivieren
-      cont_write_check.state = 1
+      cont_write_check.state = convertToNSControlStateValue(1)
       //print("\nreport start download: teensy.last_read_byteArray: \(teensy.last_read_byteArray)")
       
       let senderfolg = teensy.start_write_USB()
@@ -3379,13 +3394,14 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[0] = UInt8(LOGGER_STOP)
       
       var senderfolg = teensy.cont_write_USB()
-      cont_read_check.state = 1
+      cont_read_check.state = convertToNSControlStateValue(1)
       
    }
    
    @IBAction func reportWriteCodeBit(_ sender: AnyObject)
    {
-      print("reportBit1 tag: \(sender.tag)")
+      let temptag:Int? = sender.tag
+      print("reportBit1 tag: \temptag")
       let bit:UInt8 = UInt8(sender.tag)
       if (sender.state == 1)
       {
@@ -3529,10 +3545,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       
       // https://stackoverflow.com/questions/43426391/how-do-you-reference-the-views-window-in-swift-3-x-using-storyboards-cocoa
 
-      if (NSApplication.shared().mainWindow != nil)
+      if (NSApplication.shared.mainWindow != nil)
       {
          //print("hauptfenster da")
-         let hauptfenster:NSWindow = ((NSApplication.shared().mainWindow))!
+         let hauptfenster:NSWindow = ((NSApplication.shared.mainWindow))!
          if (notification.object != nil)
          {
             //print("objektfenster da")
@@ -3573,7 +3589,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                }
                
                //print("beenden A")
-               NSApplication.shared().terminate(self)
+               NSApplication.shared.terminate(self)
                //return
                
                
@@ -3691,7 +3707,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       teensy.read_OK = false
       usb_read_cont = false
-      cont_read_check.state = 0;
+      cont_read_check.state = convertToNSControlStateValue(0);
       
       
    }
@@ -3699,7 +3715,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBAction func stop_write_USB(_ sender: AnyObject)
    {
       usb_write_cont = false
-      cont_write_check.state = 0;
+      cont_write_check.state = convertToNSControlStateValue(0);
    }
    
    @IBAction func close_USB(_ sender: AnyObject)
@@ -3796,7 +3812,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       teensy.write_byteArray[0] = UInt8(LOGGER_SETTING)
       //Task lesen
       
-      let save_SD = save_SD_check?.state
+      let save_SD = convertFromNSControlStateValue((save_SD_check?.state)!)
       var loggersettings:UInt8 = 0
       if ((save_SD == 1)) // Daten auf SD sichern
       {
@@ -3868,11 +3884,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       print("reportSetSettings")
       setSettings()
       return
+         /*
       print("swiftArray\n\(swiftArray)")
       teensy.write_byteArray[0] = UInt8(LOGGER_SETTING)
       //Task lesen
       
-      let save_SD = save_SD_check?.state
+      let save_SD = convertFromNSControlStateValue(save_SD_check?.state)
       var loggersettings:UInt8 = 0
       if ((save_SD == 1)) // Daten auf SD sichern
       {
@@ -3935,6 +3952,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          NSSound(named: "Glass")?.play()
       }
       print("reportSetSettings end") 
+ */
    }
    
    @IBAction func reportTaskIntervall(_ sender: NSComboBox)
@@ -3967,7 +3985,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBAction func reportCheckbox(sender:NSButton)
    {
-      print("reportCheckbox \(sender.state) tag: \(sender.tag)")
+      print("reportCheckbox \(convertFromNSControlStateValue(sender.state)) tag: \(sender.tag)")
       let knopftag = Int(sender.tag)
       let zeile = knopftag%1000
       print("reportCheckbox zeile: \(zeile)")
@@ -4050,12 +4068,12 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    @IBAction func reportTaskCheck(_ sender: NSButton)
    {
-      print("reportTaskCheck  sender tag: \(sender.tag) state: \(sender.state)")
+      print("reportTaskCheck  sender tag: \(sender.tag) state: \(convertFromNSControlStateValue(sender.state))")
       let index = (sender.tag / 1000) 
       let laststate = taskArray[index]["taskcheck"]
-      print("reportTaskCheck  taskArray: \n\(taskArray) laststate: \(laststate)")
+      print("reportTaskCheck  taskArray: \n\(taskArray) laststate: \(String(describing: laststate))")
 
-      taskArray[index]["taskcheck"] = String(sender.state)
+      taskArray[index]["taskcheck"] = String(sender.state.rawValue)
       print("reportTaskCheck  taskArray: \n\(taskArray)")
       anzahlChannels = countChannels()
       Channels_Feld.intValue  = Int32(anzahlChannels)
@@ -4139,7 +4157,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       }
       
       // Messung starten
-      if (sender.state == 1)
+      if (sender.state.rawValue == 1)
       {
          self.datagraph.DatenArray.removeAll()
          self.datagraph.wertesammlungarray.removeAll()
@@ -4176,7 +4194,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          }
          setSettings()
          // Sichern auf SD?
-         var save_SD = save_SD_check?.state
+         var save_SD = save_SD_check?.state.rawValue
          if (save_SD == 0)
          {
             var SD_antwort = dialogAlertMult(message: "Sicherung auf MMC", information: "Messungen auf MMC schreiben", buttonOK: "Sicher", buttonCancel: "Nein")
@@ -4184,7 +4202,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             if (SD_antwort == 1000) // JA
             {
                save_SD = 1
-               save_SD_check?.state = 1
+               save_SD_check?.state = convertToNSControlStateValue(1)
             }
          }
 
@@ -4302,7 +4320,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          for cnt in 0..<32 
          {    // Add 32 tab stops, at desired intervals...
-            paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: [:]))
+            paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: convertToNSTextTabOptionKeyDictionary([:])))
          }               
          //print("tabstops: \(paragraphStyle.tabStops)")
 
@@ -4311,7 +4329,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          let attrdatatext = NSMutableAttributedString(string: tempstring)
          let datatextRange = NSMakeRange(0, tempstring.characters.count)
-         attrdatatext.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: datatextRange)
+         attrdatatext.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: datatextRange)
          inputDataFeld.textStorage?.append(attrdatatext)
 
          
@@ -4340,7 +4358,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             self.datagraph.setMaxY(maxY: 160)
             self.datagraph.setDisplayRect()
             
-            self.usb_read_cont = (self.cont_read_check.state == 1) // cont_Read wird bei aktiviertem check eingeschaltet
+            self.usb_read_cont = (self.cont_read_check.state.rawValue == 1) // cont_Read wird bei aktiviertem check eingeschaltet
             
             self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
             //Do something
@@ -4499,7 +4517,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       startblock = 1
       teensy.write_byteArray[BLOCKOFFSETLO_BYTE] = UInt8(startblock & 0x00FF) // Startblock
       teensy.write_byteArray[BLOCKOFFSETHI_BYTE] = UInt8((startblock & 0xFF00)>>8)
-      cont_read_check.state = 1
+      cont_read_check.state = convertToNSControlStateValue(1)
       self.usb_read_cont = true
       //print("\nreportcheck_WL: teensy.write_byteArray nach: \(teensy.write_byteArray)")
       
@@ -4638,7 +4656,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let diff =  (dauer1.timeIntervalSince(dateA))*1000
       print("dauer report_start_write_USB: \(diff)")
       
-      usb_write_cont = (cont_write_check.state == 1)
+      usb_write_cont = (cont_write_check.state.rawValue == 1)
       
       //println("report_start_write_USB senderfolg: \(senderfolg)")
       
@@ -4648,17 +4666,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var timer : Timer? = nil
          timer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(DataViewController.cont_write_USB(_:)), userInfo: nil, repeats: true)
          // http://stackoverflow.com/questions/38031137/how-to-program-a-delay-in-swift-3
-         RunLoop.current.add(timer!, forMode: .commonModes)
+         RunLoop.current.add(timer!, forMode: RunLoop.Mode.common)
          
       }
       
    }
    
-   func cont_write_USB(_ timer: Timer)
+   @objc func cont_write_USB(_ timer: Timer)
    {
       print("*** \tcont_write usb: \(usb_write_cont)")
       // if (usb_write_cont)
-      if (cont_write_check.state == 1)
+      if (cont_write_check.state.rawValue == 1)
       {
          
          //NSBeep()
@@ -4698,7 +4716,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBAction func Teensy_setState(_ sender: NSButton)
    {
       return
-      if (sender.state > 0)
+      if (sender.state.rawValue > 0)
       {
          sender.title = "Teensy ON"
          teensycode |= (1<<7)
@@ -4824,7 +4842,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             teensy.write_byteArray[0] = UInt8(READ_START)
             
             // Sichern auf SD
-            if (save_SD_check?.state == 1)
+            //let status:NSControl.StateValue = save_SD_check.state
+            if (save_SD_check.state.rawValue  == 1)
+            //if (convertFromNSControlStateValue(status ) == 1)   
             {
             teensy.write_byteArray[1] = UInt8(SAVE_SD_RUN)
             //teensy.write_byteArray[1] |= (1<<SAVE_SD_RUN_BIT)
@@ -4884,7 +4904,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                self.datagraph.setMaxY(maxY: 160)
                self.datagraph.setDisplayRect()
  */              
-               self.usb_read_cont = (self.cont_read_check.state == 1) // cont_Read wird bei aktiviertem check eingeschaltet
+               self.usb_read_cont = (self.cont_read_check.state.rawValue == 1) // cont_Read wird bei aktiviertem check eingeschaltet
                
                //self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
                
@@ -5033,7 +5053,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBAction func ExitNow(_ sender: AnyObject)
    {
       NSLog("ExitNow");
-      NSApplication.shared().terminate(self)
+      NSApplication.shared.terminate(self)
    }
    
    
@@ -5041,7 +5061,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    @IBAction func reportSaveMessung(sender: AnyObject)
    {
       // https://eclecticlight.co/2016/12/23/more-fun-scripting-with-swift-and-xcode-alerts-and-file-save/
-      var fileContentToWrite:String = (inputDataFeld.string)!
+      var fileContentToWrite:String = (inputDataFeld.string)
       if (fileContentToWrite.characters.count == 0)
       {
          fileContentToWrite = "empty file"
@@ -5058,7 +5078,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       FS.directoryURL = messungURL
       //which should also allow “txt”
       FS.begin { result in
-         if result == NSFileHandlingPanelOKButton {
+         if result.rawValue == NSFileHandlingPanelOKButton {
             guard let url = FS.url else { return }
             do {
                try fileContentToWrite.write(to: url, atomically: false, encoding: String.Encoding.utf8)
@@ -5568,7 +5588,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          self.dataScroller.contentView.bounds.origin.x = 0
          lastscrollposition = 0
          self.datagraph.augmentMaxX(maxX:1000)
-         print("seite anfuegen \(lastx) new width:  \(dataScroller.documentView?.frame.size.width)")
+         print("seite anfuegen \(lastx) new width:  \(String(describing: dataScroller.documentView?.frame.size.width))")
       }
 
       
@@ -5704,7 +5724,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          for cnt in 0..<32 
          {    // Add 32 tab stops, at desired intervals...
-            paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: [:]))
+            paragraphStyle.tabStops.append(NSTextTab(textAlignment: .right, location: (CGFloat(cnt) * tabInterval), options: convertToNSTextTabOptionKeyDictionary([:])))
          }               
          //print("tabstops: \(paragraphStyle.tabStops)")
          
@@ -5713,7 +5733,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          let attrdatatext = NSMutableAttributedString(string: tempstring)
          let datatextRange = NSMakeRange(0, tempstring.characters.count)
-         attrdatatext.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: datatextRange)
+         attrdatatext.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: datatextRange)
          inputDataFeld.textStorage?.append(attrdatatext)
 
     //     inputDataFeld.textStorage?.append(NSAttributedString(string:(tempinputDataFeldstring + "\n")))
@@ -5776,7 +5796,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       let messungURL = NSURL.fileURL(withPath: messungPfad.expandingTildeInPath , isDirectory: true)
       FS.directoryURL = messungURL
       // http://stackoverflow.com/questions/41349781/nsopenpanel-nssavepanel-crashes-in-swift-3
-      if (FS.runModal() == NSModalResponseOK)
+      if (FS.runModal() == NSApplication.ModalResponse.OK)
       {
          let result = FS.url // Pathname of the file
          
@@ -5964,10 +5984,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       }
       let objekt = self.swiftArray[row]
       
-      return objekt[(tableColumn?.identifier)!]
+      let ident = tableColumn?.identifier.rawValue
+      
+      let zeile = row
+      let inhalt = objekt[ident!]
+      
+  //    let wert = self.swiftArray, objectValueFor: tableColumn, zeile
+  //    return objekt[(convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier))!]
+      return objekt[ident!]
       
       //print("objectValueFor row:\(row) ident: \(tableColumn?.identifier)")
-      if (tableColumn?.identifier == "on")
+      if (ident == "on")
       {
          //let temp = self.taskArray.object(at: row) as! NSDictionary
          //let swifttemp = swiftArray[row] as [String:AnyObject]
@@ -5978,19 +6005,20 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //return (self.taskArray.object(at: row)as! NSDictionary)["task"]
          return swiftArray[row]["on"]
       }
-      else if (tableColumn?.identifier == "description")
+     // else if (convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier) == "description")
+     else if (ident == "description")
       {
          
          //  return (self.taskArray.object(at: row)as! NSDictionary)["description"]
          return swiftArray[row]["description"]
       }
-      else if (tableColumn?.identifier == "bereich")
+      else if (ident == "bereich")
       {
          
          //return (self.taskArray.object(at: row)as! NSDictionary)["util"]
          return swiftArray[row]["bereich"]
       }
-      else if (tableColumn?.identifier == "A0")
+      else if (ident == "A0")
       {
          let wahlzelle = tableColumn?.dataCell(forRow: row) as? NSPopUpButtonCell
          let auswahl = wahlzelle?.indexOfSelectedItem
@@ -6017,7 +6045,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool
    {
       // OK
-      let listeident = tableView.identifier
+      let listeident = convertFromOptionalNSUserInterfaceItemIdentifier(tableView.identifier)
       if (listeident == "taskliste")
       {
          //print ("taskliste shouldSelectRow row: \(row) ")
@@ -6032,11 +6060,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    private func tableView(tableView: NSTableView, setObjectValue object: AnyObject?, forTableColumn tableColumn: NSTableColumn?, row: Int)
    {
-      let listeident = tableView.identifier
+      //let listeident = convertFromOptionalNSUserInterfaceItemIdentifier(tableView.identifier)
+      let listeident = tableColumn?.identifier.rawValue
+      
       if (listeident == "device")
       {
-         let ident = tableColumn?.identifier
-         self.swiftArray[row][ident!] = object as! String
+        let ident = tableColumn?.identifier.rawValue
+        // let ident = convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier ?? nil )
+
+         self.swiftArray[row][ident!] = (object as! String)
          //      (self.swiftArray[row] as! NSMutableDictionary).setObject(object!, forKey: (tableColumn?.identifier)! as NSCopying)
       }
    }
@@ -6045,7 +6077,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    
    func numberOfRowsInTableView(tableView: NSTableView) -> Int
    {
-      let listeident = tableView.identifier
+      let listeident = convertFromOptionalNSUserInterfaceItemIdentifier(tableView.identifier)
       print("numberOfRowsInTableView ident: \(String(describing: listeident))")
       if (listeident == "device")
       {
@@ -6286,24 +6318,25 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
    {
       
-      let ident = tableColumn?.identifier
+      //let ident = convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier)
+      let ident = tableColumn?.identifier.rawValue
       //print ("viewFor row: \(row) ident: \(ident)")
-      if tableColumn?.identifier == "imageIcon"
+      if ident == "imageIcon"
       {
-         let result = tableView.make(withIdentifier: "imageIcon", owner: self) as! NSTableCellView
+         let result = tableView.makeView(withIdentifier: convertToNSUserInterfaceItemIdentifier("imageIcon"), owner: self) as! NSTableCellView
          result.imageView?.image = NSImage(named:swiftArray[row]["imageIcon"]!)
          return result
       }
-      else if tableColumn?.identifier == "jobTitle"
+      else if ident == "jobTitle"
       {
-         let result:NSPopUpButton = tableView.make(withIdentifier: "jobTitle", owner: self) as! NSPopUpButton
+         let result:NSPopUpButton = tableView.makeView(withIdentifier: convertToNSUserInterfaceItemIdentifier("jobTitle"), owner: self) as! NSPopUpButton
          result.selectItem(withTitle: swiftArray[row]["jobTitle"]! )
          return result
       }
-      else if  tableColumn?.identifier == "on"
+      else if  ident == "on"
       {
-         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
-         let wert = swiftArray[row][(tableColumn?.identifier)!]
+         let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier(ident!), owner: self) as! NSTableCellView
+         let wert = swiftArray[row][ident!]
          //print("check value: \(wert)")
          let sub = result.subviews
          
@@ -6314,11 +6347,11 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          let knopf = element as! NSButton
          knopf.toolTip = "aktiv"
          knopf.tag = 1000 + row
-         let status = Int(knopf.state)
-         let sollstatus = (swiftArray[row][(tableColumn?.identifier)!]! )
-         let soll = Int(sollstatus)//.integerValue
+         let status = Int(Float(knopf.state.rawValue))
+         let sollstatus = swiftArray[row][ident!]
+         let soll = Int(sollstatus!)//.integerValue
          //knopf.state = 0
-         knopf.state = soll!
+         knopf.state = convertToNSControlStateValue(soll!)
  //        print("check tag: \(knopf.tag) status: \(status)")
          return result
          
@@ -6368,11 +6401,15 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          
       }
 */
-      else if  tableColumn?.identifier == "A" // SegmentedControl
+      else if  ident == "A" // SegmentedControl
       {
-         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
-         let wert = (swiftArray[row][(tableColumn?.identifier)!])
-    //     print("A value: \(wert)")
+         //let aa = tableColumn?.identifier
+         let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier(ident!), owner: self) as! NSTableCellView
+
+        // let result = tableView.makeView(withIdentifier:tableColumn?.identifier, owner: self) as! NSTableCellView
+         //let wert = (swiftArray[row][(convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier))!])
+         let wert = swiftArray[row][ident!]
+         //     print("A value: \(wert)")
          let sub = result.subviews
          
          let element = result.subviews[0]
@@ -6413,9 +6450,10 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          return result
          
       }
-          else if  tableColumn?.identifier == "bereich" // PopUpButton
+          else if  ident == "bereich" // PopUpButton
       {
-         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
+         //let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier((convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier ?? <#default value#>))!), owner: self) as! NSTableCellView
+         let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier(ident!), owner: self) as! NSTableCellView
          //print("bereich")
          let sub = result.subviews
          
@@ -6426,7 +6464,7 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          knopf.toolTip = "Bereich waehlen"
          //print("knopftag: \(knopftag)")
          //let result:NSPopUpButton = tableView.make(withIdentifier: "bereich", owner: self) as! NSPopUpButton
-         let titlestring = swiftArray[row][(tableColumn?.identifier)!]
+         let titlestring = swiftArray[row][ident!]
          let titles:[String] = titlestring!.components(separatedBy: "\t")
         // let titles:[String] = swiftArray[row][(tableColumn?.identifier)!]! as! Array
          
@@ -6446,20 +6484,22 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
 
       }
 
-      else if  tableColumn?.identifier == "scale" // PopUpButton
+      else if  ident == "scale" // PopUpButton
       {
-         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
+        // let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier((convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier))!), owner: self) as! NSTableCellView
+        let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier(ident!), owner: self) as! NSTableCellView
          //print("scale")
          return result
       }
 
-      else if  tableColumn?.identifier == "temperatur" // TextField
+      else if  ident == "temperatur" // TextField
       {
-         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
+        // let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier((convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier))!), owner: self) as! NSTableCellView
+         let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier(ident!), owner: self) as! NSTableCellView
          let element = result.subviews[0]
          //         print("check element A0: \(element)")
          let feld = element as! NSTextField
-         let wertstring = swiftArray[row][(tableColumn?.identifier)!]
+         let wertstring = swiftArray[row][ident!]
          feld.stringValue = wertstring!
          //print("temperatur")
          
@@ -6467,13 +6507,14 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
          return result
       }
 
-      else if  tableColumn?.identifier == "batterie" // TextField
+      else if  ident == "batterie" // TextField
       {
-         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
+         //let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier((convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier ?? <#default value#>))!), owner: self) as! NSTableCellView
+         let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier(ident!), owner: self) as! NSTableCellView
          let element = result.subviews[0]
          //         print("check element A0: \(element)")
          let feld = element as! NSTextField
-         let wertstring = swiftArray[row][(tableColumn?.identifier)!]
+         let wertstring = swiftArray[row][ident!]
          feld.stringValue = wertstring!
          //print("batterie")
          return result
@@ -6482,9 +6523,9 @@ extension DataViewController:NSTableViewDataSource, NSTableViewDelegate
       else
       {
          
-         let result = tableView.make(withIdentifier:(tableColumn?.identifier)!, owner: self) as! NSTableCellView
-         
-         result.textField?.stringValue = swiftArray[row][(tableColumn?.identifier)!]!// as! String
+         //let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier((convertFromNSUserInterfaceItemIdentifier(tableColumn?.identifier ?? <#default value#>))!), owner: self) as! NSTableCellView
+         let result = tableView.makeView(withIdentifier:convertToNSUserInterfaceItemIdentifier(ident!), owner: self) as! NSTableCellView
+         result.textField?.stringValue = swiftArray[row][ident!]!// as! String
          return result
          
       }
@@ -6514,4 +6555,41 @@ extension DataViewController
     //  self.resetButtonClicked(self)
    }
    
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSUserInterfaceItemIdentifier(_ input: String?) -> NSUserInterfaceItemIdentifier? {
+	guard let input = input else { return nil }
+	return NSUserInterfaceItemIdentifier(rawValue: input)
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToNSControlStateValue(_ input: Int) -> NSControl.StateValue {
+	return NSControl.StateValue(rawValue: input)
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToNSTextTabOptionKeyDictionary(_ input: [String: Any]) -> [NSTextTab.OptionKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSTextTab.OptionKey(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSControlStateValue(_ input: NSControl.StateValue) -> Int {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSUserInterfaceItemIdentifier(_ input: NSUserInterfaceItemIdentifier) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromOptionalNSUserInterfaceItemIdentifier(_ input: NSUserInterfaceItemIdentifier?) -> String? {
+	guard let input = input else { return nil }
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToNSUserInterfaceItemIdentifier(_ input: String) -> NSUserInterfaceItemIdentifier {
+	return NSUserInterfaceItemIdentifier(rawValue: input)
 }

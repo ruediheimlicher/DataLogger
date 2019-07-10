@@ -58,7 +58,7 @@ open class usb_teensy: NSObject
    
    open func USBOpen()->Int32
    {
-      var r:Int32 = 0
+     // var r:Int32 = 0
       
       let    out = rawhid_open(1, 0x16C0, 0x0480, 0xFFAB, 0x0200)
       //print("func usb_teensy.USBOpen out: \(out)")
@@ -87,14 +87,14 @@ open class usb_teensy: NSObject
           */
          // https://codedump.io/share/77b7p4vSpwaJ/1/converting-from-const-char-to-swift-string
          let manu   = get_manu()
-         let l = strlen(manu)
-         let str1 = String(cString: get_manu())
+ //        let l = strlen(manu)
+ //        let str1 = String(cString: get_manu())
          
-         let str2 = String(cString: manu!)
+ //        let str2 = String(cString: manu!)
          //print ("manu l: \(l) \(manu!) str2: \(str2)")
          if (strlen(manu) > 1)
          {
-            let manustr:String = String(cString: manu!)
+//            let manustr:String = String(cString: manu!)
             manustring = String(cString: manu!)
          }
          else
@@ -125,7 +125,7 @@ open class usb_teensy: NSObject
       if (strlen(prod) > 1)
       {
          //fprintf(stderr,"prod: %s\n",pr#>);
-         let prodstr = String(cString: prod!)
+ //        let prodstr = String(cString: prod!)
          prodstring = String(cString: prod!)
 
       }
@@ -134,7 +134,7 @@ open class usb_teensy: NSObject
          prodstring = String(cString: UnsafePointer<CChar>(prod!))
       }
       
-      var USBDatenDic = ["prod": prod, "manu":manu]
+//      var USBDatenDic = ["prod": prod, "manu":manu]
       
       }
       return out;
@@ -190,7 +190,7 @@ open class usb_teensy: NSObject
    }
    
    
-   open func cont_read_USB(_ timer: Timer)
+   @objc open func cont_read_USB(_ timer: Timer)
    {
       //print("*cont_read_USB read_OK: \(read_OK)")
       if (read_OK).boolValue
