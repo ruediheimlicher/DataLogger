@@ -92,20 +92,12 @@ open class usb_teensy: NSObject
          
  //        let str2 = String(cString: manu!)
          //print ("manu l: \(l) \(manu!) str2: \(str2)")
-         if (strlen(manu) > 1)
-         {
-//            let manustr:String = String(cString: manu!)
-            manustring = String(cString: manu!)
-         }
-         else
-         {
-            manustring = "-"
-         }
-         
+           
          
          
          /*
           let prod = get_prod();
+          
           //fprintf(stderr,"prod: %s\n",prod);
           let prodstr = UnsafePointer<CUnsignedChar>(prod)
           if (prodstr == nil)
@@ -122,17 +114,7 @@ open class usb_teensy: NSObject
       
       
       let prod = get_prod();
-      if (strlen(prod) > 1)
-      {
-         //fprintf(stderr,"prod: %s\n",pr#>);
- //        let prodstr = String(cString: prod!)
-         prodstring = String(cString: prod!)
 
-      }
-      else
-      {
-         prodstring = String(cString: UnsafePointer<CChar>(prod!))
-      }
       
 //      var USBDatenDic = ["prod": prod, "manu":manu]
       

@@ -1207,7 +1207,9 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 //      print("")
       
   //    var werteArray = [[Float]](repeating: [0.0,0.0,1.0,1.0], count: 16 ) // Data mit wert, deviceID, sortenfaktor anzeigefaktor
-
+      var adc13 = 0
+      
+      
       switch (code)
       {
 //MARK: READ_START      
@@ -2263,7 +2265,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let oldstatus = Int(swiftArray[deviceindex]["on"]!) // bisheriger status, nur update wenn changed
             if (wl_callback_status & (1<<devicecode) > 0)
             {
-               //print("device \(String(describing: device)) ist da")
+               print("device \(String(describing: device)) ist da")
                if (oldstatus == 0)
                {
                   swiftArray[deviceindex]["on"] = "1"
@@ -2346,7 +2348,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                {
                   break;
                }
-            //print("\tMESSUNG_DATA device 0 aktiv")
+            print("\tMESSUNG_DATA device 0 aktiv")
             print("MESSUNG_DATA TEENSY_CODE: ")
             //for index in 16...24
             for index in 0..<8 // data
@@ -2366,6 +2368,8 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                print("\(teensy.read_byteArray[index])\t", terminator: "")
             }
             print("")
+            
+            print("Batterie: Byite 7: \(teensy.read_byteArray[USB_BATT_BYTE])")
             let rawdatazeile:[UInt8] = teensy.read_byteArray
             rawdataarray.append(rawdatazeile)
             let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO_BYTE])
@@ -2393,7 +2397,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                inputDataFeldstring = messungcounter.stringValue  + "\t" + String(tagsekunde()-MessungStartzeit) + "\t" 
                
             }
-            let teensybatterie = Int32(teensy.read_byteArray[USB_BATT_BYTE]) // halbe Batteriespannung *100
+            let teensybatterie = Int32(teensy.read_byteArray[USB_BATT_BYTE]) //  Byte 7 halbe Batteriespannung *100
             var teensybatteriefloat = Float(teensybatterie) * 2 / 100
             teensybatt.stringValue = NSString(format:"%.2f", teensybatteriefloat) as String
             print("teensybatterie: \(teensybatterie) teensybatteriefloat: \(teensybatteriefloat)")      
@@ -2484,7 +2488,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      switch deviceID
                      {
                      case 0: // teensy
-                        //print("switch  teensy deviceID : \(deviceID) kanal: \(kanal)")
+                        print("switch  teensy deviceID : \(deviceID) kanal: \(kanal)")
                         break
                      case 1:
                         //let ordinateMajorTeileY = dataAbszisse_Temperatur.AbszisseVorgaben.MajorTeileY
@@ -2611,7 +2615,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
  //              print("wl_callback_status: \(wl_callback_status) devicenummer: \(devicenummer)  devicestatus: \(devicestatus)")
                
-               //print("device \(String(describing: device)) ist da")
+               print("device \(String(describing: device)) ist da")
                //               swiftArray[task]["on"] = "1"
                inputDataFeldstring += ( String(devicenummer) + ":" + "\t")
                
@@ -2626,7 +2630,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                //var messungfloatarray:[[Float]] = Array(repeating:Array(repeating:0,count:10),count:6)
                var devicearray:[Float] = Array(repeating:0.0,count:16)
                
-               let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0 + DATA_START_BYTE])
+               let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0 + DATA_START_BYTE]) // ANALOG0: 3 DATA_START_BYTE: 8
                let analog0hi:Int32 =  Int32(teensy.read_byteArray[ANALOG0+1 + DATA_START_BYTE])
                let analog0 = analog0lo | (analog0hi<<8)
                //print ("analog0lo: \(analog0lo) analog0hi: \(analog0hi)  analog0: \(analog0)");
@@ -2754,7 +2758,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             {
                devicestatus |= (1<<UInt8(devicenummer))
                let device = swiftArray[devicenummer]
-               //print("device \(String(describing: device)) ist da")
+               print("device \(String(describing: device)) ist da")
                //               swiftArray[task]["on"] = "1"
                inputDataFeldstring += ( String(devicenummer) + ":" + "\t")
  //              print("wl_callback_status: \(wl_callback_status) devicenummer: \(devicenummer)  devicestatus: \(devicestatus)")
@@ -2788,7 +2792,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                analog1float = Float(analog1) // * TEENSYVREF / 1024   // Kalibrierung teensy2: VREF ist 2.49 anstatt 2.56
                //print ("task 2 analog1float: \(analog1float)");
                
-               analog1float = floorf(fabs(analog1float)*2.f) / 2.f
+               analog1float = floorf(abs(analog1float)*2.f) / 2.f
                //print ("analog1float floor: \(analog1float)");
                messungfloatarray[devicenummer][DIAGRAMMDATA_OFFSET + 1] = analog1float
                
@@ -4177,20 +4181,35 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          inputDataFeld.string = inputDataFeldstring
          //print("start_messung start ")
          
-         teensy.close_hid()
-         
-         let erfolg = UInt8(teensy.USBOpen())
-         if (erfolg > 0)
+         //teensy.close_hid()
+         if (usbstatus == 0 ) // not yet open
          {
+            
+            print("USB-Device ist noch nicht da")
+            let warnung = NSAlert.init()
+            warnung.messageText = "USB"
+            warnung.messageText = "USB-Device ist schon da"
+            warnung.addButton(withTitle: "OK")
+            warnung.runModal()
+            
+            
+            
+            let erfolg = UInt8(teensy.USBOpen())
+            
+            if (erfolg > 0)
+            {
             usbstatus = erfolg
             //print("start_messung start OK")
+            }
+            else
+            {
+               return
+            }
          }
          else
          {
             
-            print("start_messung error ")
-            
-            return;
+           
          }
          setSettings()
          // Sichern auf SD?
@@ -4328,7 +4347,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 //         inputDataFeld.string = "Messung tagsekunde: \(zeit)\n"
          
          let attrdatatext = NSMutableAttributedString(string: tempstring)
-         let datatextRange = NSMakeRange(0, tempstring.characters.count)
+         let datatextRange = NSMakeRange(0, tempstring.count)
          attrdatatext.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: datatextRange)
          inputDataFeld.textStorage?.append(attrdatatext)
 
@@ -5062,7 +5081,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       // https://eclecticlight.co/2016/12/23/more-fun-scripting-with-swift-and-xcode-alerts-and-file-save/
       var fileContentToWrite:String = (inputDataFeld.string)
-      if (fileContentToWrite.characters.count == 0)
+      if (fileContentToWrite.count == 0)
       {
          fileContentToWrite = "empty file"
       }
@@ -5732,7 +5751,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          //         inputDataFeld.string = "Messung tagsekunde: \(zeit)\n"
          
          let attrdatatext = NSMutableAttributedString(string: tempstring)
-         let datatextRange = NSMakeRange(0, tempstring.characters.count)
+         let datatextRange = NSMakeRange(0, tempstring.count)
          attrdatatext.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: datatextRange)
          inputDataFeld.textStorage?.append(attrdatatext)
 
