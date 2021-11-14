@@ -4195,7 +4195,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          var analogfloat = Float(Int32(data[LOGGERDATA_OFFSET + 2 * delta]) | (Int32(data[LOGGERDATA_OFFSET + 2 * delta + 1]))<<8)
          
          //print ("analog0lo: \(analog0lo) analog0hi: \(analog0hi)  analog0: \(analog0)");
-         print ("kanal \(delta)  analogfloat: \(analogfloat) \t\kanalstatus: ((kanalstatus & (1<<UInt(delta)) > 0))");
+         print ("kanal \(delta)  analogfloat: \(analogfloat) \t\tkanalstatus: ((kanalstatus & (1<<UInt(delta)) > 0))");
          messungfloatzeile.append(analogfloat)
          if (kanalstatus & (1<<UInt(delta)) > 0)
          {
