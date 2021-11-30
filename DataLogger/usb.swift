@@ -149,24 +149,26 @@ open class usb_teensy: NSObject
    {
       read_OK = ObjCBool(cont)
       let timerDic:NSMutableDictionary  = ["count": 0]
+      var result = 0
       
-      let result = rawhid_recv(0, &read_byteArray, Int32(BUFFER_SIZE), 50);
+  //    let result = rawhid_recv(0, &read_byteArray, Int32(BUFFER_SIZE), 50);
       
-      print("\n*report_start_read_USB result: \(result) cont: \(cont)")
+ //     print("\n*report_start_read_USB result: \(result) cont: \(cont)")
       //print("usb.swift start_read_byteArray start: *\n\(read_byteArray)*")
       
       let nc = NotificationCenter.default
+      /*
       nc.post(name:Notification.Name(rawValue:"newdata"),
               object: nil,
               userInfo: ["message":"neue Daten", "data":read_byteArray])
-
+       */
       // var somethingToPass = "It worked in teensy_send_USB"
       let xcont = cont;
       
       if (xcont == true)
       {
          var timer : Timer? = nil
-         timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(usb_teensy.cont_read_USB(_:)), userInfo: timerDic, repeats: true)
+         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(usb_teensy.cont_read_USB(_:)), userInfo: timerDic, repeats: true)
       }
       return Int(result) //
    }
@@ -174,7 +176,7 @@ open class usb_teensy: NSObject
    
    @objc open func cont_read_USB(_ timer: Timer)
    {
-      //print("*cont_read_USB read_OK: \(read_OK)")
+      print("*cont_read_USB read_OK: \(read_OK)")
       if (read_OK).boolValue
       {
          //var tempbyteArray = [UInt8](count: 32, repeatedValue: 0x00)
