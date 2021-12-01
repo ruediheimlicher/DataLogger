@@ -945,7 +945,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
       tempDic["bereich"] = "0-8V\t0-16V"
       tempDic["bereichwahl"] = "1"
       tempDic["temperatur"] = "20.1°"
-      tempDic["batterie"] = "4.20V"
+      tempDic["batterie"] = "1.0V"
       tempDic["stellen"] = "1"
       tempDic["majorteiley"] = "8"
       tempDic["minorteiley"] = "2"
@@ -1279,7 +1279,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let datacode = (Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0xF0) >> 4   // Code fuer Datenbereich
          devicenummer &= 0x0F
          let wl_callback_status = UInt8(teensy.read_byteArray[2])
-         print("wl_callback_status: \(wl_callback_status)")
+         //print("wl_callback_status: \(wl_callback_status)")
          if (messungcounter.intValue != counter)
          {
             
@@ -1296,7 +1296,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          if checkDeviceStatus(callback_status: wl_callback_status)
          {
-            print("wl_callback_status: TaskListe.reloadData")
+            //print("wl_callback_status: TaskListe.reloadData")
             TaskListe.reloadData()
             reorderAbszisse()
 
@@ -1304,7 +1304,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          let teensybatterie = Int32(teensy.read_byteArray[USB_BATT_BYTE]) // halbe Batteriespannung *100
          var teensybatteriefloat = Float(teensybatterie) * 2 / 100
          teensybatt.stringValue = NSString(format:"%.2f", teensybatteriefloat) as String
-         print("teensybatterie: \(teensybatterie) teensybatteriefloat: \(teensybatteriefloat)")      
+         //print("teensybatterie: \(teensybatterie) teensybatteriefloat: \(teensybatteriefloat)")      
          swiftArray[devicenummer]["batterie"] = String(format:"%2.02fV", teensybatteriefloat)
          TaskListe.reloadData()
          
@@ -1526,7 +1526,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             {
                let s = String(format:"%2.02fV", startdevicebatteriespannung/100)
                swiftArray[zeilenindex]["batterie"] = String(format:"%2.02fV", startdevicebatteriespannung/100)
-            print("startdevicebatteriespannung: \(startdevicebatteriespannung)")
+               print("check_WL startdevicebatteriespannung: \(startdevicebatteriespannung)")
             }
          }
          
@@ -1576,20 +1576,22 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          if (readerr == 0) // alles OK
          {
             //print("newLoggerDataAktion LOGGER_START: OK")
-            print("newLoggerDataAktion LOGGER_START  \nraw data:\n\(teensy.read_byteArray)\n")
+            //print("newLoggerDataAktion LOGGER_START  \nraw data:\n\(teensy.read_byteArray)\n")
             
-            print("LOGGER_START CODE read_byteArray")
+           // print("LOGGER_START CODE read_byteArray")
             
             download_sd_block_progress.intValue = Int32(blockcount)
 
-            
+            /*
             for index in 0..<DATA_START_BYTE
             {
                print("\(teensy.read_byteArray[index])\t", terminator: "")
             }
             
             print ("")
+            */
             
+            /*
             print("LOGGER_START DATA read_byteArray")
             
             for index in DATA_START_BYTE..<BUFFER_SIZE
@@ -1598,7 +1600,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             
             print ("")
-
+*/
             
             print("Header: ") // Daten oberhalb Block, nur fuer Kontrolle beim Download
             for index in (PACKET_SIZE)..<BUFFER_SIZE
@@ -2122,13 +2124,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
 
          blockcounter.intValue = blockposition
          read_sd_anzahl.intValue = blockposition
-         
+         /*
          print("messungDataArray: ") // Array der Daten von readbytearray von DATA_START_BYTE an
          for line in messungDataArray
          {
             print("\(line)")
          }
-
+*/
          /*
          print("rawdataarray") 
 
@@ -2189,7 +2191,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          {
             break
          }
-         print("\n*********************\ncode ist MESSUNG_DATA \t\t\t +++++++++++++++++++++++ ")
+         //print("\n*********************\ncode ist MESSUNG_DATA \t\t\t +++++++++++++++++++++++ ")
          //        print("teensy.read_byteArray")
          let messungnummer = UInt16(teensy.read_byteArray[DATACOUNT_LO_BYTE]) | (UInt16(teensy.read_byteArray[DATACOUNT_HI_BYTE])<<8)
          //print("\(teensy.read_byteArray)\tmessungnummer: \(messungnummer)")
@@ -2197,7 +2199,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          var devicenummer:Int = Int(((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0x0F) // Device, 1-4
          
-         print("messungnummer: \(messungnummer)\tdevicenummer: \(devicenummer)")
+         //print("messungnummer: \(messungnummer)\tdevicenummer: \(devicenummer)")
          //print("messungnummer: \(messungnummer)\ndevicenummer: \(devicenummer)\(teensy.read_byteArray)\n")
 
          //var rawdatazeile:[Int] = Array(repeating:0,count:32) // raw data vom teensy, mit Header
@@ -2214,14 +2216,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
           }
           print("")
  */
-         print(U8ArrayToIntString(arr:teensy.read_byteArray))
- 
+   //      print(U8ArrayToIntString(arr:teensy.read_byteArray))
+ /*
          for index in 0..<teensy.read_byteArray.count
          {
           print("\(teensy.read_byteArray[index])\t", terminator: "")
          }
          
          print ("")
+ */
          rawdataarray.append(rawdatazeile)
          
          var counterLO:Int32 = 0;   //Int32(teensy.read_byteArray[DATACOUNT_LO_BYTE])
@@ -2233,7 +2236,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO_BYTE])
             counterHI = Int32(teensy.read_byteArray[DATACOUNT_HI_BYTE])
             counter = (counterLO ) | ((counterHI )<<8)
-            print("teensy: counter: \(counter)")
+            //print("teensy: counter: \(counter)")
          }
          
          let datacode = (Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0xF0) >> 4   // Code fuer Datenbereich
@@ -2246,7 +2249,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          let wl_callback_status = UInt8(teensy.read_byteArray[2])
-         print ("wl_callback_status B: \(wl_callback_status)")
+         //print ("wl_callback_status: \(wl_callback_status)")
    //      let devicecount = (teensy.read_byteArray[DEVICECOUNT_BYTE])
          
          // status der  device checken
@@ -2264,10 +2267,10 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let oldstatus = Int(swiftArray[deviceindex]["on"]!) // bisheriger status, nur update wenn changed
             if (wl_callback_status & (1<<devicecode) > 0)
             {
-               print("device \(String(describing: device)) ist da")
+               //print("device \(String(describing: device)) ist da")
                if (oldstatus == 0)
                {
-                  print("neu da")
+                  //print("neu da")
                   swiftArray[deviceindex]["on"] = "1"
                   changestatus = true
                }
@@ -2277,7 +2280,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                print("device \(String(describing: device)) ist nicht mehr da")
                if (oldstatus == 1)
                {
-                  print("neu weg")
+                  //print("neu weg")
                   swiftArray[deviceindex]["on"] = "0"
                   changestatus = true
                } 
@@ -2298,7 +2301,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          
          
          let blockposition = (Int32(teensy.read_byteArray[BLOCKOFFSETLO_BYTE]) & 0x00FF) | ((Int32(teensy.read_byteArray[BLOCKOFFSETHI_BYTE])  & 0x00FF)<<8)
-         print("messung data device: \(devicenummer) blockposition: \(blockposition) blockcounter: \(blockcounter.intValue) blockcounter set")
+         //print("messung data device: \(devicenummer) blockposition: \(blockposition) blockcounter: \(blockcounter.intValue) blockcounter set")
 
          blockcounter.intValue = blockposition
          
@@ -2341,17 +2344,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // wl_callback_status , devicenummer
          
          //print("wl_callback_status: \(wl_callback_status) devicenummer: \(devicenummer) devicestatus: \(devicestatus)")
-         print ("MESSUNG_DATA devicenummer: \(devicenummer)")
+         //print ("MESSUNG_DATA devicenummer: \(devicenummer)")
          let devicenummerstring = String(devicenummer)
          switch (devicenummer)
          {
          case 0:     
-            print("\tMESSUNG_DATA device 0 aktiv masterstatus; \(masterstatus)")
-            print("Batterie: Byte 7: \(teensy.read_byteArray[USB_BATT_BYTE])")
+            //print("\tMESSUNG_DATA device 0 aktiv masterstatus; \(masterstatus)")
+            //print("Batterie: Byte 7: \(teensy.read_byteArray[USB_BATT_BYTE])")
             let teensybatterie = Int32(teensy.read_byteArray[USB_BATT_BYTE]) //  Byte 7 halbe Batteriespannung *100
             let teensybatteriefloat = Float(teensybatterie) * 2 / 100
             teensybatt.stringValue = NSString(format:"%.2f", teensybatteriefloat) as String
-            print("teensybatterie: \(teensybatterie) teensybatteriefloat: \(teensybatteriefloat)")      
+            //print("teensybatterie: \(teensybatterie) teensybatteriefloat: \(teensybatteriefloat)")      
             swiftArray[devicenummer]["batterie"] =  String(format:"%2.02fV", teensybatteriefloat)
 
             
@@ -2363,11 +2366,13 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //print("\tMESSUNG_DATA device 0 aktiv")
             print("MESSUNG_DATA TEENSY_CODE: ")
             //for index in 16...24
+            
             for index in 0..<8 // data
             {
                print("\(teensy.read_byteArray[index])\t", terminator: "")
             }
             print("")
+ 
             print("MESSUNG_DATA TEENSY_DATA: ")
             //for index in 16...24
             for index in 8..<BUFFER_SIZE // data
@@ -2381,7 +2386,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             }
             print("")
             
-            print("Batterie: Byte 7: \(teensy.read_byteArray[USB_BATT_BYTE])")
+            //print("Batterie: Byte 7: \(teensy.read_byteArray[USB_BATT_BYTE])")
             let rawdatazeile:[UInt8] = teensy.read_byteArray
             rawdataarray.append(rawdatazeile)
             let counterLO = Int32(teensy.read_byteArray[DATACOUNT_LO_BYTE])
@@ -2392,15 +2397,15 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             let datacode = (Int32((teensy.read_byteArray[DEVICE + DATA_START_BYTE])) & 0xF0) >> 4   // Code fuer Datenbereich
             devicenummer &= 0x0F
             let wl_callback_status = UInt8(teensy.read_byteArray[2])
-            print("wl_callback_status: \(wl_callback_status)")
+            //print("wl_callback_status: \(wl_callback_status)")
             devicestatus = 0x01 // teensy ist immer aktiv. Sonst wird inputDatafeld nicht geschrieben (devicestatus == callback_status)
 
             if (messungcounter.intValue != counter)
             {
                
-               print("\n++++++++++++++++++++++++ ")
-               print("\t\t\t neue Messung vom Teensy Nr: \(counter)")// \t Block: \(blockposition)")
-               print("++++++++++++++++++++++++ \n")
+              // print("\n++++++++++++++++++++++++ ")
+               print("\t\t neue Messung vom Teensy Nr: \(counter)")// \t Block: \(blockposition)")
+               //print("++++++++++++++++++++++++ \n")
                
                devicestatus = 0x01 // teensy ist immer aktiv. Sonst wird inputDatafeld nicht geschrieben (devicestatus == callback_status)
                // String beginnen
@@ -2409,13 +2414,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                inputDataFeldstring = messungcounter.stringValue  + "\t" + String(tagsekunde()-MessungStartzeit) + "\t" 
                
             }
-            /*
-            let teensybatterie = Int32(teensy.read_byteArray[USB_BATT_BYTE]) //  Byte 7 halbe Batteriespannung *100
-            let teensybatteriefloat = Float(teensybatterie) * 2 / 100
-            teensybatt.stringValue = NSString(format:"%.2f", teensybatteriefloat) as String
-            print("teensybatterie: \(teensybatterie) teensybatteriefloat: \(teensybatteriefloat)")      
-            swiftArray[devicenummer]["batterie"] =  String(format:"%2.02fV", teensybatteriefloat)
-            */
+   
  // Part 2
             
             let analog0LO = UInt16(teensy.read_byteArray[ANALOG0  + DATA_START_BYTE])
@@ -2428,7 +2427,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             //        print(" teensy0: \(teensy0) ")
             Vertikalbalken.setLevel(Int32(teensy0float*0xFF/1023))
             //print(" analog0: \(analog0LO) \(analog0HI) teensy0: \(teensy0) teensy0_norm: \(teensy0_norm)")
-            print("task 0 teensy0_norm: \(teensy0_norm)")
+           // print("task 0 teensy0_norm: \(teensy0_norm)")
             
             var temparray:[UInt8] = []
             for pos in DATA_START_BYTE..<BUFFER_SIZE
@@ -2502,7 +2501,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                      switch deviceID
                      {
                      case 0: // teensy
-                        print("switch  teensy deviceID : \(deviceID) kanal: \(kanal)")
+                       // print("switch  teensy deviceID : \(deviceID) kanal: \(kanal)")
                         
                         break
                      case 1:
@@ -2593,16 +2592,16 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
          case 1:
             // MARK: MESSUNG_DATA Device 1
-            print("\nMESSUNG_DATA device 1 aktiv")
+            //print("\nMESSUNG_DATA device 1 aktiv")
             //print ("")
-  
+  /*
             print("task 1 CODE read_byteArray\tcount: \(counter)\t")
             
             for index in 0..<DATA_START_BYTE
             {
                print("\(teensy.read_byteArray[index])\t")
             }
-
+*/
             
             /*
             print("\ntask 1 DATA read_byteArray\tcount: \(counter) *\t", terminator: "\n")
@@ -2631,19 +2630,19 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
  //              print("wl_callback_status: \(wl_callback_status) devicenummer: \(devicenummer)  devicestatus: \(devicestatus)")
                
-               print("device \(String(describing: device)) ist da")
+    //           print("device \(String(describing: device)) ist da")
                //               swiftArray[task]["on"] = "1"
                inputDataFeldstring += ( String(devicenummer) + ":" + "\t")
                
                let devicebatteriespannung = Float(teensy.read_byteArray[USB_BATT_BYTE])  * 2
               
                
-               print ("switch task: \(devicenummer)\t devicebatteriespannung: \(devicebatteriespannung/100)")
+       //        print ("switch task: \(devicenummer)\t devicebatteriespannung: \(devicebatteriespannung/100)")
                
                swiftArray[devicenummer]["batterie"] = String(format:"%2.02fV", devicebatteriespannung/100)
 
                
-                  print("pt: \(teensy.read_byteArray[15])")
+            //      print("pt: \(teensy.read_byteArray[15])")
 
                //var messungfloatarray:[[Float]] = Array(repeating:Array(repeating:0,count:10),count:6)
                var devicearray:[Float] = Array(repeating:0.0,count:16)
@@ -2717,7 +2716,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                let batteriespannung = Int32(teensy.read_byteArray[USB_BATT_BYTE]) * 2
                batteriefloat = Float(batteriespannung)
                
-               print("device 1 batteriefloat USB_BATT_BYTE: \(batteriefloat)");
+ //              print("device 1 batteriefloat USB_BATT_BYTE: \(batteriefloat)");
                let batt:String? = swiftArray[devicenummer]["batterie"]
                if (batteriefloat < Float(BATT_MIN))
                {
@@ -2742,7 +2741,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
          case 2:
             // MARK: MESSUNG_DATA Device 2
-             print("\nMESSUNG_DATA device 2 aktiv")
+             //print("\nMESSUNG_DATA device 2 aktiv")
             //print ("")
             
             //print ("switch devicenummer: \(devicenummer)")
@@ -2776,18 +2775,20 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             {
                devicestatus |= (1<<UInt8(devicenummer))
                let device = swiftArray[devicenummer]
-               print("device \(String(describing: device)) ist da")
+               //print("device \(String(describing: device)) ist da")
                //               swiftArray[task]["on"] = "1"
                inputDataFeldstring += ( String(devicenummer) + ":" + "\t")
  //              print("wl_callback_status: \(wl_callback_status) devicenummer: \(devicenummer)  devicestatus: \(devicestatus)")
                
                let devicebatteriespannung = Float(teensy.read_byteArray[USB_BATT_BYTE]) * 2 // halber Wert vom device
 
-               print ("switch task: \(devicenummer)\t devicebatteriespannung: \(devicebatteriespannung/100)")
+   //            print ("switch task: \(devicenummer)\t devicebatteriespannung: \(devicebatteriespannung/100)")
                let temp = Float(devicebatteriespannung)/100
+               
                let tempstr = String(format:"%2.01f", temp)
-               swiftArray[devicenummer]["batterie"] = String(format:"%2.02fV", devicebatteriespannung/100)
-               print ("switch task: \(devicenummer)\t devicebatteriespannung: \(devicebatteriespannung/100)")
+               let devicebatteriefloat = Float(devicebatteriespannung)  / 100
+               swiftArray[devicenummer]["batterie"] = String(format:"%2.02fV", devicebatteriefloat)
+ //              print ("switch task: \(devicenummer)\t devicebatteriespannung: \(devicebatteriefloat)")
                
                let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0 + DATA_START_BYTE])
                let analog0hi:Int32 =  Int32(teensy.read_byteArray[ANALOG0+1 + DATA_START_BYTE])
@@ -2856,7 +2857,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             print ("")
             break
          }
-         print("\nend MESSUNG_DATA \t\t\t\t +++++++++++++++++++++++ ")
+   //      print("\nend MESSUNG_DATA \t\t\t\t +++++++++++++++++++++++ ")
          
          TaskListe.reloadData()
          
@@ -4415,6 +4416,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
             
             self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
             //Do something
+         if teensy.readtimervalid() == true
+         {
+            print("report start Messung readtimer valid vor")
+         }
+         else 
+         {
+            print("report start Messung readtimer not valid vor")
+            var start_read_USB_erfolg = teensy.start_read_USB(true)
+         
+         }
+
             
             let readerr = self.teensy.start_read_USB(true)
             if (readerr == 0)
@@ -4544,15 +4556,6 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
    {
       print("check_WL start");
 //      teensy.close_hid()
-      /*
-      let erfolg = UInt8(teensy.USBOpen())
-
-      if (erfolg == 0)
-         {
-            print("check_WL: kein teensy da");
-            return
-         }
- */
   //    print("\nreportcheck_WL: teensy.write_byteArray vor: \(teensy.write_byteArray)")
       MessungStartzeit = tagsekunde()
       teensy.write_byteArray[TAKT_LO_BYTE] = 1
@@ -4583,21 +4586,36 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          self.teensy.write_byteArray[0] = UInt8(CHECK_WL)
          //Do something
          
+      /*
          let readerr = self.teensy.start_read_USB(true)
          if (readerr == 0)
          {
             print("Fehler in check_WL")
          }
- //     }
+ */
+      
+      if teensy.readtimervalid() == true
+      {
+         print("check wl readtimer valid vor")
+      }
+      else 
+      {
+         print("check wl readtimer not valid vor")
+         var start_read_USB_erfolg = teensy.start_read_USB(true)
+         print("check wl  erfolg: \(start_read_USB_erfolg)")
+      }
 
-/*
+ //     }
+      
+
+
       var senderfolg = teensy.start_write_USB()
       if (senderfolg > 0)
       {
          print("check_WL send OK");
          NSSound(named: "Tink")?.play()
       }
- */     
+     
       print("check_WL end");
    }
    
@@ -4962,6 +4980,17 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                
                //self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
                
+            if teensy.readtimervalid() == true
+            {
+               print("report start Messung readtimer valid vor")
+            }
+            else 
+            {
+               print("report start Messung readtimer not valid vor")
+               let readerr = teensy.start_read_USB(true)
+               self.codeFeld.integerValue = readerr
+            }
+/*
                let readerr = Int32(self.teensy.start_read_USB(true))
                self.codeFeld.intValue = readerr
 
@@ -4969,7 +4998,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
                {
                   print("Fehler in report_start_messung")
                }
-//            }
+*/
          
          let senderfolg = teensy.start_write_USB()
          if (senderfolg > 0)
@@ -4979,89 +5008,7 @@ class DataViewController: NSViewController, NSWindowDelegate, AVAudioPlayerDeleg
          // let startscrollpunkt = NSMakePoint(dataScroller.frame.size.width,0.0)
       }
       return;
-      /*
-      print("report_start_read_USB")
-      //myUSBController.startRead(1)
-      
-      usb_read_cont = (cont_read_check.state == 1) // cont_Read wird bei aktiviertem check eingeschaltet
-      teensy.write_byteArray[0] = UInt8(MESSUNG_START)
-      // Intervall einsetzen
-      var index = IntervallPop.indexOfSelectedItem
-      //
-      if (index < 0)
-      {
-         index = 0
-         IntervallPop.selectItem(at:index)
-      }
-      let wahl = IntervallPop.objectValueOfSelectedItem as! String
-      //print("reportTaskIntervall wahl: \(wahl) index: \(index)")
-      
-      let integerwahl:UInt16? = UInt16(wahl)
-      //print("report_start_messung integerwahl: \(integerwahl!)")
-      // Taktintervall in array einsetzen
-      teensy.write_byteArray[TAKT_LO_BYTE] = UInt8(integerwahl! & 0x00FF)
-      teensy.write_byteArray[TAKT_HI_BYTE] = UInt8((integerwahl! & 0xFF00)>>8)
-      
-
-     // 
-  //    delayWithSeconds(1)
-      {            
-         
-         self.usb_read_cont = (self.cont_read_check.state == 1) // cont_Read wird bei aktiviertem check eingeschaltet
-         
-         self.teensy.write_byteArray[0] = UInt8(MESSUNG_START)
-         //Do something
-         
-         let readerr = Int32(self.teensy.start_read_USB(true))
-         self.codeFeld.intValue = readerr
-         if (readerr == 0)
-         {
-            print("Fehler in report_start_read")
-         }
-         else
-         {
-            print("report_start_read OK")
-         }
-      }
-      
-      let DSLOW:Int32 = Int32(teensy.read_byteArray[DSLO])
-      let DSHIGH:Int32 = Int32(teensy.read_byteArray[DSHI])
-      
-      if (DSLOW > 0)
-      {
-         let temperatur = DSLOW | (DSHIGH<<8)         
-      }
-        
-      
-      let analog0lo:Int32 =  Int32(teensy.read_byteArray[ANALOG0])
-      let analog0hi:Int32 =  Int32(teensy.read_byteArray[ANALOG0+1])
-      ADC0LO_Feld.intValue = analog0lo
-      ADC0HI_Feld.intValue = analog0hi
-      
-      let analog0 = analog0lo | (analog0hi<<8)
-      let  analog0float:Float = Float(analog0)/0xFFFF*5.0
-      _ = NumberFormatter()
-      
-      //print("adcfloat: \(adcfloat) String: \(adcfloat)");
-      ADC0Feld.stringValue = NSString(format:"%.02f", analog0float) as String
-      
-      //print ("adc0: \(adc0)");
-      
-      //teensy.start_teensy_Timer()
-      
-      //     var somethingToPass = "It worked"
-      
-      //      let timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("tester:"), userInfo: somethingToPass, repeats: true)
- */
-      /*
-       if (usb_read_cont == true)
-       {
-       var timer : Timer? = nil
-       
-       // Auslesen der Ergebnisse in teensy
-       //       timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(DataViewController.cont_read_USB(_:)), userInfo: nil, repeats: true)
-       }
-       */
+  
    }
    
    @IBAction func report_cont_read(_ sender: AnyObject)
